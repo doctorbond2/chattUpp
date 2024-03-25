@@ -10,9 +10,9 @@ app.use(
     origin: ALLOWED_ORIGINS,
   })
 );
+
+app.use("/api/v1/users", userRouter);
 app.use("/", (req, res) => {
   res.send("Server is up and running!!");
 });
-app.use("/api/v1/users", userRouter);
-
 export default app;
