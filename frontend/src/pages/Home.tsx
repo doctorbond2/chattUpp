@@ -1,6 +1,5 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect } from "react";
 import { ActiveUser } from "../types/userTypes";
 type Props = { loggedIn: ActiveUser | null };
 const Home: React.FC<Props> = ({}) => {
