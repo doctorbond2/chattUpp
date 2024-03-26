@@ -6,7 +6,6 @@ export async function hash_password(
   this: any,
   next: CallbackWithoutResultAndOptionalError
 ) {
-  console.log("Pre save!");
   const doc: any = this;
   if (doc.isModified(doc.password) || doc.isNew) {
     try {

@@ -16,12 +16,14 @@ function App() {
   useEffect(() => {
     if (loggedIn.id) {
       localStorage.setItem("logged_in", JSON.stringify(loggedIn));
+    } else {
+      localStorage.removeItem("logged_in");
     }
   }, [loggedIn]);
   return (
     <>
       <Routes>
-        <Route element={<NavBar />}>
+        <Route element={<NavBar {...{ loggedIn, setLoggedIn }} />}>
           <Route path="/" element={<Home {...{ loggedIn }} />} />
           <Route path="/profile" element={<Profile />} />
           <Route

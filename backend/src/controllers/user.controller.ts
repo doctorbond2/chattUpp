@@ -3,7 +3,6 @@ import { Response, Request } from "express";
 import { error_MESSAGE } from "../utilities/helpers/database.helper.js";
 import { compare_password } from "../middleware/auth.middleware.js";
 export const createUser = async (req: Request, res: Response) => {
-  console.log("hejhej");
   if (!req.body) {
     return res.status(400).json({
       message: "Bad request.",

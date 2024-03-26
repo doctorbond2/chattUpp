@@ -4,9 +4,19 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { NavDropdown } from "react-bootstrap";
 import { Outlet } from "react-router";
-type Props = {};
+import { ActiveUser } from "../types/userTypes";
+import { LOGGED_OUT } from "../types/userTypes";
+type Props = {
+  loggedIn: ActiveUser;
+  setLoggedIn: React.Dispatch<React.SetStateAction<ActiveUser>>;
+};
 
-const mainNavBar: React.FC<Props> = ({}) => {
+const mainNavBar: React.FC<Props> = ({ loggedIn, setLoggedIn }) => {
+  const logoutUser = () => {
+    if (loggedIn.id) {
+      setLoggedIn(LOGGED_OUT);
+    }
+  };
   return (
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
@@ -32,6 +42,7 @@ const mainNavBar: React.FC<Props> = ({}) => {
               </NavDropdown>
             </Nav>
           </Navbar.Collapse>
+          {loggedIn.id && <button onClick={logoutUser}>LOG OUT</button>}
         </Container>
       </Navbar>
       <Outlet />
