@@ -13,6 +13,7 @@ const Home: React.FC<Props> = ({}) => {
         const response = await axios.get(BaseUrl + "/");
         if (response) {
           setTest(response.data);
+          console.log(response.data);
         }
         {
           setTest("Response error");
