@@ -9,7 +9,7 @@ const ALLOWED_ORIGINS = [
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: ALLOWED_ORIGINS,
+    origin: "*",
 }));
 app.use("/api/v1/users", userRouter);
 app.use("/", (req, res) => {
