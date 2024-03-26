@@ -14,6 +14,7 @@ const Home: React.FC<Props> = ({}) => {
         if (response) {
           setTest(response.data);
           console.log(response.data);
+          console.log("TEST: ", test);
         }
         {
           setTest("Response error");

@@ -25,6 +25,6 @@ app.use(function (req, res, next) {
 });
 app.use("/api/v1/users", userRouter);
 app.use("/", (req, res) => {
-  res.send("Server is up and running!!" + process.env.PORT);
+  res.json({ message: "Server is up and running!!" });
 });
 export default app;
