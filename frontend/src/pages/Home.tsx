@@ -6,7 +6,7 @@ type Props = { loggedIn: ActiveUser | null };
 const Home: React.FC<Props> = ({}) => {
   const [test, setTest] = useState<any>(null);
   const BaseUrl = import.meta.env.VITE_BaseUrl;
-  console.log(BaseUrl);
+  console.log("BASE", BaseUrl);
   useEffect(() => {
     const fetchData = async () => {
       try {
