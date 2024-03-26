@@ -16,7 +16,7 @@ const Login: React.FC<Props> = ({ setLoggedIn, loggedIn }) => {
   const [loginData, setLoginData] = useState<any>();
 
   const submit_login_info = async (e: HTMLFormElement) => {
-    console.log(BaseUrl + "api/v1/users/login");
+    console.log(BaseUrl + "/api/v1/users/login");
     e.preventDefault();
     const login_body: any = {
       username: login_username,
@@ -27,7 +27,7 @@ const Login: React.FC<Props> = ({ setLoggedIn, loggedIn }) => {
 
     try {
       const response = await axios.post(
-        BaseUrl + "api/v1/users/login",
+        BaseUrl + "/api/v1/users/login",
         JSON.stringify(loginData),
         { headers: { "Content-Type": "application/json" } }
       );
