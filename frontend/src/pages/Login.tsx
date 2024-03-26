@@ -9,13 +9,14 @@ type Props = {
   loggedIn: any;
 };
 const BaseUrl = import.meta.env.VITE_BaseUrl;
-console.log(BaseUrl + "users/login");
+
 const Login: React.FC<Props> = ({ setLoggedIn, loggedIn }) => {
   const [login_username, set_login_username] = useState<string>("");
   const [login_password, set_login_password] = useState<string>("");
   const [loginData, setLoginData] = useState<any>();
 
   const submit_login_info = async (e: HTMLFormElement) => {
+    console.log(BaseUrl + "api/v1/users/login");
     e.preventDefault();
     const login_body: any = {
       username: login_username,

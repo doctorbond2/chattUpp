@@ -11,12 +11,9 @@ const Home: React.FC<Props> = ({}) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(BaseUrl + "/");
-        if (response) {
-          setTest(response.data);
-          console.log(response.data);
-          console.log("TEST: ", test);
-        }
-        {
+        if (response.statusText === "OK") {
+          response.data && setTest(response.data);
+        } else {
           setTest("Response error");
         }
       } catch (err: any) {
@@ -32,7 +29,8 @@ const Home: React.FC<Props> = ({}) => {
   return (
     <>
       <div>Homepage</div>
-      <h2>{test && test}</h2>
+      <h2>{test && test.message}</h2>
+      <h4>asd</h4>
     </>
   );
 };
