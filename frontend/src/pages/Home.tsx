@@ -31,7 +31,7 @@ const Home: React.FC<Props> = ({}) => {
   return (
     <>
       <div>Homepage</div>
-      <h2>{test}</h2>
+      <h2>{test && test}</h2>
     </>
   );
 };
