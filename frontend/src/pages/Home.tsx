@@ -11,7 +11,7 @@ const Home: React.FC<Props> = ({}) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(BaseUrl + "/");
-        console.log("RESPONSE", response.statusText, response.data);
+        console.log("RESPONSE", response.statusText);
         if (response.statusText === "OK") {
           response.data && setTest(response.data);
         } else {
