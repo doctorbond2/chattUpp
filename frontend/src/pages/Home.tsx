@@ -12,7 +12,7 @@ const Home: React.FC<Props> = ({}) => {
       try {
         const response = await axios.get(BaseUrl + "/");
         console.log("RESPONSE", response);
-        if (response.statusText === "OK") {
+        if (response) {
           response.data && setTest(response.data);
         } else {
           setTest("Response error");
