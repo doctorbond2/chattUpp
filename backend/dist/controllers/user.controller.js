@@ -11,7 +11,6 @@ import User from "../models/user.model.js";
 import { error_MESSAGE } from "../utilities/helpers/database.helper.js";
 import { compare_password } from "../middleware/auth.middleware.js";
 export const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("hejhej");
     if (!req.body) {
         return res.status(400).json({
             message: "Bad request.",

@@ -11,7 +11,6 @@ import { hashPassword } from "../utilities/helpers/database.helper.js";
 import bcrypt from "bcrypt";
 export function hash_password(next) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("Pre save!");
         const doc = this;
         if (doc.isModified(doc.password) || doc.isNew) {
             try {
