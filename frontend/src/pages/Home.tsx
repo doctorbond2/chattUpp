@@ -9,14 +9,19 @@ const Home: React.FC<Props> = ({}) => {
   console.log(BaseUrl);
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get(BaseUrl + "/");
-      if (response) {
-        setTest(response.data);
-      }
-      {
-        setTest("Response error");
+      try {
+        const response = await axios.get(BaseUrl + "/");
+        if (response) {
+          setTest(response.data);
+        }
+        {
+          setTest("Response error");
+        }
+      } catch (err: any) {
+        console.error(err.message);
       }
     };
+
     fetchData();
     return () => {
       console.log("Homepage cleanup");
