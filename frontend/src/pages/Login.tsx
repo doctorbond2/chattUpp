@@ -9,7 +9,7 @@ type Props = {
   loggedIn: any;
 };
 const BaseUrl = import.meta.env.VITE_BaseUrl;
-console.log(BaseUrl + "/users/login");
+console.log(BaseUrl + "users/login");
 const Login: React.FC<Props> = ({ setLoggedIn, loggedIn }) => {
   const [login_username, set_login_username] = useState<string>("");
   const [login_password, set_login_password] = useState<string>("");
@@ -26,7 +26,7 @@ const Login: React.FC<Props> = ({ setLoggedIn, loggedIn }) => {
 
     try {
       const response = await axios.post(
-        BaseUrl + "/api/v1/users/login",
+        BaseUrl + "api/v1/users/login",
         JSON.stringify(loginData),
         { headers: { "Content-Type": "application/json" } }
       );
