@@ -6,6 +6,7 @@ const ALLOWED_ORIGINS: string[] = [
   "http://localhost:5173",
   "https://chatt-upp-client.vercel.app",
   `${process.env.CLIENT_URL}`,
+  "https://*.vercel.app",
 ];
 
 app.use(express.json());
