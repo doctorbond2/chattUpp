@@ -2,7 +2,10 @@ import express from "express";
 import cors from "cors";
 import userRouter from "./routes/user.route.js";
 const app = express();
-const ALLOWED_ORIGINS: string[] = ["http://localhost:5173"];
+const ALLOWED_ORIGINS: string[] = [
+  "http://localhost:5173",
+  "https://chatt-upp-client.vercel.app",
+];
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(

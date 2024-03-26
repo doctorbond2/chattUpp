@@ -26,7 +26,7 @@ const Login: React.FC<Props> = ({ setLoggedIn, loggedIn }) => {
 
     try {
       const response = await axios.post(
-        BaseUrl + "/users/login",
+        BaseUrl + "/api/v1/users/login",
         JSON.stringify(loginData),
         { headers: { "Content-Type": "application/json" } }
       );
