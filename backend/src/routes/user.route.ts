@@ -4,7 +4,7 @@ import { createUser, loginUser } from "../controllers/user.controller.js";
 
 router.post("/create", createUser);
 router.post("/login", loginUser);
-router.get("/", (req, res) => {
+router.get("/profile", (req, res) => {
   res.send("hej");
 });
 

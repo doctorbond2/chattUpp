@@ -2,6 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ActiveUser } from "../types/userTypes";
+import { Card } from "react-bootstrap";
 type Props = { loggedIn: ActiveUser | null };
 const Home: React.FC<Props> = ({}) => {
   const [test, setTest] = useState<any>(null);
@@ -32,6 +33,10 @@ const Home: React.FC<Props> = ({}) => {
       <div>Homepage</div>
       <h2>{test && test.message}</h2>
       <h4>asd</h4>
+      <Card>
+        {" "}
+        <h1>Hello world!</h1>
+      </Card>
     </>
   );
 };
