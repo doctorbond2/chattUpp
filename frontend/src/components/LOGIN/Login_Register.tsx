@@ -1,7 +1,6 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import { RegisterFormType } from "../../types/userTypes";
-import { useState } from "react";
 type Props = {
   registerForm: RegisterFormType;
   handleRegister: any;

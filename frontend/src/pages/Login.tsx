@@ -1,7 +1,7 @@
 import React from "react";
 import Login_Input from "../components/LOGIN/Login_Input";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ActiveUser } from "../types/userTypes";
 import { Stack } from "react-bootstrap";
 import Login_Register from "../components/LOGIN/Login_Register";
