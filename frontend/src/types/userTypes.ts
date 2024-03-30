@@ -24,3 +24,33 @@ export const defaultRegisterState: RegisterFormType = {
   password: "",
   repeat_password: "",
 };
+export type LoginStateType = {
+  password: string;
+  username: string;
+  email: string;
+};
+export const defaultLoginState: LoginStateType = {
+  password: "",
+  username: "",
+  email: "",
+};
+export type ProfileInfo = {
+  username: string;
+  createdAt: Date;
+  email: string;
+  firstname: string;
+  lastname: string;
+  age: number | null;
+  role: string;
+  avatar: string;
+} | null;
+export const defaultProfileInfo: ProfileInfo = {
+  username: "John",
+  createdAt: new Date(),
+  email: "John.doe@johndoe@john",
+  firstname: "John",
+  lastname: "Doe",
+  age: null,
+  role: "standard",
+  avatar: "",
+};

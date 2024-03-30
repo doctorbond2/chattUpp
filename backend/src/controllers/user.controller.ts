@@ -68,3 +68,23 @@ export const loginUser = async (req: Request, res: Response) => {
     });
   }
 };
+export const getUserProfile = async (req: Request, res: Response) => {
+  console.log("Test backend");
+  if (!req.params.id) {
+    return res.status(400).json({
+      message: "Bad request, no profile ID provided.",
+    });
+  }
+  const { id } = req.params;
+  try {
+    const user = await User.findOne({ _id: id });
+    if (user) {
+      res.status(200).json(user);
+    }
+  } catch (err: any) {
+    res.status(500).json({
+      message: "Unexpected error.",
+      error: err.message,
+    });
+  }
+};

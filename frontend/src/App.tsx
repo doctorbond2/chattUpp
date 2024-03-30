@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import { ActiveUser } from "./types/userTypes";
 import NavBar from "./components/NavBar";
+import Register from "./pages/subpages/Register";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
@@ -25,11 +26,12 @@ function App() {
       <Routes>
         <Route element={<NavBar {...{ loggedIn, setLoggedIn }} />}>
           <Route path="/" element={<Home {...{ loggedIn }} />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile" element={<Profile {...{ loggedIn }} />} />
           <Route
             path="/login"
             element={<Login {...{ setLoggedIn, loggedIn }} />}
           />
+          <Route path="/register" element={<Register />} />
         </Route>
       </Routes>
     </>

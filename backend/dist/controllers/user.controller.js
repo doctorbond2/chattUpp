@@ -80,3 +80,24 @@ export const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, functio
         });
     }
 });
+export const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("Test backend");
+    if (!req.params.id) {
+        return res.status(400).json({
+            message: "Bad request, no profile ID provided.",
+        });
+    }
+    const { id } = req.params;
+    try {
+        const user = yield User.findOne({ _id: id });
+        if (user) {
+            res.status(200).json(user);
+        }
+    }
+    catch (err) {
+        res.status(500).json({
+            message: "Unexpected error.",
+            error: err.message,
+        });
+    }
+});

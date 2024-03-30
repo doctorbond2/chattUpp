@@ -27,18 +27,27 @@ const mainNavBar: React.FC<Props> = ({ loggedIn, setLoggedIn }) => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <NavDropdown title="Dropdown" id="basic-nav-dropdown">
-                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">
-                  Another action
+              <NavDropdown
+                title={loggedIn.id ? "Profile" : "Logged out"}
+                id="basic-nav-dropdown"
+              >
+                <NavDropdown.Item onClick={() => navigate("/login")}>
+                  {loggedIn.id ? "Profile" : "Sign in"}
+                </NavDropdown.Item>
+                <NavDropdown.Item onClick={() => navigate("/register")}>
+                  {loggedIn.id ? "Friendlist" : "Sign up"}
                 </NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.3">
                   Something
                 </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action/3.4">
-                  Separated link
-                </NavDropdown.Item>
+                {loggedIn.admin_access && (
+                  <>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item href="#action/3.4">
+                      Admin page
+                    </NavDropdown.Item>
+                  </>
+                )}
               </NavDropdown>
 
               <Nav.Link
@@ -51,10 +60,10 @@ const mainNavBar: React.FC<Props> = ({ loggedIn, setLoggedIn }) => {
 
               <Nav.Link
                 onClick={() => {
-                  navigate("/asd");
+                  navigate("/profile");
                 }}
               >
-                asd
+                Profile
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>

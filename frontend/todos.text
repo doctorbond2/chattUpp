@@ -1,0 +1,6 @@
+
+TODO: Fixa proper routing för frontend, fixa nestade routes. EXEMPEL: Profile/friends, Profile/settings. Login/Register, /Login/login?
+
+TODO REMINDER: Se över Container/Row/Col för register page. :(|)
+
+TODO REMINDER: Se över hur eventkey attr funkar på React-boostrap TABS
