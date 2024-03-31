@@ -9,6 +9,7 @@ import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import { useEffect, useState } from "react";
 import { LOGGED_OUT } from "./types/userTypes";
+import AdminPage from "./pages/AdminPage";
 function App() {
   const [loggedIn, setLoggedIn] = useState<ActiveUser>(() => {
     const storedLogin = localStorage.getItem("logged_in");
@@ -32,6 +33,7 @@ function App() {
             element={<Login {...{ setLoggedIn, loggedIn }} />}
           />
           <Route path="/register" element={<Register />} />
+          <Route path="/admin" element={<AdminPage {...{ loggedIn }} />} />
         </Route>
       </Routes>
     </>

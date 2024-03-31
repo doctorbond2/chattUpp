@@ -43,7 +43,7 @@ const mainNavBar: React.FC<Props> = ({ loggedIn, setLoggedIn }) => {
                 {loggedIn.admin_access && (
                   <>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="#action/3.4">
+                    <NavDropdown.Item onClick={() => navigate("/admin")}>
                       Admin page
                     </NavDropdown.Item>
                   </>

@@ -10,3 +10,5 @@ export const POST_request = async (url: string, data: any) => {
 export const GET_request = async (url: string) => {
   return axios.get(BaseUrl + url);
 };
+
+export const fetchAndSetState = async () => {};

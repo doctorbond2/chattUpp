@@ -42,7 +42,7 @@ const Profile: React.FC<Props> = ({ loggedIn }) => {
               id="uncontrolled-tab-example"
               className="mb-3"
             >
-              <Tab eventKey="home" title="Profile">
+              <Tab eventKey="profile" title="Profile">
                 <Container className="border border-success">
                   <Row>
                     <Col>{userProfile.username}</Col>
@@ -57,11 +57,16 @@ const Profile: React.FC<Props> = ({ loggedIn }) => {
                 </Container>
               </Tab>
               <Tab eventKey="friends" title="Friends">
-                Tab content for Profile
+                Tab content for friends
               </Tab>
               <Tab eventKey="settings" title="Settings">
-                Tab content for Contact
+                Tab content for settings
               </Tab>
+              {loggedIn?.admin_access && (
+                <Tab eventKey="admin" title="Admin">
+                  You are admin
+                </Tab>
+              )}
             </Tabs>{" "}
           </>
         ) : (

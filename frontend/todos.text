@@ -4,3 +4,7 @@ TODO: Fixa proper routing för frontend, fixa nestade routes. EXEMPEL: Profile/f
 TODO REMINDER: Se över Container/Row/Col för register page. :(|)
 
 TODO REMINDER: Se över hur eventkey attr funkar på React-boostrap TABS
+
+TODO: Göra en fetchData funktion som exporteras? Tar GET,POST,UPDATE,DELETE som parameter
+
+TODO: Gör component för profile page på profile sidan

@@ -16,15 +16,27 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
+        maxLength: 255,
+        minLength: 8,
         required: true,
     },
     firstname: {
         type: String,
+        maxLength: 100,
+        minLength: 1,
         required: true,
     },
     lastname: {
         type: String,
+        maxLength: 100,
+        minLength: 1,
         required: true,
+    },
+    age: {
+        type: Number,
+        min: 15,
+        max: 125,
+        default: null,
     },
     avatar: {
         type: String,
@@ -35,6 +47,12 @@ const userSchema = new Schema({
         required: true,
         default: "standard",
     },
+    friends: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "User",
+        },
+    ],
 }, { timestamps: true });
 userSchema.virtual("fullname").get(function () {
     return (this.firstname.charAt(0).toUpperCase() +

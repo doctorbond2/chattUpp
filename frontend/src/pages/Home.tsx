@@ -1,6 +1,6 @@
 import React from "react";
-import axios from "axios";
 import { useEffect, useState } from "react";
+import { GET_request } from "../utils/requestHelpers";
 import { ActiveUser } from "../types/userTypes";
 import { Card } from "react-bootstrap";
 type Props = { loggedIn: ActiveUser | null };
@@ -11,10 +11,10 @@ const Home: React.FC<Props> = ({}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(BaseUrl + "/");
+        const response = await GET_request("/");
         console.log("RESPONSE", response);
-        if (response) {
-          response.data && setTest(response.data);
+        if (response.data) {
+          setTest(response.data);
         } else {
           setTest("Response error");
         }
@@ -22,7 +22,6 @@ const Home: React.FC<Props> = ({}) => {
         console.error(err.message);
       }
     };
-
     fetchData();
     return () => {
       console.log("Homepage cleanup");
