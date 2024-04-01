@@ -18,7 +18,7 @@ const AdminPage: React.FC<Props> = ({ loggedIn }) => {
       console.log("Welcome admin!");
     }
   }, []);
-  //UPDATE CONTROL
+  //UPDATE USER CONTROL
   const getUserById = async (url: string, id: string) => {
     try {
       const response = await GET_request(url + "/" + id);

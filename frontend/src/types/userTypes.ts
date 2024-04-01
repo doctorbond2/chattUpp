@@ -43,6 +43,7 @@ export type ProfileInfo = {
   age: number | null;
   role: string;
   avatar: string;
+  password: string;
 } | null;
 export const defaultProfileInfo: ProfileInfo = {
   username: "John",
@@ -53,4 +54,5 @@ export const defaultProfileInfo: ProfileInfo = {
   age: null,
   role: "standard",
   avatar: "",
+  password: "",
 };

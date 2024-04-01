@@ -10,5 +10,9 @@ export const POST_request = async (url: string, data: any) => {
 export const GET_request = async (url: string) => {
   return axios.get(BaseUrl + url);
 };
-
+export const PUT_request = async (url: string, data: any) => {
+  return axios.put(BaseUrl + url, JSON.stringify(data), {
+    headers: { "Content-Type": "application/json" },
+  });
+};
 export const fetchAndSetState = async () => {};

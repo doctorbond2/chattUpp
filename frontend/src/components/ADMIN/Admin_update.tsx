@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { ActiveUser } from "../../types/userTypes";
 import { noID, fullID } from "../../styles/customReact/buttonStyles";
-import UpdateUserForm from "./UpdateUserForm";
+import UpdateForm from "./UpdateForm";
 import { ProfileInfo } from "../../types/userTypes";
-import { Container, Modal, Button, InputGroup, Form } from "react-bootstrap";
+import { Container, InputGroup, Form } from "react-bootstrap";
+import { PUT_request } from "../../utils/requestHelpers";
 
 type Props = {
   loggedIn: ActiveUser;
@@ -21,10 +22,32 @@ const Admin_update: React.FC<Props> = ({
   // TODO: Gör att jag kan uppdatera en användare i databasen från min adminpanel
   //En form som skrivs ut när man fetchar en användare.
   //När man sparar formen, så uppdateras användaren.
-  const [show, setShow] = useState(false);
+
   const [fetchId, setFetchId] = useState<string>("");
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  //TODO LÄGG TILL KEY TYPES
+  const handleUpdateField = (e: any, field: keyof ProfileInfo | any) => {
+    const { value } = e.target;
+    if (userToUpdate !== null) {
+      setUserToUpdate({ ...userToUpdate, [field]: value });
+    }
+  };
+  const submitUpdate = async () => {
+    try {
+      if (userToUpdate) {
+        const response = await PUT_request("/aurl", userToUpdate);
+        if (response) {
+          console.log("Update successfull.");
+          setUserToUpdate(null);
+        }
+      }
+    } catch (err: any) {
+      console.error(err.message);
+    }
+  };
+  if (4 > 5) {
+    submitUpdate();
+  }
+
   return (
     <>
       <Container className="w-25">
@@ -51,42 +74,8 @@ const Admin_update: React.FC<Props> = ({
         </InputGroup>
 
         <h2>{userToUpdate?.firstname}</h2>
-        <Button
-          variant="primary"
-          onClick={() => {
-            if (userToUpdate) {
-              handleShow();
-            }
-          }}
-          disabled={userToUpdate ? false : true}
-        >
-          {userToUpdate ? "Edit user" : "No user"}
-        </Button>
+        <UpdateForm {...{ handleUpdateField, userToUpdate, setUserToUpdate }} />
       </Container>
-
-      <Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Modal title</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {userToUpdate ? (
-            <UpdateUserForm {...{ userToUpdate, setUserToUpdate }} />
-          ) : (
-            "Error fetching user."
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary">Understood</Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };
