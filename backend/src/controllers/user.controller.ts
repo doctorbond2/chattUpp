@@ -88,3 +88,21 @@ export const getUserProfile = async (req: Request, res: Response) => {
     });
   }
 };
+const getUserList = async (req: Request, res: Response) => {
+  if (!req.query.page || !req.query.pageSize) {
+    return res.status(500);
+  }
+  let page: number = parseInt(req.query.page as string) || 1;
+  let pageSize: number = parseInt(req.query.pageSize as string) || 10;
+  let pageSkip = page - 1;
+  try {
+    let _users = User.find().skip(pageSkip).limit(pageSize);
+    res.status(200).json(_users);
+  } catch (err: any) {
+    console.error(err.message);
+    res.status(500).json({
+      message: "Unexpected error.",
+      error: err.message,
+    });
+  }
+};
