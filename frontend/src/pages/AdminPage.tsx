@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Admin_update from "../components/ADMIN/update/Admin_update";
 import { useNavigate } from "react-router-dom";
 import { ActiveUser } from "../types/userTypes";

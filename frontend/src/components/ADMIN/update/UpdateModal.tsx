@@ -13,6 +13,7 @@ type Props = {
 const UpdateForm: React.FC<Props> = ({ userToUpdate, setUserToUpdate }) => {
   //TODO Fixa types för incoming data
   const [data, setData] = useState(null);
+  const [replica, setReplica] = useState<ProfileInfo | any>(null);
   //MODAL - - - - - - -
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -21,7 +22,9 @@ const UpdateForm: React.FC<Props> = ({ userToUpdate, setUserToUpdate }) => {
 
   const active_Component = () => {
     if (userToUpdate?.email) {
-      return <UpdateUserForm {...{ userToUpdate, setUserToUpdate }} />;
+      return (
+        <UpdateUserForm {...{ userToUpdate, setUserToUpdate, setReplica }} />
+      );
     } else {
       return <NotFound />;
     }
@@ -29,10 +32,13 @@ const UpdateForm: React.FC<Props> = ({ userToUpdate, setUserToUpdate }) => {
   return (
     <>
       <div style={{ border: "1px solid black" }}>
-        asd
-        <Button variant="primary" onClick={handleShow}>
+        <Button
+          variant="primary"
+          onClick={handleShow}
+          disabled={userToUpdate ? false : true}
+        >
           {" "}
-          asd
+          {userToUpdate ? "Edit user" : "No user selected"}
         </Button>
         <Modal
           show={show}
@@ -40,17 +46,22 @@ const UpdateForm: React.FC<Props> = ({ userToUpdate, setUserToUpdate }) => {
           backdrop="static"
           keyboard={false}
         >
-          <Modal.Header closeButton>
-            <Modal.Title>Info</Modal.Title>
-          </Modal.Header>
           <Modal.Body>
-            <form>
+            <form onSubmit={handleClose}>
               {active_Component()}
-              <Button variant="secondary" onClick={handleClose}>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  setUserToUpdate(replica);
+                  setReplica(null);
+                  handleClose();
+                  console.log("replicated:", userToUpdate);
+                }}
+              >
                 Cancel
               </Button>
-              <Button type={"submit"} variant="primary" onClick={handleClose}>
-                Understood
+              <Button type={"submit"} variant="primary">
+                Update
               </Button>
             </form>
           </Modal.Body>
