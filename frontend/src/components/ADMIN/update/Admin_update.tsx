@@ -5,7 +5,6 @@ import UpdateModal from "./UpdateModal";
 import { GET_request } from "../../../utils/requestHelpers";
 import { ProfileInfo } from "../../../types/userTypes";
 import { Container, InputGroup, Form } from "react-bootstrap";
-import { PUT_request } from "../../../utils/requestHelpers";
 type Props = {
   loggedIn: ActiveUser;
 };
@@ -22,6 +21,7 @@ const Admin_update: React.FC<Props> = (
   const [productToUpdate, setProductToUpdate] = useState<any>(null);
   const [fetchId, setFetchId] = useState<string>("");
   const getUserById = async (url: string, id: string) => {
+    setUserToUpdate(null);
     try {
       const response = await GET_request(url + "/" + id);
       if (response.data) {
@@ -80,7 +80,7 @@ const Admin_update: React.FC<Props> = (
           />
         </InputGroup>
 
-        <h2>{userToUpdate?.firstname}</h2>
+        <h2>{userToUpdate ? "User found, start editing!" : "Get a user"}</h2>
         <UpdateModal {...{ userToUpdate, setUserToUpdate }} />
       </Container>
     </>
