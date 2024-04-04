@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import NotFound from "../../SIMPLE/NotFound";
 import { useState } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { ProfileInfo } from "../../../types/userTypes";
@@ -18,6 +19,13 @@ const UpdateForm: React.FC<Props> = ({ userToUpdate, setUserToUpdate }) => {
   const [show, setShow] = useState(false);
   //MODAL - - - - - - -
 
+  const active_Component = () => {
+    if (userToUpdate?.email) {
+      return <UpdateUserForm {...{ userToUpdate, setUserToUpdate }} />;
+    } else {
+      return <NotFound />;
+    }
+  };
   return (
     <>
       <div style={{ border: "1px solid black" }}>
@@ -33,11 +41,11 @@ const UpdateForm: React.FC<Props> = ({ userToUpdate, setUserToUpdate }) => {
           keyboard={false}
         >
           <Modal.Header closeButton>
-            <Modal.Title>Modal title</Modal.Title>
+            <Modal.Title>Info</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <form>
-              <UpdateUserForm {...{ userToUpdate, setUserToUpdate }} />
+              {active_Component()}
               <Button variant="secondary" onClick={handleClose}>
                 Cancel
               </Button>

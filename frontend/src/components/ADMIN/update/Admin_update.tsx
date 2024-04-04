@@ -38,6 +38,7 @@ const Admin_update: React.FC<Props> = (
       console.error(err.message);
     }
   };
+  const handleUpdateUser = async () => {};
   useEffect(() => {
     if (userToUpdate) {
       setProductToUpdate(null);
