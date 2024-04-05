@@ -70,6 +70,7 @@ const Admin_update: React.FC<Props> = (
               {fetchId.length === 24 ? "GET USER" : "ENTER ID"}
             </button>
           </InputGroup.Text>
+
           <Form.Control
             placeholder="mongoid"
             aria-label="Username"

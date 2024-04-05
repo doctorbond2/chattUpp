@@ -89,9 +89,6 @@ export const getUserProfile = async (req: Request, res: Response) => {
   }
 };
 const getUserList = async (req: Request, res: Response) => {
-  if (!req.query.page || !req.query.pageSize) {
-    return res.status(500);
-  }
   let page: number = parseInt(req.query.page as string) || 1;
   let pageSize: number = parseInt(req.query.pageSize as string) || 10;
   let pageSkip = page - 1;
