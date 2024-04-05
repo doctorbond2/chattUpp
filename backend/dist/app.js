@@ -20,6 +20,7 @@ app.use(function (req, res, next) {
     next();
 });
 app.use("/api/v1/users", userRouter);
+app.listen("/api/v1/auth");
 app.use("/", (req, res) => {
     console.log("test");
     res.json({ message: "Server is up and running!!" });

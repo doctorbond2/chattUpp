@@ -4,5 +4,6 @@ import { createUser, loginUser, getUserProfile, } from "../controllers/user.cont
 router.post("/create", createUser);
 router.post("/login", loginUser);
 router.get("/profile/:id", getUserProfile);
+router.get("/user/list");
 router.post("/update/:id");
 export default router;
