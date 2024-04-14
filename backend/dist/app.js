@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import userRouter from "./routes/user.route.js";
+import authRouter from "./routes/auth.route.js";
 const app = express();
 const ALLOWED_ORIGINS = [
     "http://localhost:5173",
@@ -20,7 +21,7 @@ app.use(function (req, res, next) {
     next();
 });
 app.use("/api/v1/users", userRouter);
-app.listen("/api/v1/auth");
+app.use("/api/v1/auth", authRouter);
 app.use("/", (req, res) => {
     console.log("test");
     res.json({ message: "Server is up and running!!" });

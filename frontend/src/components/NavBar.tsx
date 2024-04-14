@@ -2,23 +2,19 @@ import React from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import { useAuth } from "../utils/hooks/AuthContext";
 import { NavDropdown } from "react-bootstrap";
 import { Outlet } from "react-router";
-import { ActiveUser } from "../types/userTypes";
-import { LOGGED_OUT } from "../types/userTypes";
 import { useNavigate } from "react-router-dom";
 type Props = {
-  loggedIn: ActiveUser;
-  setLoggedIn: React.Dispatch<React.SetStateAction<ActiveUser>>;
+  // loggedIn: ActiveUser;
+  // setLoggedIn: React.Dispatch<React.SetStateAction<ActiveUser>>;
 };
 
-const mainNavBar: React.FC<Props> = ({ loggedIn, setLoggedIn }) => {
+const mainNavBar: React.FC<Props> = ({}) => {
+  const { loggedIn, logout } = useAuth();
   const navigate = useNavigate();
-  const logoutUser = () => {
-    if (loggedIn.id) {
-      setLoggedIn(LOGGED_OUT);
-    }
-  };
+
   return (
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
@@ -28,14 +24,14 @@ const mainNavBar: React.FC<Props> = ({ loggedIn, setLoggedIn }) => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <NavDropdown
-                title={loggedIn.id ? "Profile" : "Logged out"}
+                title={loggedIn.access ? "Profile" : "Logged out"}
                 id="basic-nav-dropdown"
               >
                 <NavDropdown.Item onClick={() => navigate("/login")}>
-                  {loggedIn.id ? "Profile" : "Sign in"}
+                  {loggedIn.access ? "Profile" : "Sign in"}
                 </NavDropdown.Item>
                 <NavDropdown.Item onClick={() => navigate("/register")}>
-                  {loggedIn.id ? "Friendlist" : "Sign up"}
+                  {loggedIn.access ? "Friendlist" : "Sign up"}
                 </NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.3">
                   Something
@@ -67,7 +63,7 @@ const mainNavBar: React.FC<Props> = ({ loggedIn, setLoggedIn }) => {
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
-          {loggedIn.id && <button onClick={logoutUser}>LOG OUT</button>}
+          {loggedIn.id && <button onClick={logout}>LOG OUT</button>}
         </Container>
       </Navbar>
       <Outlet />

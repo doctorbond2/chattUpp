@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import User from "../models/user.model.js";
-import { compare_password } from "../middleware/auth.middleware";
+import { compare_password } from "../middleware/auth.middleware.js";
 export const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body) {
         return res.status(400).json({
@@ -26,9 +26,7 @@ export const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, functio
         try {
             const user = yield User.findOne({ username: username });
             if (!user) {
-                return res.status(404).json({
-                    message: "Bad login, user not found.",
-                });
+                throw new Error("Bad login, user not found.");
             }
             const isValidPassword = yield compare_password(password, user.password);
             if (isValidPassword) {

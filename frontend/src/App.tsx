@@ -10,6 +10,7 @@ import Login from "./pages/Login";
 import { useEffect, useState } from "react";
 import { LOGGED_OUT } from "./types/userTypes";
 import AdminPage from "./pages/AdminPage";
+import { AuthProvider } from "./utils/hooks/AuthContext";
 function App() {
   const [loggedIn, setLoggedIn] = useState<ActiveUser>(() => {
     const storedLogin = localStorage.getItem("logged_in");
@@ -24,18 +25,17 @@ function App() {
   }, [loggedIn]);
   return (
     <>
-      <Routes>
-        <Route element={<NavBar {...{ loggedIn, setLoggedIn }} />}>
-          <Route path="/" element={<Home {...{ loggedIn }} />} />
-          <Route path="/profile" element={<Profile {...{ loggedIn }} />} />
-          <Route
-            path="/login"
-            element={<Login {...{ setLoggedIn, loggedIn }} />}
-          />
-          <Route path="/register" element={<Register />} />
-          <Route path="/admin" element={<AdminPage {...{ loggedIn }} />} />
-        </Route>
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route element={<NavBar />}>
+            <Route path="/" element={<Home {...{ loggedIn }} />} />
+            <Route path="/profile" element={<Profile {...{ loggedIn }} />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/admin" element={<AdminPage {...{ loggedIn }} />} />
+          </Route>
+        </Routes>
+      </AuthProvider>
     </>
   );
 }

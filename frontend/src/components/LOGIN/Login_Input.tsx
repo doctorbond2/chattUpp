@@ -2,13 +2,16 @@ import React from "react";
 import { LoginStateType } from "../../types/userTypes";
 type Props = {
   submit_login_info: (e: any) => void;
-  setLoginData: React.Dispatch<React.SetStateAction<LoginStateType>>;
+  handleLoginData: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    input: keyof LoginStateType
+  ) => void;
   loginData: LoginStateType;
 };
 
 const Login_Input: React.FC<Props> = ({
   submit_login_info,
-  setLoginData,
+  handleLoginData,
   loginData,
 }) => {
   return (
@@ -24,7 +27,7 @@ const Login_Input: React.FC<Props> = ({
           max={50}
           value={loginData.username}
           onChange={(e) => {
-            setLoginData({ ...loginData, username: e.target.value });
+            handleLoginData(e, "username");
           }}
         ></input>
         <label htmlFor={"LOGIN-INPUT-FIELD-PASSWORD"}></label>
@@ -34,7 +37,7 @@ const Login_Input: React.FC<Props> = ({
           id={"LOGIN-INPUT-FIELD-PASSWORD"}
           value={loginData.password}
           onChange={(e) => {
-            setLoginData({ ...loginData, password: e.target.value });
+            handleLoginData(e, "password");
           }}
         ></input>
         <button type={"submit"}>Login!</button>

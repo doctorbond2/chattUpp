@@ -7,9 +7,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { hashPassword } from "../utilities/helpers/database.helper.js";
+import { hashPassword } from "../utilities/helpers/auth.helpers.js";
 import bcrypt from "bcrypt";
-export function hash_password(next) {
+export function hashMiddleware(next) {
     return __awaiter(this, void 0, void 0, function* () {
         const doc = this;
         if (doc.isModified(doc.password) || doc.isNew) {

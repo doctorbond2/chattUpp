@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import { Response, Request } from "express";
-import { compare_password } from "../middleware/auth.middleware";
+import { compare_password } from "../utilities/helpers/auth.helpers.js";
+import { hashPassword } from "../utilities/helpers/auth.helpers.js";
 
 export const loginUser = async (req: Request, res: Response) => {
   if (!req.body) {
@@ -19,9 +20,7 @@ export const loginUser = async (req: Request, res: Response) => {
     try {
       const user = await User.findOne({ username: username });
       if (!user) {
-        return res.status(404).json({
-          message: "Bad login, user not found.",
-        });
+        throw new Error("Bad login, user not found.");
       }
       const isValidPassword = await compare_password(password, user.password);
       if (isValidPassword) {

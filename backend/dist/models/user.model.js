@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { hash_password } from "../middleware/auth.middleware.js";
+import { hashMiddleware } from "../middleware/auth.middleware.js";
 const userSchema = new Schema({
     username: {
         type: String,
@@ -62,7 +62,7 @@ userSchema.virtual("fullname").get(function () {
 // TODO
 // ANVÄND PRESAVE FÖR ATT IMPLEMENTERA BILDER!
 //PRE SAVE FÖR ATT KOLLA SPRÅKET -> AJA BAJA!!!
-userSchema.pre("save", hash_password);
+userSchema.pre("save", hashMiddleware);
 // userSchema.pre("save");
 const User = model("User", userSchema);
 export default User;

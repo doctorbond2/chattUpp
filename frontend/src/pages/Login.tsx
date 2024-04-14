@@ -4,60 +4,39 @@ import { useState } from "react";
 import { ActiveUser } from "../types/userTypes";
 import { Stack } from "react-bootstrap";
 import { POST_request } from "../utils/requestHelpers";
+import { useAuth } from "../utils/hooks/AuthContext";
 import { defaultLoginState, LoginStateType } from "../types/userTypes";
-type Props = {
-  setLoggedIn: React.Dispatch<React.SetStateAction<ActiveUser>>;
-  loggedIn: any;
-};
+type Props = {};
 const BaseUrl = import.meta.env.VITE_BaseUrl;
 
-const Login: React.FC<Props> = ({ setLoggedIn, loggedIn }) => {
+const Login: React.FC<Props> = ({}) => {
   // const [login_username, set_login_username] = useState<string>("");
   // const [login_password, set_login_password] = useState<string>("");
+  const { login, loggedIn } = useAuth();
   const [loginData, setLoginData] = useState<LoginStateType>(defaultLoginState);
+  const handleLoginData = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    input: keyof LoginStateType
+  ) => {
+    setLoginData({ ...loginData, [input]: e.target.value });
+  };
 
   // LOGIN BLOCK
   const submit_login_info = async (e: HTMLFormElement) => {
     e.preventDefault();
     console.log(BaseUrl + "/api/v1/users/login");
     console.log("LOGIN BODY:", loginData);
-
-    try {
-      const response = await POST_request("/api/v1/users/login", loginData);
-      if (response.data) {
-        console.log(response.data?.access);
-        if (response.data.access) {
-          setLoggedIn({
-            access: true,
-            admin_access: true,
-            id: response.data.user,
-          });
-          console.log("LOGIN SUCCESS: Logged in as ADMIN");
-        } else {
-          setLoggedIn({
-            access: true,
-            admin_access: false,
-            id: response.data.user,
-          });
-          console.log("LOGIN SUCCESS: Logged in as standard user");
-        }
-      }
-      setLoginData(defaultLoginState);
-    } catch (err: any) {
-      console.error(err.message);
-      return;
-    }
+    await login(loginData);
   };
   // REGISTER BLOCK
-
   return (
     <>
       <Stack direction="horizontal" gap={3}>
         <div style={{ border: "2px solid black" }}>
           <Login_Input
             {...{
+              handleLoginData,
               submit_login_info,
-              setLoginData,
               loginData,
             }}
           />
