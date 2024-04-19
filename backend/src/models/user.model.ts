@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { hashHelper } from "../utilities/helpers/auth.helpers.js";
+import { hashHelper } from "../utilities/hooks/auth.hooks.js";
 const userSchema = new Schema(
   {
     username: {
