@@ -7,45 +7,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { hashPassword } from "../utilities/helpers/auth.helpers.js";
-import bcrypt from "bcrypt";
-export function hashMiddleware(next) {
+import jwt from "jsonwebtoken";
+import { generateAccessToken } from "../utilities/helpers/token.helpers.js";
+const secret_key = String(process.env.JWT_ACCESS_SECRET);
+const refresh_secret = String(process.env.JWT_REFRESH_SECRET);
+export function tokenTestOne(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
-        const doc = this;
-        if (doc.isModified(doc.password) || doc.isNew) {
-            try {
-                doc.password = yield hashPassword(doc.password);
-            }
-            catch (err) {
-                console.error("Error pre-saving user", err);
-                next(err);
-            }
-        }
-        next();
-    });
-}
-export function compare_password(unhashed_input_password, hashed_document_password) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const INPUT_PASSWORD = unhashed_input_password;
-        const CORRECT_PASSWORD = hashed_document_password;
-        console.log("comparing passwords...");
-        if (!INPUT_PASSWORD || !CORRECT_PASSWORD) {
-            console.log("Error: provide password details.");
-            return;
-        }
+        const user = req.body;
         try {
-            const passwordMatch = yield bcrypt.compare(INPUT_PASSWORD, CORRECT_PASSWORD);
-            if (passwordMatch) {
-                console.log("Password match!");
-                return true;
-            }
-            else {
-                console.log("Password don't match.");
-                return false;
-            }
+            const newToken = yield generateAccessToken(user);
+            req.token = newToken;
+            console.log(newToken);
+            next();
         }
         catch (err) {
             console.log(err);
+            return res.status(400).json({ message: "hej" });
+        }
+    });
+}
+export function tokenTestTwo(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log(req.token);
+        try {
+            const decoded = jwt.verify(req.token, secret_key);
+            if (decoded) {
+                res.send(decoded);
+            }
+        }
+        catch (err) {
+            return res.send("wrong test 2");
         }
     });
 }

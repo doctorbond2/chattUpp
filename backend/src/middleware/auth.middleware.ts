@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { CallbackWithoutResultAndOptionalError as n } from "mongoose";
 import { hashPassword } from "../utilities/helpers/auth.helpers.js";
 import { generateAccessToken } from "../utilities/helpers/token.helpers.js";
+import { compare_password } from "../utilities/helpers/auth.helpers.js";
 import bcrypt from "bcrypt";
 const secret_key = String(process.env.JWT_ACCESS_SECRET);
 const refresh_secret = String(process.env.JWT_REFRESH_SECRET);
@@ -16,6 +17,7 @@ export async function tokenTestOne(
   try {
     const newToken = await generateAccessToken(user);
     req.token = newToken;
+    console.log(newToken);
     next();
   } catch (err) {
     console.log(err);

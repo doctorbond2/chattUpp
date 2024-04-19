@@ -1,4 +1,4 @@
-import { hashPassword } from "../helpers/auth.helpers";
+import { hashPassword } from "../helpers/auth.helpers.js";
 
 export async function hashHelper(this: any) {
   const doc: any = this;
