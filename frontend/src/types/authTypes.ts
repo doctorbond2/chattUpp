@@ -10,3 +10,7 @@ export const defaultAuthUser = {
   login: async () => {},
   logout: () => {},
 };
+export interface TwoTokens {
+  access: string;
+  refresh: string;
+}

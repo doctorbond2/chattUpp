@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import { GET_request } from "../requestHelpers";
 export const useGet = (url: string) => {

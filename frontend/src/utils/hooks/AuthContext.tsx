@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useState, ReactNode } from "react";
+import { useContext, createContext, useState, ReactNode } from "react";
 import { ActiveUser } from "../../types/userTypes";
 import { AuthUser, defaultAuthUser } from "../../types/authTypes";
 import { POST_request } from "../requestHelpers";
@@ -17,13 +17,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (loginData) {
       try {
         const response = await POST_request("/api/v1/auth/login", loginData);
-        if (response.data) {
-          console.log("RESPONSE", response.data?.access);
-          if (response.data.access) {
+        if (response) {
+          console.log("RESPONSE", response);
+          if (response) {
             setLoggedIn({
               access: true,
               admin_access: true,
-              id: response.data.user,
               token: null,
               refreshToken: null,
             });
@@ -32,7 +31,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setLoggedIn({
               access: true,
               admin_access: false,
-              id: response.data.user,
               token: null,
               refreshToken: null,
             });

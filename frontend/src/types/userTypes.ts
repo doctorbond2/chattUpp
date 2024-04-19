@@ -1,14 +1,12 @@
 export type ActiveUser = {
   access: Boolean;
   admin_access: Boolean;
-  id: string | null;
   token: string | null;
   refreshToken: string | null;
 };
 export const LOGGED_OUT: ActiveUser = {
   access: false,
   admin_access: false,
-  id: null,
   token: null,
   refreshToken: null,
 };

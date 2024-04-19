@@ -1,25 +1,28 @@
 import jwt from "jsonwebtoken";
 import User from "../../models/user.model";
-const envSecret = String(process.env.JWT_ACCESS_SECRET);
-const envRefreshSecret = String(process.env.JWT_REFRESH_SECRET);
+import { nextTick } from "process";
+import { AnyError } from "mongodb";
+const secret_key = String(process.env.JWT_ACCESS_SECRET);
+const refresh_secret = String(process.env.JWT_REFRESH_SECRET);
+interface TokenRequest extends Request {
+  refreshToken: string;
+  token: string;
+}
 export const generateATokenRToken = async (user_db_Id: typeof User) => {
-  const secret = String(process.env.JWT_ACCESS_SECRET);
-  const refreshSecret = String(process.env.JWT_REFRESH_SECRET);
-
   const accesstoken = jwt.sign(
     {
       userId: user_db_Id,
     },
-    secret,
+    secret_key,
     {
-      expiresIn: "5m",
+      expiresIn: "1m",
     }
   );
   const refreshToken = jwt.sign(
     {
       userId: user_db_Id,
     },
-    refreshSecret,
+    refresh_secret,
     {
       expiresIn: "28d",
     }
@@ -29,13 +32,63 @@ export const generateATokenRToken = async (user_db_Id: typeof User) => {
     refresh: refreshToken,
   };
 };
-
-const verifyToken = async (token: string, secret: string) => {
+export const generateAccessToken = async (user_db_Id: typeof User) => {
+  const accessToken = jwt.sign(
+    {
+      userId: user_db_Id,
+    },
+    secret_key,
+    {
+      expiresIn: "1m",
+    }
+  );
+};
+const verifyToken = async (
+  token: string,
+  refreshToken: string | null,
+  secret: string
+) => {
   try {
-    const decoded = jwt.verify(token, envSecret);
-    return decoded;
+    if (!secret || !token) {
+      throw new Error("Not enough data, early stoppage");
+    }
+    const decodedToken = jwt.verify(token, secret_key);
+    if (!decodedToken) {
+      if (refreshToken) {
+        const decodedRefreshToken: any = jwt.verify(refreshToken, secret_key);
+        if (decodedRefreshToken) {
+          console.log("Refreshtoken accepted");
+          const newToken = generateATokenRToken(decodedRefreshToken.userId);
+        }
+      }
+    }
   } catch (err) {
     console.log(err);
+    throw err;
+  }
+};
+const verifyAccessToken = async (token: string) => {
+  try {
+    return jwt.verify(token, secret_key);
+  } catch (err: any) {
+    throw err;
+  }
+};
+const verifyRefreshToken = async (token: string) => {
+  try {
+    return jwt.verify(token, refresh_secret);
+  } catch (err: any) {
+    throw err;
+  }
+};
+// ÄR EN EGEN ROUTE
+const refreshAccessToken = (req: any, res: Response) => {
+  const authorizationHeader = req.header("Authorization") || "";
+  const accessToken = authorizationHeader.split(" ")?.[1] || "";
+  const { refreshToken } = req;
+  try {
+    const decodedRefreshToken = verifyRefreshToken(refreshToken);
+  } catch (err: any) {
     throw err;
   }
 };

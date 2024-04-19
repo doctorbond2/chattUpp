@@ -32,7 +32,7 @@ const Home: React.FC<Props> = ({}) => {
       <div>Homepage</div>
       <h2>{test && test.message}</h2>
       <h4>asd</h4>
-      <Card>
+      <Card className="">
         {" "}
         <h1>Hello world!</h1>
       </Card>
