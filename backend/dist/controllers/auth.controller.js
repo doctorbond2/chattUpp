@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import User from "../models/user.model.js";
 import { compare_password } from "../utilities/helpers/auth.helpers.js";
-import { generateAccessToken, getBothTokens, verifyAccessToken, verifyRefreshToken, } from "../utilities/helpers/token.helpers.js";
+import { generateAccessToken, generateAdminToken, getBothTokens, verifyAccessToken, verifyRefreshToken, } from "../utilities/helpers/token.helpers.js";
 export const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body) {
         return res.status(400).json({
@@ -33,6 +33,9 @@ export const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, functio
             console.log("USERID,", user.id);
             const tokens = yield getBothTokens(user.id);
             console.log(tokens);
+            if (user.admin) {
+                tokens.adminToken = yield generateAdminToken(user.id);
+            }
             return res.status(200).json(tokens);
         }
         else {

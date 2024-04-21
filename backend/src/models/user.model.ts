@@ -49,6 +49,10 @@ const userSchema = new Schema(
       required: true,
       default: "standard",
     },
+    admin: {
+      type: Boolean,
+      default: false,
+    },
     friends: [
       {
         type: Schema.Types.ObjectId,

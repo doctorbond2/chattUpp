@@ -3,12 +3,17 @@ import { Response, Request } from "express";
 import { compare_password } from "../utilities/helpers/auth.helpers.js";
 import {
   generateAccessToken,
+  generateAdminToken,
   getBothTokens,
   verifyAccessToken,
   verifyRefreshToken,
   verifyToken,
 } from "../utilities/helpers/token.helpers.js";
-
+type TheTokens = {
+  access: string;
+  refresh: string;
+  adminToken?: string;
+};
 export const loginUser = async (req: Request, res: Response) => {
   if (!req.body) {
     return res.status(400).json({
@@ -30,8 +35,11 @@ export const loginUser = async (req: Request, res: Response) => {
     const isValidPassword = await compare_password(password, user.password);
     if (isValidPassword) {
       console.log("USERID,", user.id);
-      const tokens = await getBothTokens(user.id);
+      const tokens: TheTokens = await getBothTokens(user.id);
       console.log(tokens);
+      if (user.admin) {
+        tokens.adminToken = await generateAdminToken(user.id);
+      }
       return res.status(200).json(tokens);
     } else {
       return res.status(400).send("Bad login, passwords don't match.");

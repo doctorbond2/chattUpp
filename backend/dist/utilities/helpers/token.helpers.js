@@ -10,6 +10,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import jwt from "jsonwebtoken";
 const secret_key = String(process.env.JWT_ACCESS_SECRET);
 const refresh_secret_key = String(process.env.JWT_REFRESH_SECRET);
+export const generateAdminToken = (user_db_Id) => __awaiter(void 0, void 0, void 0, function* () {
+    const adminToken = jwt.sign({
+        userId: user_db_Id,
+    }, secret_key, {
+        expiresIn: "1m",
+    });
+    return adminToken;
+});
 export const generateAccessToken = (user_db_Id) => __awaiter(void 0, void 0, void 0, function* () {
     const accessToken = jwt.sign({
         userId: user_db_Id,

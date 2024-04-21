@@ -23,7 +23,33 @@ export const createUser = async (req: Request, res: Response) => {
     });
   }
 };
-
+export const updateUserController = async (req: Request, res: Response) => {
+  if (!req.body) {
+    return res.status(400).json({
+      message: "Bad request.",
+      error: "No user body submitted.",
+    });
+  }
+  if (!req.params.id) {
+    return res.status(400).json({
+      message: "Bad request.",
+      error: "No user id submitted.",
+    });
+  }
+  const { id } = req.params;
+  try {
+    const _user = await User.findByIdAndUpdate({ _id: id }, req.body);
+    if (_user) {
+      res.status(200).send({ message: "Updated" });
+    }
+  } catch (err: any) {
+    console.log(error_MESSAGE("post"), err);
+    return res.status(400).json({
+      message: "Error creating user",
+      error: err.message,
+    });
+  }
+};
 export const getUserProfile = async (req: Request, res: Response) => {
   console.log("Test backend");
   if (!req.params.id) {

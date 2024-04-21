@@ -42,8 +42,6 @@ export const START_request = async () => {
     const response = await client.get(url);
     if (response.status === 200) {
       return true;
-    } else {
-      return false;
     }
   } catch (err: any) {
     throw err;
@@ -79,6 +77,7 @@ export const POST_request = async (url: string, data: any) => {
 export const LOGIN_request = async (url: string, data: any) => {
   try {
     const response = await client.post(url, data);
+    console.log("LOGIN RESPONSE:", response);
     if (response.status === 200) {
       return response.data;
     } else {

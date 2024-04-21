@@ -8,7 +8,18 @@ interface TokenRequest extends Request {
   refreshToken: string;
   token: string;
 }
-
+export const generateAdminToken = async (user_db_Id: typeof User) => {
+  const adminToken = jwt.sign(
+    {
+      userId: user_db_Id,
+    },
+    secret_key,
+    {
+      expiresIn: "1m",
+    }
+  );
+  return adminToken;
+};
 export const generateAccessToken = async (user_db_Id: typeof User) => {
   const accessToken = jwt.sign(
     {

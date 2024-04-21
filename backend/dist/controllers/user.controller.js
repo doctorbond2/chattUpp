@@ -32,6 +32,34 @@ export const createUser = (req, res) => __awaiter(void 0, void 0, void 0, functi
         });
     }
 });
+export const updateUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.body) {
+        return res.status(400).json({
+            message: "Bad request.",
+            error: "No user body submitted.",
+        });
+    }
+    if (!req.params.id) {
+        return res.status(400).json({
+            message: "Bad request.",
+            error: "No user id submitted.",
+        });
+    }
+    const { id } = req.params;
+    try {
+        const _user = yield User.findByIdAndUpdate({ _id: id }, req.body);
+        if (_user) {
+            res.status(200).send({ message: "Updated" });
+        }
+    }
+    catch (err) {
+        console.log(error_MESSAGE("post"), err);
+        return res.status(400).json({
+            message: "Error creating user",
+            error: err.message,
+        });
+    }
+});
 export const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Test backend");
     if (!req.params.id) {

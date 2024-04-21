@@ -4,10 +4,10 @@ import {
   createUser,
   getUserProfile,
   getUserList,
+  updateUserController,
 } from "../controllers/user.controller.js";
 router.post("/create", createUser);
 router.get("/profile/:id", getUserProfile);
 router.get("/list", getUserList);
-router.post("/update/:id");
-
+router.put("/update/user/:id", updateUserController);
 export default router;

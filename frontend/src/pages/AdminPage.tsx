@@ -3,12 +3,14 @@ import Admin_update from "../components/ADMIN/update/Admin_update";
 import { useNavigate } from "react-router-dom";
 import { ActiveUser } from "../types/userTypes";
 import { Tabs, Tab } from "react-bootstrap";
+import { useAuth } from "../utils/hooks/AuthContext";
 type Props = { loggedIn: ActiveUser };
 
-const AdminPage: React.FC<Props> = ({ loggedIn }) => {
+const AdminPage: React.FC<Props> = () => {
+  const { loggedIn } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!loggedIn.admin_access) {
+    if (!loggedIn.adminToken) {
       console.error("REJECTED: NOT ADMIN");
       navigate("/");
     } else {

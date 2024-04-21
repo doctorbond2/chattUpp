@@ -24,7 +24,7 @@ const mainNavBar: React.FC<Props> = ({}) => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <NavDropdown
-                title={loggedIn.access ? "Profile" : "Logged out"}
+                title={loggedIn?.access ? "Profile" : "Logged out"}
                 id="basic-nav-dropdown"
               >
                 <NavDropdown.Item onClick={() => navigate("/login")}>
@@ -36,7 +36,7 @@ const mainNavBar: React.FC<Props> = ({}) => {
                 <NavDropdown.Item href="#action/3.3">
                   Something
                 </NavDropdown.Item>
-                {loggedIn.admin_access && (
+                {loggedIn.adminToken && (
                   <>
                     <NavDropdown.Divider />
                     <NavDropdown.Item onClick={() => navigate("/admin")}>
@@ -63,7 +63,7 @@ const mainNavBar: React.FC<Props> = ({}) => {
               </Nav.Link>
             </Nav>
           </Navbar.Collapse>
-          {loggedIn.id && <button onClick={logout}>LOG OUT</button>}
+          {loggedIn.access && <button onClick={logout}>LOG OUT</button>}
         </Container>
       </Navbar>
       <Outlet />

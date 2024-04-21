@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Login_Input from "../components/LOGIN/Login_Input";
 import { useState } from "react";
 import { Stack } from "react-bootstrap";
@@ -16,13 +16,15 @@ const Login: React.FC<Props> = ({}) => {
     setLoginData({ ...loginData, [input]: e.target.value });
   };
 
-  // LOGIN BLOCK
   const submit_login_info = async (e: HTMLFormElement) => {
     e.preventDefault();
     console.log("LOGIN BODY:", loginData);
-    await login(loginData);
+    try {
+      await login(loginData);
+    } catch (err: any) {
+      console.log("Login error: ", err.message);
+    }
   };
-  // REGISTER BLOCK
   return (
     <>
       <Stack direction="horizontal" gap={3}>
@@ -35,7 +37,7 @@ const Login: React.FC<Props> = ({}) => {
             }}
           />
           <h3>Are you logged in?</h3>
-          <h4>{loggedIn.token ? "Yes" : "No"}</h4>
+          <h4>{loggedIn && loggedIn?.access ? "Yes" : "No"}</h4>
         </div>
       </Stack>
     </>
