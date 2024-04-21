@@ -11,7 +11,7 @@ const Home: React.FC<Props> = ({}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await GET_request("/");
+        const response = await GET_request("/user/list");
         console.log("RESPONSE", response);
         if (response.data) {
           setTest(response.data);

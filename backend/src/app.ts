@@ -24,8 +24,8 @@ app.use(function (req, res, next) {
   );
   next();
 });
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1/auth", authRouter);
+app.use("/api/chatupp/user", userRouter);
+app.use("/api/chatupp/auth", authRouter);
 app.use("/", (req, res) => {
   console.log("test");
   res.json({ message: "Server is up and running!!" });

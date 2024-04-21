@@ -53,12 +53,12 @@ export const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, fu
         });
     }
 });
-const getUserList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+export const getUserList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     let page = parseInt(req.query.page) || 1;
     let pageSize = parseInt(req.query.pageSize) || 10;
     let pageSkip = page - 1;
     try {
-        let _users = User.find().skip(pageSkip).limit(pageSize);
+        let _users = yield User.find().skip(pageSkip).limit(pageSize);
         res.status(200).json(_users);
     }
     catch (err) {

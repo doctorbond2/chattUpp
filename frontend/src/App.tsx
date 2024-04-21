@@ -17,7 +17,7 @@ function App() {
     return storedLogin != undefined ? JSON.parse(storedLogin) : LOGGED_OUT;
   });
   useEffect(() => {
-    if (loggedIn.id) {
+    if (loggedIn) {
       localStorage.setItem("logged_in", JSON.stringify(loggedIn));
     } else {
       localStorage.removeItem("logged_in");
