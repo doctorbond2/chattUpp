@@ -1,4 +1,5 @@
 import React from "react";
+import { Container } from "react-bootstrap";
 import { useEffect, useState } from "react";
 import { GET_request } from "../utils/requestHelpers";
 import { ActiveUser } from "../types/userTypes";
@@ -12,9 +13,9 @@ const Home: React.FC<Props> = ({}) => {
     const fetchData = async () => {
       try {
         const response = await GET_request("/user/list");
-        console.log("RESPONSE", response);
-        if (response.data) {
-          setTest(response.data);
+        console.log("RESPONSE", response[2].firstname);
+        if (response) {
+          setTest(response[2].firstname);
         } else {
           setTest("Response error");
         }
@@ -29,13 +30,12 @@ const Home: React.FC<Props> = ({}) => {
   }, []);
   return (
     <>
-      <div>Homepage</div>
-      <h2>{test && test.message}</h2>
-      <h4>asd</h4>
-      <Card className="">
-        {" "}
-        <h1>Hello world!</h1>
-      </Card>
+      <Container>
+        asd
+        <div>Homepage</div>
+        <h2>{test}</h2>
+        <h4>asd</h4>
+      </Container>
     </>
   );
 };

@@ -1,28 +1,48 @@
 import { Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import { ActiveUser } from "./types/userTypes";
 import NavBar from "./components/NavBar";
 import Register from "./pages/subpages/Register";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import { useEffect, useState } from "react";
-import { LOGGED_OUT } from "./types/userTypes";
+import { useAuth } from "./utils/hooks/AuthContext";
 import AdminPage from "./pages/AdminPage";
 import { AuthProvider } from "./utils/hooks/AuthContext";
+import { LOGGED_OUT } from "./types/userTypes";
+import localStorageKit from "./utils/helper/localstorageKit";
+import { REFRESH_request, START_request } from "./utils/requestHelpers";
 function App() {
-  const [loggedIn, setLoggedIn] = useState<ActiveUser>(() => {
-    const storedLogin = localStorage.getItem("logged_in");
-    return storedLogin != undefined ? JSON.parse(storedLogin) : LOGGED_OUT;
-  });
+  const { loggedIn, logout } = useAuth();
   useEffect(() => {
-    if (loggedIn) {
-      localStorage.setItem("logged_in", JSON.stringify(loggedIn));
-    } else {
-      localStorage.removeItem("logged_in");
+    if (loggedIn.access === null) {
+      const tokens = localStorageKit.getTokensFromStorage();
+      console.log(tokens);
+      const checkTokens = async () => {
+        try {
+          const response = await START_request();
+          console.log("RESPONSE:", response);
+        } catch (err: any) {
+          try {
+            const refreshResponse = await REFRESH_request(
+              "auth/refresh/token",
+              {
+                refresh: tokens.refresh,
+              }
+            );
+            localStorageKit.setTokenInStorage(refreshResponse);
+          } catch (refreshError: any) {
+            console.log(refreshError.message);
+            logout();
+          }
+        }
+      };
+      if (tokens) {
+        checkTokens();
+      }
     }
-  }, [loggedIn]);
+  }, []);
   return (
     <>
       <AuthProvider>

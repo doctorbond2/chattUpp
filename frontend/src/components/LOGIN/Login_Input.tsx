@@ -1,5 +1,6 @@
 import React from "react";
 import { LoginStateType } from "../../types/userTypes";
+import { Button } from "react-bootstrap";
 type Props = {
   submit_login_info: (e: any) => void;
   handleLoginData: (
@@ -40,7 +41,9 @@ const Login_Input: React.FC<Props> = ({
             handleLoginData(e, "password");
           }}
         ></input>
-        <button type={"submit"}>Login!</button>
+        <Button type={"submit"} className="bg-success rounded-pill">
+          Login!
+        </Button>
       </form>
     </>
   );

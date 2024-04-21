@@ -15,17 +15,14 @@ const Register: React.FC<Props> = ({}) => {
       registerForm.password === registerForm.repeat_password
     ) {
       try {
-        const response = await POST_request(
-          "/api/v1/users/create",
-          registerForm
-        );
-        if (response.data) {
+        const response = await POST_request("/user/create", registerForm);
+        if (response) {
           console.log("response.data");
           console.log("request successful!");
           setRegisterForm(defaultRegisterState);
           return true;
         } else {
-          console.log("whoops");
+          console.log("Something went wrong with register");
           return false;
         }
       } catch (err: any) {

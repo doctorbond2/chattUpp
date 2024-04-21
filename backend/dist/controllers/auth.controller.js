@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import User from "../models/user.model.js";
 import { compare_password } from "../utilities/helpers/auth.helpers.js";
-import { getBothTokens, } from "../utilities/helpers/token.helpers.js";
+import { generateAccessToken, getBothTokens, verifyAccessToken, verifyRefreshToken, } from "../utilities/helpers/token.helpers.js";
 export const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body) {
         return res.status(400).json({
@@ -32,6 +32,7 @@ export const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, functio
         if (isValidPassword) {
             console.log("USERID,", user.id);
             const tokens = yield getBothTokens(user.id);
+            console.log(tokens);
             return res.status(200).json(tokens);
         }
         else {
@@ -43,5 +44,45 @@ export const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, functio
             message: "Bad login, unexpected error.",
             error: err.message,
         });
+    }
+});
+export const refreshController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.body.refresh) {
+        return res.status(400).json({ error: "No body submitted" });
+    }
+    const { refresh } = req.body;
+    try {
+        console.log("trying new refresh");
+        const decodedRefreshToken = yield verifyRefreshToken(refresh);
+        if (decodedRefreshToken) {
+            const { userId } = decodedRefreshToken;
+            const newToken = yield generateAccessToken(userId);
+            res.status(200).json({ refresh: refresh, access: newToken });
+        }
+    }
+    catch (err) {
+        return res.status(401).json({ message: "Token not valid" });
+    }
+});
+export const startUpCheckToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("startup");
+    if (!req.headers.authorization) {
+        return res.status(401).json({ error: "No auth headers" });
+    }
+    const { authorization } = req.headers;
+    const token = authorization.split(" ")[1];
+    console.log("TOKEN?", token);
+    try {
+        const decodedToken = yield verifyAccessToken(token);
+        if (decodedToken) {
+            console.log("Token is good");
+            return res.status(200);
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+        return res
+            .status(401)
+            .json({ message: "Token not valid", error: err.message });
     }
 });

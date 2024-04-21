@@ -38,18 +38,19 @@ export const getBothTokens = (user_db_Id) => __awaiter(void 0, void 0, void 0, f
         throw err;
     }
 });
-export const verifyToken = (token, refreshToken, secret) => __awaiter(void 0, void 0, void 0, function* () {
+export const verifyToken = (token, refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        if (!secret || !token) {
+        if (!token) {
             throw new Error("Not enough data, early stoppage");
         }
         const decodedToken = jwt.verify(token, secret_key);
         if (!decodedToken) {
             if (refreshToken) {
-                const decodedRefreshToken = jwt.verify(refreshToken, secret_key);
+                const decodedRefreshToken = jwt.verify(refreshToken, refresh_secret_key);
                 if (decodedRefreshToken) {
                     console.log("Refreshtoken accepted");
                     const newToken = yield generateAccessToken(decodedRefreshToken.userId);
+                    return newToken;
                 }
             }
         }

@@ -5,7 +5,6 @@ import { Stack } from "react-bootstrap";
 import { useAuth } from "../utils/hooks/AuthContext";
 import { defaultLoginState, LoginStateType } from "../types/userTypes";
 type Props = {};
-const BaseUrl = import.meta.env.VITE_BaseUrl;
 
 const Login: React.FC<Props> = ({}) => {
   const { login, loggedIn } = useAuth();
@@ -20,7 +19,6 @@ const Login: React.FC<Props> = ({}) => {
   // LOGIN BLOCK
   const submit_login_info = async (e: HTMLFormElement) => {
     e.preventDefault();
-    console.log(BaseUrl + "/api/v1/users/login");
     console.log("LOGIN BODY:", loginData);
     await login(loginData);
   };

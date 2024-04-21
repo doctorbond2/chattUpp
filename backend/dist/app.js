@@ -23,7 +23,6 @@ app.use(function (req, res, next) {
 app.use("/api/chatupp/user", userRouter);
 app.use("/api/chatupp/auth", authRouter);
 app.use("/", (req, res) => {
-    console.log("test");
     res.json({ message: "Server is up and running!!" });
 });
 export default app;

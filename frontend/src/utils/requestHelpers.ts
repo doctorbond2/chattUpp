@@ -36,6 +36,19 @@ export const GET_request = async (url: string) => {
     return { error: "GET REQUEST ERROR: " + err.message };
   }
 };
+export const START_request = async () => {
+  const url = "auth/start/verify/tokens";
+  try {
+    const response = await client.get(url);
+    if (response.status === 200) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (err: any) {
+    throw err;
+  }
+};
 export const user_GET_request = async (url: string, token: string) => {
   try {
     const response = await user.get(url, {
@@ -63,7 +76,29 @@ export const POST_request = async (url: string, data: any) => {
     return null;
   }
 };
-
+export const LOGIN_request = async (url: string, data: any) => {
+  try {
+    const response = await client.post(url, data);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      return null;
+    }
+  } catch (err: any) {
+    console.error({ error: "POST REQUEST ERROR: " + err.message });
+    return null;
+  }
+};
+export const REFRESH_request = async (url: string, data: any) => {
+  try {
+    const response = await client.post(url, data);
+    if (response.status === 200) {
+      return response.data;
+    }
+  } catch (err: any) {
+    throw err;
+  }
+};
 export const PUT_request = async (url: string, data: any) => {
   try {
     const response = await client.put(url, data);

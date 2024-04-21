@@ -46,22 +46,25 @@ export const getBothTokens = async (user_db_Id: typeof User) => {
 };
 export const verifyToken = async (
   token: string,
-  refreshToken: string | null,
-  secret: string
+  refreshToken: string | null
 ) => {
   try {
-    if (!secret || !token) {
+    if (!token) {
       throw new Error("Not enough data, early stoppage");
     }
     const decodedToken = jwt.verify(token, secret_key);
     if (!decodedToken) {
       if (refreshToken) {
-        const decodedRefreshToken: any = jwt.verify(refreshToken, secret_key);
+        const decodedRefreshToken: any = jwt.verify(
+          refreshToken,
+          refresh_secret_key
+        );
         if (decodedRefreshToken) {
           console.log("Refreshtoken accepted");
           const newToken = await generateAccessToken(
             decodedRefreshToken.userId
           );
+          return newToken;
         }
       }
     }

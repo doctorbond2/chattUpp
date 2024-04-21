@@ -1,17 +1,16 @@
-import { client, admin, user } from "../requestHelpers";
+import { client } from "../requestHelpers";
 import { TwoTokens } from "../../types/authTypes";
+
 class LocalStorageKit {
   constructor() {
     console.log("meme");
   }
-  STORAGE_TOKEN_KEY = "STORAGE_TOKEN_KEY";
-
+  STORAGE_TOKEN_KEY = import.meta.env.VITE_STORAGE_TOKEN_KEY;
   setTokenInStorage(tokens: TwoTokens) {
     localStorage.setItem(this.STORAGE_TOKEN_KEY, JSON.stringify(tokens));
     client.defaults.headers.common["Authorization"] = `Bearer ${tokens.access}`;
   }
-
-  getTokenFromStorage() {
+  getTokensFromStorage() {
     const token = localStorage.getItem(this.STORAGE_TOKEN_KEY);
     if (token) {
       const parsedToken = JSON.parse(token);
@@ -23,8 +22,9 @@ class LocalStorageKit {
     return null;
   }
 
-  deleteTokenFormStorage() {
+  deleteTokenFromStorage() {
     localStorage.removeItem(this.STORAGE_TOKEN_KEY);
+    delete client.defaults.headers.common["Authorization"];
   }
 }
 

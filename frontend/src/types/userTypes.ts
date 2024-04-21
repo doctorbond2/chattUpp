@@ -1,14 +1,12 @@
 export type ActiveUser = {
-  access: Boolean;
-  admin_access: Boolean;
-  token: string | null;
-  refreshToken: string | null;
+  access: string | null;
+  refresh: string | null;
+  adminToken: string | null;
 };
 export const LOGGED_OUT: ActiveUser = {
-  access: false,
-  admin_access: false,
-  token: null,
-  refreshToken: null,
+  access: null,
+  refresh: null,
+  adminToken: null,
 };
 export type RegisterFormType = {
   username: string;
