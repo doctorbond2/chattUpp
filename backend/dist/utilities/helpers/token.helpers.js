@@ -49,7 +49,7 @@ export const verifyToken = (token, refreshToken, secret) => __awaiter(void 0, vo
                 const decodedRefreshToken = jwt.verify(refreshToken, secret_key);
                 if (decodedRefreshToken) {
                     console.log("Refreshtoken accepted");
-                    const newToken = generateATokenRToken(decodedRefreshToken.userId);
+                    const newToken = yield generateAccessToken(decodedRefreshToken.userId);
                 }
             }
         }
@@ -69,7 +69,7 @@ export const verifyAccessToken = (token) => __awaiter(void 0, void 0, void 0, fu
 });
 export const verifyRefreshToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        return jwt.verify(token, refresh_secret);
+        return jwt.verify(token, refresh_secret_key);
     }
     catch (err) {
         throw err;
