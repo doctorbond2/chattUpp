@@ -59,7 +59,9 @@ export const verifyToken = async (
         const decodedRefreshToken: any = jwt.verify(refreshToken, secret_key);
         if (decodedRefreshToken) {
           console.log("Refreshtoken accepted");
-          const newToken = generateATokenRToken(decodedRefreshToken.userId);
+          const newToken = await generateAccessToken(
+            decodedRefreshToken.userId
+          );
         }
       }
     }
@@ -77,7 +79,7 @@ export const verifyAccessToken = async (token: string) => {
 };
 export const verifyRefreshToken = async (token: string) => {
   try {
-    return jwt.verify(token, refresh_secret);
+    return jwt.verify(token, refresh_secret_key);
   } catch (err: any) {
     throw err;
   }
