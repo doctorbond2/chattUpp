@@ -4,7 +4,7 @@ import "./App.css";
 import NavBar from "./components/NavBar";
 import Register from "./pages/subpages/Register";
 import Home from "./pages/Home";
-import Profile from "./pages/Profile";
+import ProfilePage from "./pages/ProfilePage";
 import Login from "./pages/Login";
 import { useAuth } from "./utils/hooks/AuthContext";
 import AdminPage from "./pages/AdminPage";
@@ -18,7 +18,10 @@ function App() {
         <Routes>
           <Route element={<NavBar />}>
             <Route path="/" element={<Home {...{ loggedIn }} />} />
-            <Route path="/profile" element={<Profile {...{ loggedIn }} />} />
+            <Route
+              path="/profile"
+              element={<ProfilePage {...{ loggedIn }} />}
+            />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/admin" element={<AdminPage {...{ loggedIn }} />} />

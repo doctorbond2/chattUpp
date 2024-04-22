@@ -50,42 +50,35 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
   useEffect(() => {
-    console.log("STATUS", loggedIn);
-  }, [loggedIn]);
-  useEffect(() => {
-    if (loggedIn.access === null) {
-      const tokens = localStorageKit.getTokensFromStorage();
-      console.log("LOCAL STORAGE TOKENS:", tokens);
-      const checkTokens = async () => {
-        try {
-          console.log("checking Accesstoken!");
-          const response = await START_request();
-          if (response) {
-            console.log("good stuf!");
-            setLoggedIn(tokens);
-          }
-        } catch (err: any) {
-          try {
-            const refreshResponse = await REFRESH_request(
-              "auth/refresh/token",
-              {
-                refresh: tokens.refresh,
-              }
-            );
-            localStorageKit.setTokenInStorage(refreshResponse);
-            console.log("tokens set in storage. used refreshToken:");
-            setLoggedIn(refreshResponse);
-          } catch (refreshError: any) {
-            console.log("Refresh error:", refreshError.message);
-            alert("Please login again!");
-            localStorageKit.deleteTokenFromStorage();
-            logout();
-          }
+    const tokens = localStorageKit.getTokensFromStorage();
+    console.log("LOCAL STORAGE TOKENS:", tokens);
+    const checkTokens = async () => {
+      try {
+        console.log("checking Accesstoken!");
+        const response = await START_request();
+        if (response) {
+          console.log("good stuf!");
+          setLoggedIn(tokens);
         }
-      };
-      if (tokens) {
-        checkTokens();
+      } catch (err: any) {
+        console.log("CAUGHT AN ERROR:", err.message);
+        try {
+          const refreshResponse = await REFRESH_request("auth/refresh/token", {
+            refresh: tokens.refresh,
+          });
+          localStorageKit.setTokenInStorage(refreshResponse);
+          console.log("tokens set in storage. used refreshToken:");
+          setLoggedIn(refreshResponse);
+        } catch (refreshError: any) {
+          console.log("Refresh error:", refreshError.message);
+          alert("Please login again!");
+          localStorageKit.deleteTokenFromStorage();
+          logout();
+        }
       }
+    };
+    if (tokens) {
+      checkTokens();
     }
   }, []);
   return (

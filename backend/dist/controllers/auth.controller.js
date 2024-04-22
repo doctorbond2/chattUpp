@@ -53,14 +53,19 @@ export const refreshController = (req, res) => __awaiter(void 0, void 0, void 0,
     if (!req.body.refresh) {
         return res.status(400).json({ error: "No body submitted" });
     }
-    const { refresh } = req.body;
+    const { refresh, adminToken } = req.body;
     try {
         console.log("trying new refresh");
         const decodedRefreshToken = yield verifyRefreshToken(refresh);
         if (decodedRefreshToken) {
             const { userId } = decodedRefreshToken;
-            const newToken = yield generateAccessToken(userId);
-            res.status(200).json({ refresh: refresh, access: newToken });
+            let newTokens = { access: "", refresh: "" };
+            newTokens.access = yield generateAccessToken(userId);
+            newTokens.refresh = refresh;
+            if (adminToken) {
+                newTokens.adminToken = yield generateAdminToken(userId);
+            }
+            res.status(200).json(newTokens);
         }
     }
     catch (err) {
@@ -68,7 +73,6 @@ export const refreshController = (req, res) => __awaiter(void 0, void 0, void 0,
     }
 });
 export const startUpCheckToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("startup");
     if (!req.headers.authorization) {
         return res.status(401).json({ error: "No auth headers" });
     }
@@ -79,7 +83,7 @@ export const startUpCheckToken = (req, res) => __awaiter(void 0, void 0, void 0,
         const decodedToken = yield verifyAccessToken(token);
         if (decodedToken) {
             console.log("Token is good");
-            return res.status(200);
+            return res.status(200).send("");
         }
     }
     catch (err) {

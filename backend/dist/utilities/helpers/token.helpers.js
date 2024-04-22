@@ -22,7 +22,7 @@ export const generateAccessToken = (user_db_Id) => __awaiter(void 0, void 0, voi
     const accessToken = jwt.sign({
         userId: user_db_Id,
     }, secret_key, {
-        expiresIn: "1m",
+        expiresIn: "30s",
     });
     return accessToken;
 });

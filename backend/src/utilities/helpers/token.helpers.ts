@@ -27,7 +27,7 @@ export const generateAccessToken = async (user_db_Id: typeof User) => {
     },
     secret_key,
     {
-      expiresIn: "1m",
+      expiresIn: "30s",
     }
   );
   return accessToken;
