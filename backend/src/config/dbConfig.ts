@@ -14,5 +14,6 @@ export const RUN_SERVER = async (db_path: string, port: any) => {
     console.log("Connected with mongoose!");
   } catch (err: any) {
     console.log("ERROR CONNECTING WITH MONGOOSE", err.message);
+    mongoose.disconnect();
   }
 };

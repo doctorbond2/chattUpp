@@ -21,7 +21,6 @@ class LocalStorageKit {
     }
     return null;
   }
-
   deleteTokenFromStorage() {
     localStorage.removeItem(this.STORAGE_TOKEN_KEY);
     delete client.defaults.headers.common["Authorization"];

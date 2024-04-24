@@ -1,15 +1,20 @@
 import express from "express";
 const router = express.Router();
 import { loginUser } from "../controllers/auth.controller.js";
-import { verifyToken } from "../utilities/helpers/token.helpers.js";
+import { ENV } from "../config/serverKeys.js";
 import {
   startUpCheckToken,
   refreshController,
 } from "../controllers/auth.controller.js";
-
 import { tokenTestOne, tokenTestTwo } from "../middleware/auth.middleware.js";
-router.post("/login", loginUser);
-router.get("/test/test", tokenTestOne, tokenTestTwo);
-router.get("/start/verify/tokens", startUpCheckToken);
-router.post("/refresh/token", refreshController);
+const {
+  auth_route_LOGIN,
+  auth_route_TEST_TEST,
+  auth_route_START_VERIFY_TOKENS,
+  auth_route_REFRESH_TOKEN,
+}: ENV = process.env as unknown as ENV;
+router.post(auth_route_LOGIN, loginUser);
+router.get(auth_route_TEST_TEST, tokenTestOne, tokenTestTwo);
+router.get(auth_route_START_VERIFY_TOKENS, startUpCheckToken);
+router.post(auth_route_REFRESH_TOKEN, refreshController);
 export default router;
