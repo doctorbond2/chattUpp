@@ -22,5 +22,6 @@ export const RUN_SERVER = (db_path, port) => __awaiter(void 0, void 0, void 0, f
     }
     catch (err) {
         console.log("ERROR CONNECTING WITH MONGOOSE", err.message);
+        mongoose.disconnect();
     }
 });
