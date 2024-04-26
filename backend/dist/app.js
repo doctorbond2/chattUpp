@@ -1,12 +1,12 @@
-import express from "express";
-import cors from "cors";
-import userRouter from "./routes/user.route.js";
-import authRouter from "./routes/auth.route.js";
+import express from 'express';
+import cors from 'cors';
+import userRouter from './routes/user.route.js';
+import authRouter from './routes/auth.route.js';
 const app = express();
 const ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "https://chatt-upp-client.vercel.app",
-    "https://*.vercel.app",
+    'http://localhost:5173',
+    'https://chatt-upp-client.vercel.app',
+    'https://*.vercel.app',
 ];
 //`${process.env.CLIENT_URL}`
 app.use(express.json());
@@ -15,14 +15,14 @@ app.use(function (req, res, next) {
     cors({
         origin: ALLOWED_ORIGINS,
     });
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS,POST,PUT');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization');
     next();
 });
-app.use("/api/chatupp/user", userRouter);
-app.use("/api/chatupp/auth", authRouter);
-app.use("/", (req, res) => {
-    res.json({ message: "Server is up and running!!" });
+app.use('/api/chatupp/user', userRouter);
+app.use('/api/chatupp/auth', authRouter);
+app.use('/', (req, res) => {
+    res.json({ message: 'Server is up and running!!' });
 });
 export default app;

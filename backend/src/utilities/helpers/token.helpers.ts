@@ -1,7 +1,7 @@
-import jwt from "jsonwebtoken";
-import User from "../../models/user.model.js";
-import { nextTick } from "process";
-import { AnyError } from "mongodb";
+import jwt from 'jsonwebtoken';
+import User from '../../models/user.model.js';
+import { nextTick } from 'process';
+import { AnyError } from 'mongodb';
 const secret_key = String(process.env.JWT_ACCESS_SECRET);
 const refresh_secret_key = String(process.env.JWT_REFRESH_SECRET);
 interface TokenRequest extends Request {
@@ -15,7 +15,7 @@ export const generateAdminToken = async (user_db_Id: typeof User) => {
     },
     secret_key,
     {
-      expiresIn: "1m",
+      expiresIn: '1m',
     }
   );
   return adminToken;
@@ -27,22 +27,44 @@ export const generateAccessToken = async (user_db_Id: typeof User) => {
     },
     secret_key,
     {
-      expiresIn: "30s",
+      expiresIn: '30s',
     }
   );
   return accessToken;
 };
 export const generateRefreshToken = async (user_db_Id: typeof User) => {
-  const refreshToken = jwt.sign(
-    {
-      userId: user_db_Id,
-    },
-    refresh_secret_key,
-    {
-      expiresIn: "10m",
+  console.log(user_db_Id);
+  try {
+    const _user = await User.findById(user_db_Id);
+    if (_user) {
+      if (_user.admin === true) {
+        return jwt.sign(
+          {
+            userId: user_db_Id,
+            admin: true,
+          },
+          refresh_secret_key,
+          {
+            expiresIn: '1d',
+          }
+        );
+      } else {
+        return jwt.sign(
+          {
+            userId: user_db_Id,
+          },
+          refresh_secret_key,
+          {
+            expiresIn: '1d',
+          }
+        );
+      }
+    } else {
+      return '';
     }
-  );
-  return refreshToken;
+  } catch (err) {
+    throw err;
+  }
 };
 export const getBothTokens = async (user_db_Id: typeof User) => {
   try {
@@ -61,7 +83,7 @@ export const verifyToken = async (
 ) => {
   try {
     if (!token) {
-      throw new Error("Not enough data, early stoppage");
+      throw new Error('Not enough data, early stoppage');
     }
     const decodedToken = jwt.verify(token, secret_key);
     if (!decodedToken) {
@@ -71,7 +93,7 @@ export const verifyToken = async (
           refresh_secret_key
         );
         if (decodedRefreshToken) {
-          console.log("Refreshtoken accepted");
+          console.log('Refreshtoken accepted');
           const newToken = await generateAccessToken(
             decodedRefreshToken.userId
           );
@@ -100,8 +122,8 @@ export const verifyRefreshToken = async (token: string) => {
 };
 // ÄR EN EGEN ROUTE
 export const refreshAccessToken = (req: any, res: Response) => {
-  const authorizationHeader = req.header("Authorization") || "";
-  const accessToken = authorizationHeader.split(" ")?.[1] || "";
+  const authorizationHeader = req.header('Authorization') || '';
+  const accessToken = authorizationHeader.split(' ')?.[1] || '';
   const { refreshToken } = req;
   try {
     const decodedRefreshToken = verifyRefreshToken(refreshToken);

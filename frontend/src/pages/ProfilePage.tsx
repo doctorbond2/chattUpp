@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { ProfileInfo, defaultProfileInfo } from "../types/userTypes";
 import { Container, Row, Col, Tab, Tabs } from "react-bootstrap";
 import PrProfile from "../components/SOCIAL/profile/ProfileInfo";
-
+const { VITE_user_route_ID_PROFILE: ID_route } = import.meta.env;
 type Props = {
   loggedIn: ActiveUser | null;
 };
@@ -20,7 +20,7 @@ const ProfilePage: React.FC<Props> = ({ loggedIn }) => {
     }
     const fetchData = async () => {
       if (loggedIn?.access) {
-        const response = await GET_request("/user/profile" + loggedIn.id);
+        const response = await GET_request(ID_route);
         console.log(response.data);
         if (response.data) {
           setUserProfile({ ...defaultProfileInfo, ...response.data });
@@ -50,7 +50,7 @@ const ProfilePage: React.FC<Props> = ({ loggedIn }) => {
               <Tab eventKey="settings" title="Settings">
                 Tab content for settings
               </Tab>
-              {loggedIn?.admin_access && (
+              {loggedIn?.adminToken && (
                 <Tab eventKey="admin" title="Admin">
                   You are admin
                 </Tab>

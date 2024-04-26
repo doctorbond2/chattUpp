@@ -1,28 +1,5 @@
-import axios from "axios";
-const BaseUrl = import.meta.env.VITE_BaseUrl;
-const admin_request_key = import.meta.env.VITE_ADMIN_API_KEY;
-export const admin = axios.create({
-  baseURL: BaseUrl,
-  timeout: 6000,
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: admin_request_key,
-  },
-});
-export const client = axios.create({
-  baseURL: BaseUrl,
-  timeout: 6000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-export const user = axios.create({
-  baseURL: BaseUrl,
-  timeout: 6000,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+import { client, user, admin } from "./axiosInstanceConfig";
+
 
 export const GET_request = async (url: string) => {
   try {

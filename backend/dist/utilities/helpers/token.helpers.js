@@ -7,14 +7,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
+import User from '../../models/user.model.js';
 const secret_key = String(process.env.JWT_ACCESS_SECRET);
 const refresh_secret_key = String(process.env.JWT_REFRESH_SECRET);
 export const generateAdminToken = (user_db_Id) => __awaiter(void 0, void 0, void 0, function* () {
     const adminToken = jwt.sign({
         userId: user_db_Id,
     }, secret_key, {
-        expiresIn: "1m",
+        expiresIn: '1m',
     });
     return adminToken;
 });
@@ -22,17 +23,38 @@ export const generateAccessToken = (user_db_Id) => __awaiter(void 0, void 0, voi
     const accessToken = jwt.sign({
         userId: user_db_Id,
     }, secret_key, {
-        expiresIn: "30s",
+        expiresIn: '30s',
     });
     return accessToken;
 });
 export const generateRefreshToken = (user_db_Id) => __awaiter(void 0, void 0, void 0, function* () {
-    const refreshToken = jwt.sign({
-        userId: user_db_Id,
-    }, refresh_secret_key, {
-        expiresIn: "10m",
-    });
-    return refreshToken;
+    console.log(user_db_Id);
+    try {
+        const _user = yield User.findById(user_db_Id);
+        if (_user) {
+            if (_user.admin === true) {
+                return jwt.sign({
+                    userId: user_db_Id,
+                    admin: true,
+                }, refresh_secret_key, {
+                    expiresIn: '1d',
+                });
+            }
+            else {
+                return jwt.sign({
+                    userId: user_db_Id,
+                }, refresh_secret_key, {
+                    expiresIn: '1d',
+                });
+            }
+        }
+        else {
+            return '';
+        }
+    }
+    catch (err) {
+        throw err;
+    }
 });
 export const getBothTokens = (user_db_Id) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -49,14 +71,14 @@ export const getBothTokens = (user_db_Id) => __awaiter(void 0, void 0, void 0, f
 export const verifyToken = (token, refreshToken) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         if (!token) {
-            throw new Error("Not enough data, early stoppage");
+            throw new Error('Not enough data, early stoppage');
         }
         const decodedToken = jwt.verify(token, secret_key);
         if (!decodedToken) {
             if (refreshToken) {
                 const decodedRefreshToken = jwt.verify(refreshToken, refresh_secret_key);
                 if (decodedRefreshToken) {
-                    console.log("Refreshtoken accepted");
+                    console.log('Refreshtoken accepted');
                     const newToken = yield generateAccessToken(decodedRefreshToken.userId);
                     return newToken;
                 }
@@ -87,8 +109,8 @@ export const verifyRefreshToken = (token) => __awaiter(void 0, void 0, void 0, f
 // ÄR EN EGEN ROUTE
 export const refreshAccessToken = (req, res) => {
     var _a;
-    const authorizationHeader = req.header("Authorization") || "";
-    const accessToken = ((_a = authorizationHeader.split(" ")) === null || _a === void 0 ? void 0 : _a[1]) || "";
+    const authorizationHeader = req.header('Authorization') || '';
+    const accessToken = ((_a = authorizationHeader.split(' ')) === null || _a === void 0 ? void 0 : _a[1]) || '';
     const { refreshToken } = req;
     try {
         const decodedRefreshToken = verifyRefreshToken(refreshToken);

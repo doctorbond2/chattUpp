@@ -4,17 +4,18 @@ import {
   useState,
   ReactNode,
   useEffect,
-} from "react";
-import { ActiveUser } from "../../types/userTypes";
-import { AuthUser, defaultAuthUser } from "../../types/authTypes";
+} from 'react';
+import { ActiveUser } from '../../types/userTypes';
+import { AuthUser, defaultAuthUser } from '../../types/authTypes';
 import {
   LOGIN_request,
   START_request,
   REFRESH_request,
-} from "../requestHelpers";
-import { LOGGED_OUT } from "../../types/userTypes";
+} from '../requestHelpers';
+import AuthAPI from '../helper/apiHandlers/authApi';
+import { LOGGED_OUT } from '../../types/userTypes';
 const AuthContext = createContext<AuthUser>(defaultAuthUser);
-import localStorageKit from "../helper/localstorageKit";
+import localStorageKit from '../helper/localstorageKit';
 export const useAuth = () => useContext(AuthContext);
 type AuthProviderProps = {
   children: ReactNode;
@@ -31,56 +32,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (loginData: any) => {
     if (loginData) {
       try {
-        const response: any = await LOGIN_request("/auth/login", loginData);
-
-        console.log("RESPONSE", response);
+        const response = await AuthAPI.loginRequest(loginData);
+        console.log('RESPONSE', response);
         if (response) {
-          localStorageKit.setTokenInStorage(response);
-          if (response?.adminToken) {
+          if (response.adminToken) {
             setLoggedIn(response);
-            console.log("LOGIN SUCCESS: Logged in as ADMIN");
+            console.log('LOGIN SUCCESS: Logged in as ADMIN');
           } else {
             setLoggedIn(response);
-            console.log("LOGIN SUCCESS: Logged in as standard user");
+            console.log('LOGIN SUCCESS: Logged in as standard user');
           }
         }
       } catch (err: any) {
-        console.error("Invalid logindata: ", err.message);
+        console.error('Invalid logindata: ', err.message);
       }
     }
   };
-  useEffect(() => {
-    const tokens = localStorageKit.getTokensFromStorage();
-    console.log("LOCAL STORAGE TOKENS:", tokens);
-    const checkTokens = async () => {
-      try {
-        console.log("checking Accesstoken!");
-        const response = await START_request();
-        if (response) {
-          console.log("good stuf!");
-          setLoggedIn(tokens);
-        }
-      } catch (err: any) {
-        console.log("CAUGHT AN ERROR:", err.message);
-        try {
-          const refreshResponse = await REFRESH_request("auth/refresh/token", {
-            refresh: tokens.refresh,
-          });
-          localStorageKit.setTokenInStorage(refreshResponse);
-          console.log("tokens set in storage. used refreshToken:");
-          setLoggedIn(refreshResponse);
-        } catch (refreshError: any) {
-          console.log("Refresh error:", refreshError.message);
-          alert("Please login again!");
-          localStorageKit.deleteTokenFromStorage();
-          logout();
-        }
-      }
-    };
-    if (tokens) {
-      checkTokens();
-    }
-  }, []);
+  // const checkTokens = async () => {
+  //   try {
+  //     await AuthAPI.refreshVerifyTokens();
+  //   } catch (err: any) {
+  //     console.log(err);
+  //   }
+  // };
+  useEffect(() => {}, []);
   return (
     <AuthContext.Provider value={{ loggedIn, login, logout, setLoggedIn }}>
       {children}

@@ -1,12 +1,12 @@
-import express from "express";
+import express from 'express';
 const router = express.Router();
-import { loginUser } from "../controllers/auth.controller.js";
-import { ENV } from "../config/serverKeys.js";
+import { loginUser } from '../controllers/auth.controller.js';
+import { ENV } from '../config/serverKeys.js';
 import {
   startUpCheckToken,
   refreshController,
-} from "../controllers/auth.controller.js";
-import { tokenTestOne, tokenTestTwo } from "../middleware/auth.middleware.js";
+} from '../controllers/auth.controller.js';
+import { tokenTestOne, tokenTestTwo } from '../middleware/auth.middleware.js';
 const {
   auth_route_LOGIN,
   auth_route_TEST_TEST,

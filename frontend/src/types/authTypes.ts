@@ -1,4 +1,4 @@
-import { ActiveUser, LOGGED_OUT } from "./userTypes";
+import { ActiveUser, LOGGED_OUT } from './userTypes';
 
 export interface AuthUser {
   loggedIn: ActiveUser;
@@ -15,4 +15,7 @@ export const defaultAuthUser = {
 export interface TwoTokens {
   access: string;
   refresh: string;
+}
+export interface AdminTokens extends TwoTokens {
+  adminToken: string;
 }
