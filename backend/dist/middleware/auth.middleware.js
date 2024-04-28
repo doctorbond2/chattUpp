@@ -7,8 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import jwt from "jsonwebtoken";
-import { generateAccessToken } from "../utilities/helpers/token.helpers.js";
+import jwt from 'jsonwebtoken';
+import { generateAccessToken, } from '../utilities/helpers/token.helpers.js';
 const secret_key = String(process.env.JWT_ACCESS_SECRET);
 const refresh_secret = String(process.env.JWT_REFRESH_SECRET);
 export function tokenTestOne(req, res, next) {
@@ -22,7 +22,7 @@ export function tokenTestOne(req, res, next) {
         }
         catch (err) {
             console.log(err);
-            return res.status(400).json({ message: "hej" });
+            return res.status(400).json({ message: 'hej' });
         }
     });
 }
@@ -36,7 +36,7 @@ export function tokenTestTwo(req, res, next) {
             }
         }
         catch (err) {
-            return res.send("wrong test 2");
+            return res.send('wrong test 2');
         }
     });
 }

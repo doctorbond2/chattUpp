@@ -7,13 +7,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import User from "../models/user.model.js";
-import { error_MESSAGE } from "../utilities/helpers/database.helper.js";
+import User from '../models/user.model.js';
+import { error_MESSAGE } from '../utilities/helpers/database.helper.js';
+import { verifyAccessToken } from '../utilities/helpers/token.helpers.js';
 export const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body) {
         return res.status(400).json({
-            message: "Bad request.",
-            error: "No user body submitted.",
+            message: 'Bad request.',
+            error: 'No user body submitted.',
         });
     }
     try {
@@ -25,9 +26,9 @@ export const createUser = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
     }
     catch (err) {
-        console.log(error_MESSAGE("post"), err);
+        console.log(error_MESSAGE('post'), err);
         return res.status(400).json({
-            message: "Error creating user",
+            message: 'Error creating user',
             error: err.message,
         });
     }
@@ -35,50 +36,75 @@ export const createUser = (req, res) => __awaiter(void 0, void 0, void 0, functi
 export const updateUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body) {
         return res.status(400).json({
-            message: "Bad request.",
-            error: "No user body submitted.",
+            message: 'Bad request.',
+            error: 'No user body submitted.',
         });
     }
     if (!req.params.id) {
         return res.status(400).json({
-            message: "Bad request.",
-            error: "No user id submitted.",
+            message: 'Bad request.',
+            error: 'No user id submitted.',
         });
     }
     const { id } = req.params;
     try {
         const _user = yield User.findByIdAndUpdate({ _id: id }, req.body);
         if (_user) {
-            res.status(200).send({ message: "Updated" });
+            res.status(200).send({ message: 'Updated' });
         }
     }
     catch (err) {
-        console.log(error_MESSAGE("post"), err);
+        console.log(error_MESSAGE('post'), err);
         return res.status(400).json({
-            message: "Error creating user",
+            message: 'Error creating user',
             error: err.message,
         });
     }
 });
 export const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Test backend");
+    console.log('Test backend');
     if (!req.params.id) {
         return res.status(400).json({
-            message: "Bad request, no profile ID provided.",
+            message: 'Bad request, no profile ID provided.',
         });
     }
     const { id } = req.params;
+    console.log('id: ', id);
     try {
-        const user = yield User.findOne({ _id: id });
+        const user = yield User.findById(id);
         if (user) {
             res.status(200).json(user);
         }
     }
     catch (err) {
+        console.log(err.message);
         res.status(500).json({
-            message: "Unexpected error.",
+            message: 'Unexpected error.',
             error: err.message,
         });
+    }
+});
+export const detailedUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.headers.authorization) {
+        return res.status(401).send('No access');
+    }
+    console.log('TRIGGERED!');
+    const { authorization } = req.headers;
+    const accessToken = authorization.split(' ')[1];
+    try {
+        const decodedToken = yield verifyAccessToken(accessToken);
+        console.log('Decoded:', decodedToken);
+        if (decodedToken) {
+            const userId = decodedToken.userId;
+            const _user = yield User.findById(userId).populate('friends', {
+                firstname: 1,
+                _id: 0,
+            });
+            res.status(200).json(_user);
+        }
+    }
+    catch (err) {
+        return res.status(401).json({ error: err });
     }
 });
 export const getUserList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -92,7 +118,7 @@ export const getUserList = (req, res) => __awaiter(void 0, void 0, void 0, funct
     catch (err) {
         console.error(err.message);
         res.status(500).json({
-            message: "Unexpected error.",
+            message: 'Unexpected error.',
             error: err.message,
         });
     }

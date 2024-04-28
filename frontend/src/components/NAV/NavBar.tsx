@@ -1,12 +1,12 @@
-import React from "react";
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import { useAuth } from "../../utils/hooks/AuthContext";
-import { NavDropdown } from "react-bootstrap";
-import { Outlet } from "react-router";
-import { useNavigate } from "react-router-dom";
-import localStorageKit from "../../utils/helper/localstorageKit";
+import React from 'react';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import { useAuth } from '../../utils/hooks/AuthContext';
+import { NavDropdown } from 'react-bootstrap';
+import { Outlet } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+import localStorageKit from '../../utils/helper/localstorageKit';
 type Props = {
   // loggedIn: ActiveUser;
   // setLoggedIn: React.Dispatch<React.SetStateAction<ActiveUser>>;
@@ -20,11 +20,11 @@ const mainNavBar: React.FC<Props> = ({}) => {
     <>
       <Navbar expand="lg" className="bg-info border-bottom">
         <Container>
-          <Navbar.Brand onClick={() => navigate("/")}>
+          <Navbar.Brand onClick={() => navigate('/')}>
             <Nav.Item className="d-inline-flex">
-              {" "}
+              {' '}
               <img
-                src={"/hubot.svg"}
+                src={'/hubot.svg'}
                 width="60"
                 height="45"
                 className="align-top "
@@ -37,14 +37,14 @@ const mainNavBar: React.FC<Props> = ({}) => {
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
               <NavDropdown
-                title={loggedIn?.access ? "Profile" : "Logged out"}
+                title={loggedIn?.access ? 'Profile' : 'Logged out'}
                 id="basic-nav-dropdown"
               >
-                <NavDropdown.Item onClick={() => navigate("/login")}>
-                  {loggedIn.access ? "Profile" : "Sign in"}
+                <NavDropdown.Item onClick={() => navigate('/login')}>
+                  {loggedIn.access ? 'Profile' : 'Sign in'}
                 </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => navigate("/register")}>
-                  {loggedIn.access ? "Friendlist" : "Sign up"}
+                <NavDropdown.Item onClick={() => navigate('/register')}>
+                  {loggedIn.access ? 'Friendlist' : 'Sign up'}
                 </NavDropdown.Item>
                 <NavDropdown.Item href="#action/3.3">
                   Something
@@ -52,7 +52,7 @@ const mainNavBar: React.FC<Props> = ({}) => {
                 {loggedIn.adminToken && (
                   <>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item onClick={() => navigate("/admin")}>
+                    <NavDropdown.Item onClick={() => navigate('/admin')}>
                       Admin page
                     </NavDropdown.Item>
                   </>
@@ -61,19 +61,30 @@ const mainNavBar: React.FC<Props> = ({}) => {
 
               <Nav.Link
                 onClick={() => {
-                  navigate("/login");
+                  navigate('/login');
                 }}
               >
                 Log in
               </Nav.Link>
-
               <Nav.Link
                 onClick={() => {
-                  navigate("/profile");
+                  navigate('/chat');
                 }}
               >
-                Profile
+                Chat
               </Nav.Link>
+
+              {loggedIn.access ? (
+                <Nav.Link
+                  onClick={() => {
+                    navigate('/profile');
+                  }}
+                >
+                  Profile
+                </Nav.Link>
+              ) : (
+                ''
+              )}
             </Nav>
           </Navbar.Collapse>
           {loggedIn.access && <button onClick={logout}>LOG OUT</button>}

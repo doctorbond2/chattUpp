@@ -55,7 +55,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   //     console.log(err);
   //   }
   // };
-  useEffect(() => {}, []);
+
   return (
     <AuthContext.Provider value={{ loggedIn, login, logout, setLoggedIn }}>
       {children}

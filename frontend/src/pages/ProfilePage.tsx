@@ -1,40 +1,48 @@
-import React, { useEffect, useState } from "react";
-import { ActiveUser } from "../types/userTypes";
-import { GET_request } from "../utils/requestHelpers";
-import { useNavigate } from "react-router-dom";
-import { ProfileInfo, defaultProfileInfo } from "../types/userTypes";
-import { Container, Row, Col, Tab, Tabs } from "react-bootstrap";
-import PrProfile from "../components/SOCIAL/profile/ProfileInfo";
-const { VITE_user_route_ID_PROFILE: ID_route } = import.meta.env;
-type Props = {
-  loggedIn: ActiveUser | null;
-};
+import React, { useEffect, useState } from 'react';
+import { ActiveUser } from '../types/userTypes';
+import { useNavigate } from 'react-router-dom';
+import { ProfileInfo, defaultProfileInfo } from '../types/userTypes';
+import { Container, Row, Col, Tab, Tabs } from 'react-bootstrap';
+import PrProfile from '../components/SOCIAL/profile/PrProfile';
+import UserAPI from '../utils/helper/apiHandlers/userApi';
+import NotFound from '../components/SIMPLE/NotFound';
+import FriendList from '../components/SOCIAL/profile/FriendList';
+import { useAuth } from '../utils/hooks/AuthContext';
+type Props = {};
 
-const ProfilePage: React.FC<Props> = ({ loggedIn }) => {
+const ProfilePage: React.FC<Props> = ({}) => {
+  const { loggedIn } = useAuth();
   const navigate = useNavigate();
-  const [userProfile, setUserProfile] =
+  const redirectOnNoUser = () => {
+    navigate('/login');
+  };
+  const [profileData, setProfileData] =
     useState<ProfileInfo>(defaultProfileInfo);
   useEffect(() => {
-    if (loggedIn?.access === null) {
-      navigate("/login");
-    }
-    const fetchData = async () => {
-      if (loggedIn?.access) {
-        const response = await GET_request(ID_route);
-        console.log(response.data);
-        if (response.data) {
-          setUserProfile({ ...defaultProfileInfo, ...response.data });
+    const fetchProfileData = async () => {
+      console.log('Fetching data');
+      try {
+        const response = await UserAPI.getUserDetails();
+        if (response) {
+          console.log('You got a response!', response);
+          setProfileData(response.data);
         }
-      } else {
-        return;
+      } catch (err: any) {
+        console.log('ERROR BRUH', err.message);
+        redirectOnNoUser();
       }
     };
-    fetchData();
+    fetchProfileData();
   }, []);
+
+  useEffect(() => {
+    console.log('PROFILEDATA: ', profileData);
+  }, [profileData]);
   return (
     <>
-      <div>
-        {userProfile ? (
+      {profileData && loggedIn?.access ? (
+        <div>
+          (
           <>
             <Tabs
               defaultActiveKey="profile"
@@ -42,10 +50,10 @@ const ProfilePage: React.FC<Props> = ({ loggedIn }) => {
               className="mb-3"
             >
               <Tab eventKey="profile" title="Profile">
-                <PrProfile />
+                {profileData && <PrProfile {...{ profileData }} />}
               </Tab>
               <Tab eventKey="friends" title="Friends">
-                Tab content for friends
+                <FriendList friends={profileData.friends} />
               </Tab>
               <Tab eventKey="settings" title="Settings">
                 Tab content for settings
@@ -55,19 +63,13 @@ const ProfilePage: React.FC<Props> = ({ loggedIn }) => {
                   You are admin
                 </Tab>
               )}
-            </Tabs>{" "}
+            </Tabs>{' '}
           </>
-        ) : (
-          "Loading profile..."
-        )}
-      </div>
-      <button
-        onClick={() => {
-          console.log(userProfile);
-        }}
-      >
-        asd
-      </button>
+          ){' '}
+        </div>
+      ) : (
+        <NotFound />
+      )}
     </>
   );
 };

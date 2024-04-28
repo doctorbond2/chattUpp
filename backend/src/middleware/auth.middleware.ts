@@ -1,10 +1,13 @@
-import express, { NextFunction, Response, Request } from "express";
-import jwt from "jsonwebtoken";
-import { CallbackWithoutResultAndOptionalError as n } from "mongoose";
-import { hashPassword } from "../utilities/helpers/auth.helpers.js";
-import { generateAccessToken } from "../utilities/helpers/token.helpers.js";
-import { compare_password } from "../utilities/helpers/auth.helpers.js";
-import bcrypt from "bcrypt";
+import express, { NextFunction, Response, Request } from 'express';
+import jwt from 'jsonwebtoken';
+import { CallbackWithoutResultAndOptionalError as n } from 'mongoose';
+import { hashPassword } from '../utilities/helpers/auth.helpers.js';
+import {
+  generateAccessToken,
+  verifyAccessToken,
+} from '../utilities/helpers/token.helpers.js';
+import { compare_password } from '../utilities/helpers/auth.helpers.js';
+import bcrypt from 'bcrypt';
 const secret_key = String(process.env.JWT_ACCESS_SECRET);
 const refresh_secret = String(process.env.JWT_REFRESH_SECRET);
 
@@ -21,7 +24,7 @@ export async function tokenTestOne(
     next();
   } catch (err) {
     console.log(err);
-    return res.status(400).json({ message: "hej" });
+    return res.status(400).json({ message: 'hej' });
   }
 }
 export async function tokenTestTwo(
@@ -36,6 +39,6 @@ export async function tokenTestTwo(
       res.send(decoded);
     }
   } catch (err) {
-    return res.send("wrong test 2");
+    return res.send('wrong test 2');
   }
 }

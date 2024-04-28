@@ -22,7 +22,7 @@ class AuthAPIKit {
   //FORTSÄTT- - - - - - Undersök vilket steg som kommer efter refresh av sidan.
   async refreshVerifyTokens() {
     try {
-      const response = await user.get(VITE_auth_route_START_VERIFY_TOKENS);
+      await user.get(VITE_auth_route_START_VERIFY_TOKENS);
     } catch (err: any) {
       console.error(err.message);
     }
@@ -42,6 +42,8 @@ class AuthAPIKit {
     } catch (err: any) {
       console.error(err.message);
       alert('You probably need to login.');
+      localStorageKit.deleteTokenFromStorage();
+      window.location.reload();
     }
   }
 }

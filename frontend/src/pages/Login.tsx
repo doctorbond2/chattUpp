@@ -36,13 +36,15 @@ const Login: React.FC<Props> = ({}) => {
     <>
       <Stack direction="horizontal" gap={3}>
         <div style={{ border: '2px solid black' }}>
-          <Login_Input
-            {...{
-              handleLoginData,
-              submit_login_info,
-              loginData,
-            }}
-          />
+          {!loggedIn.access && (
+            <Login_Input
+              {...{
+                handleLoginData,
+                submit_login_info,
+                loginData,
+              }}
+            />
+          )}
           <h3>Are you logged in?</h3>
           <h4>{loggedIn && loggedIn?.access ? 'Yes' : 'No'}</h4>
           <button

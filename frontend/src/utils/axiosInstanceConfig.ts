@@ -2,7 +2,6 @@ import axios from 'axios';
 import localStorageKit from './helper/localstorageKit';
 const BaseUrl = import.meta.env.VITE_BaseUrl;
 const admin_request_key = import.meta.env.VITE_ADMIN_API_KEY;
-import UserAPI from './helper/apiHandlers/userApi';
 import AuthAPI from './helper/apiHandlers/authApi';
 export const admin = axios.create({
   baseURL: BaseUrl,
@@ -57,15 +56,16 @@ export const user = axios.create({
   },
 });
 user.interceptors.request.use(
-  (config) => {
+  async (config) => {
     const tokens = localStorageKit.getTokensFromStorage();
-    const accessToken = tokens.access;
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    if (tokens && tokens.access) {
+      console.log('Added token in interceptor request USER');
+      config.headers.Authorization = `Bearer ${tokens.access}`;
     }
     return config;
   },
   (error) => {
+    console.log('Caught error in interceptor');
     return Promise.reject(error);
   }
 );
@@ -92,7 +92,7 @@ user.interceptors.response.use(
     } else if (status === 404) {
       console.log('INTERCEPTOR 404:', status);
     } else {
-      console.log(error);
+      console.log(error, status);
       console.log('INTERCEPTOR OTHER:', status);
     }
     return Promise.reject(error);

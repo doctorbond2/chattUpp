@@ -15,7 +15,7 @@ export const generateAdminToken = (user_db_Id) => __awaiter(void 0, void 0, void
     const adminToken = jwt.sign({
         userId: user_db_Id,
     }, secret_key, {
-        expiresIn: '1m',
+        expiresIn: '10m',
     });
     return adminToken;
 });
@@ -23,7 +23,7 @@ export const generateAccessToken = (user_db_Id) => __awaiter(void 0, void 0, voi
     const accessToken = jwt.sign({
         userId: user_db_Id,
     }, secret_key, {
-        expiresIn: '30s',
+        expiresIn: '10m',
     });
     return accessToken;
 });

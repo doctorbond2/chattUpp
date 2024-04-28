@@ -1,20 +1,19 @@
-import React, { useEffect } from "react";
-import Admin_update from "../components/ADMIN/update/Admin_update";
-import { useNavigate } from "react-router-dom";
-import { ActiveUser } from "../types/userTypes";
-import { Tabs, Tab } from "react-bootstrap";
-import { useAuth } from "../utils/hooks/AuthContext";
-type Props = { loggedIn: ActiveUser };
+import React, { useEffect } from 'react';
+import Admin_update from '../components/ADMIN/update/Admin_update';
+import { useNavigate } from 'react-router-dom';
+import { Tabs, Tab } from 'react-bootstrap';
+import { useAuth } from '../utils/hooks/AuthContext';
+type Props = {};
 
-const AdminPage: React.FC<Props> = () => {
+const AdminPage: React.FC<Props> = ({}) => {
   const { loggedIn } = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
     if (!loggedIn.adminToken) {
-      console.error("REJECTED: NOT ADMIN");
-      navigate("/");
+      console.error('REJECTED: NOT ADMIN');
+      navigate('/');
     } else {
-      console.log("Welcome admin!");
+      console.log('Welcome admin!');
     }
   }, []);
   //UPDATE USER CONTROL FETCH

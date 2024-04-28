@@ -17,12 +17,12 @@ export type RegisterFormType = {
   repeat_password: string;
 };
 export const defaultRegisterState: RegisterFormType = {
-  username: "",
-  firstname: "",
-  lastname: "",
-  email: "",
-  password: "",
-  repeat_password: "",
+  username: '',
+  firstname: '',
+  lastname: '',
+  email: '',
+  password: '',
+  repeat_password: '',
 };
 export type LoginStateType = {
   password: string;
@@ -30,9 +30,9 @@ export type LoginStateType = {
   email: string;
 };
 export const defaultLoginState: LoginStateType = {
-  password: "",
-  username: "",
-  email: "",
+  password: '',
+  username: '',
+  email: '',
 };
 export type ProfileInfo = {
   username: string;
@@ -44,15 +44,17 @@ export type ProfileInfo = {
   role: string;
   avatar: string;
   password: string;
+  friends?: [string];
+  conversations?: [string];
 } | null;
 export const defaultProfileInfo: ProfileInfo = {
-  username: "John",
+  username: 'John',
   createdAt: new Date(),
-  email: "John.doe@johndoe@john",
-  firstname: "John",
-  lastname: "Doe",
+  email: 'John.doe@johndoe@john',
+  firstname: 'John',
+  lastname: 'Doe',
   age: null,
-  role: "standard",
-  avatar: "",
-  password: "",
+  role: 'standard',
+  avatar: '',
+  password: '',
 };
