@@ -96,10 +96,12 @@ export const detailedUserController = (req, res) => __awaiter(void 0, void 0, vo
         console.log('Decoded:', decodedToken);
         if (decodedToken) {
             const userId = decodedToken.userId;
-            const _user = yield User.findById(userId).populate('friends', {
+            const _user = yield User.findById(userId)
+                .populate('friends', {
                 firstname: 1,
                 _id: 0,
-            });
+            })
+                .populate('conversations');
             res.status(200).json(_user);
         }
     }

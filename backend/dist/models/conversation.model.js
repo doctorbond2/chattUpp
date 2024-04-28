@@ -16,6 +16,8 @@ const conversationSchema = new Schema({
         type: [Schema.Types.ObjectId],
         ref: 'Message',
         required: true,
+        default: [],
     },
-}, { timestamps: true });
+}, { timestamps: true, index: true });
 const Conversation = model('Conversation', conversationSchema);
+export default Conversation;

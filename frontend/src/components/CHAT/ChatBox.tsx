@@ -1,9 +1,25 @@
 import React from 'react';
-
+import { Col, Container, Row } from 'react-bootstrap';
 type Props = {};
 
 const ChatBox: React.FC<Props> = ({}) => {
-  return <>Chatbox</>;
+  return (
+    <>
+      {' '}
+      <Container>
+        <Row>
+          <Col
+            xs={8}
+            className={'border rounded'}
+            style={{ height: '100vh' }}
+          ></Col>
+          {/* <Col xs={4} className={'bg-danger'}>
+      asd
+    </Col> */}
+        </Row>
+      </Container>
+    </>
+  );
 };
 
 export default ChatBox;

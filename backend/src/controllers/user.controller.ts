@@ -86,10 +86,12 @@ export const detailedUserController = async (req: Request, res: Response) => {
     console.log('Decoded:', decodedToken);
     if (decodedToken) {
       const userId = decodedToken.userId;
-      const _user = await User.findById(userId).populate('friends', {
-        firstname: 1,
-        _id: 0,
-      });
+      const _user = await User.findById(userId)
+        .populate('friends', {
+          firstname: 1,
+          _id: 0,
+        })
+        .populate('conversations');
       res.status(200).json(_user);
     }
   } catch (err) {
