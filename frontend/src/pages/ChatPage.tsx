@@ -4,10 +4,9 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Col, Row } from 'react-bootstrap';
 import ChatBox from '../components/CHAT/ChatBox';
 import ChatInput from '../components/CHAT/ChatInput';
-import ChatMessage from '../components/CHAT/ChatMessage';
 import ChatConvoList from '../components/CHAT/ChatConvoList';
 import UserAPI from '../utils/helper/apiHandlers/userApi';
-
+import ChatFriendList from '../components/CHAT/ChatFriendList';
 import { defaultProfileInfo, ProfileInfo } from '../types/userTypes';
 import { useAuth } from '../utils/hooks/AuthContext';
 type Props = {};
@@ -20,14 +19,24 @@ const ChatPage: React.FC<Props> = ({}) => {
   };
   const [room, setRoom] = useState('');
   const [conversations, setConversations] = useState([]);
+  const [friends, setFriends] = useState([]);
   const [profileData, setProfileData] =
     useState<ProfileInfo>(defaultProfileInfo);
+  const [roomInfo, setRoomInfo] = useState({});
   const switchSocketRoom = () => {
     if (room !== '') {
       socket.emit('join_room', room);
     }
   };
+  const handleActiveRoom = (target: string) => {
+    if (target !== room) {
+      setRoom(target);
+    }
+  };
 
+  useEffect(() => {
+    console.log('Current room: ', room);
+  }, [room]);
   useEffect(() => {
     if (!loggedIn.access) {
       redirectOnNoUser();
@@ -41,7 +50,7 @@ const ChatPage: React.FC<Props> = ({}) => {
           console.log('You got a response!', response);
           setProfileData(response.data);
           setConversations(response.data.conversations);
-          console.log(response.data);
+          setFriends(response.data.friends);
         }
       } catch (err: any) {
         console.log('ERROR BRUH', err.message);
@@ -57,12 +66,20 @@ const ChatPage: React.FC<Props> = ({}) => {
           <Container>
             <Row>
               <Col>
+                <h1>Room: {room}</h1>
                 <ChatInput />
                 <ChatBox />
               </Col>
-              <Col></Col>
               <Col>
-                <ChatConvoList {...{ conversations }} />
+                {' '}
+                {friends && (
+                  <ChatFriendList
+                    {...{ friends, handleActiveRoom, switchSocketRoom }}
+                  />
+                )}
+              </Col>
+              <Col>
+                {conversations && <ChatConvoList {...{ conversations }} />}
               </Col>
             </Row>
           </Container>

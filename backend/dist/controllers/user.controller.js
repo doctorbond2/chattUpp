@@ -99,7 +99,7 @@ export const detailedUserController = (req, res) => __awaiter(void 0, void 0, vo
             const _user = yield User.findById(userId)
                 .populate('friends', {
                 firstname: 1,
-                _id: 0,
+                friends: 1,
             })
                 .populate('conversations');
             res.status(200).json(_user);

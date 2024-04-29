@@ -89,9 +89,10 @@ export const detailedUserController = async (req: Request, res: Response) => {
       const _user = await User.findById(userId)
         .populate('friends', {
           firstname: 1,
-          _id: 0,
+          friends: 1,
         })
         .populate('conversations');
+
       res.status(200).json(_user);
     }
   } catch (err) {

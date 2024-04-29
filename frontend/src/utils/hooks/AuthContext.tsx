@@ -1,21 +1,10 @@
-import {
-  useContext,
-  createContext,
-  useState,
-  ReactNode,
-  useEffect,
-} from 'react';
+import { useContext, createContext, useState, ReactNode } from 'react';
 import { ActiveUser } from '../../types/userTypes';
 import { AuthUser, defaultAuthUser } from '../../types/authTypes';
-import {
-  LOGIN_request,
-  START_request,
-  REFRESH_request,
-} from '../requestHelpers';
 import AuthAPI from '../helper/apiHandlers/authApi';
 import { LOGGED_OUT } from '../../types/userTypes';
-const AuthContext = createContext<AuthUser>(defaultAuthUser);
 import localStorageKit from '../helper/localstorageKit';
+const AuthContext = createContext<AuthUser>(defaultAuthUser);
 export const useAuth = () => useContext(AuthContext);
 type AuthProviderProps = {
   children: ReactNode;

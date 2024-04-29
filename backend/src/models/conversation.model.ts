@@ -3,16 +3,11 @@ import { Schema, model } from 'mongoose';
 const conversationSchema = new Schema(
   {
     participants: {
-      user1: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'User',
-      },
-      user2: {
-        type: Schema.Types.ObjectId,
-        required: true,
-        ref: 'User',
-      },
+      type: [Schema.Types.ObjectId],
+      required: true,
+      ref: 'User',
+      maxLength: 2,
+      minLength: 2,
     },
     messages: {
       type: [Schema.Types.ObjectId],
