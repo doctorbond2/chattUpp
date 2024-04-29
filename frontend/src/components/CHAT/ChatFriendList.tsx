@@ -1,16 +1,11 @@
 import React from 'react';
-
+import { useChat } from '../../utils/hooks/ChatContext';
 type Props = {
   friends: any;
   handleActiveRoom: (target: string) => void;
-  switchSocketRoom: () => void;
 };
 
-const ChatFriendList: React.FC<Props> = ({
-  friends,
-  handleActiveRoom,
-  switchSocketRoom,
-}) => {
+const ChatFriendList: React.FC<Props> = ({ friends, handleActiveRoom }) => {
   return (
     <>
       {friends &&

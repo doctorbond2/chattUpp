@@ -42,3 +42,26 @@ export async function tokenTestTwo(
     return res.send('wrong test 2');
   }
 }
+export async function verifyTokensMiddleware(
+  req: Request | any,
+  res: Response,
+  next: NextFunction
+) {
+  if (!req.headers.authorization) {
+    return res.status(401).send('No access');
+  }
+  console.log('TOKEN MIDDLEWARE ACTIVATED');
+  const { authorization } = req.headers;
+  const accessToken = authorization.split(' ')[1];
+  try {
+    const decodedToken: any = await verifyAccessToken(accessToken);
+    console.log('Decoded:', decodedToken);
+    if (decodedToken) {
+      const userId = decodedToken.userId;
+      req.userId = userId;
+      next();
+    }
+  } catch (err) {
+    return res.status(401).json({ error: err });
+  }
+}

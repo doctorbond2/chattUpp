@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import User from '../models/user.model.js';
 import { error_MESSAGE } from '../utilities/helpers/database.helper.js';
-import { verifyAccessToken } from '../utilities/helpers/token.helpers.js';
 export const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body) {
         return res.status(400).json({
@@ -85,25 +84,14 @@ export const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 export const detailedUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.headers.authorization) {
-        return res.status(401).send('No access');
-    }
-    console.log('TRIGGERED!');
-    const { authorization } = req.headers;
-    const accessToken = authorization.split(' ')[1];
     try {
-        const decodedToken = yield verifyAccessToken(accessToken);
-        console.log('Decoded:', decodedToken);
-        if (decodedToken) {
-            const userId = decodedToken.userId;
-            const _user = yield User.findById(userId)
-                .populate('friends', {
-                firstname: 1,
-                friends: 1,
-            })
-                .populate('conversations');
-            res.status(200).json(_user);
-        }
+        const _user = yield User.findById(req.userId)
+            .populate('friends', {
+            firstname: 1,
+            friends: 1,
+        })
+            .populate('conversations');
+        res.status(200).json(_user);
     }
     catch (err) {
         return res.status(401).json({ error: err });

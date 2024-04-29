@@ -74,27 +74,15 @@ export const getUserProfile = async (req: Request, res: Response) => {
     });
   }
 };
-export const detailedUserController = async (req: Request, res: Response) => {
-  if (!req.headers.authorization) {
-    return res.status(401).send('No access');
-  }
-  console.log('TRIGGERED!');
-  const { authorization } = req.headers;
-  const accessToken = authorization.split(' ')[1];
+export const detailedUserController = async (req: any, res: Response) => {
   try {
-    const decodedToken: any = await verifyAccessToken(accessToken);
-    console.log('Decoded:', decodedToken);
-    if (decodedToken) {
-      const userId = decodedToken.userId;
-      const _user = await User.findById(userId)
-        .populate('friends', {
-          firstname: 1,
-          friends: 1,
-        })
-        .populate('conversations');
-
-      res.status(200).json(_user);
-    }
+    const _user = await User.findById(req.userId)
+      .populate('friends', {
+        firstname: 1,
+        friends: 1,
+      })
+      .populate('conversations');
+    res.status(200).json(_user);
   } catch (err) {
     return res.status(401).json({ error: err });
   }

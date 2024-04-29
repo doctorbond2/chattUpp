@@ -1,5 +1,11 @@
 // ChatContext.js
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from 'react';
 import { Message } from '../../types/chatTypes';
 import {
   ChatContextInterface,
@@ -10,7 +16,6 @@ const socket: Socket = io(import.meta.env.VITE_ServerPort);
 const ChatContext = createContext<ChatContextInterface>(
   defaultChatContextState
 );
-
 export const useChat = () => useContext(ChatContext);
 type ChatProviderProps = {
   children: ReactNode;
@@ -18,6 +23,7 @@ type ChatProviderProps = {
 export const ChatProvider = ({ children }: ChatProviderProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [room, setRoom] = useState('');
+  const [messageReceived, setMessageReceived] = useState('');
 
   const sendMessage = (message: Message) => {
     // Implement sending message logic
@@ -28,7 +34,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
       socket.emit('join_room', room);
     }
   };
-  const joinRoom = (roomId: string) => {
+  const joinRoom = async (roomId: string) => {
     // Implement joining room logic
     setRoom(roomId);
   };
@@ -37,6 +43,11 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     // Implement leaving room logic
     setRoom('');
   };
+  useEffect(() => {
+    socket.on('receive_message', (data) => {
+      setMessageReceived(data.message);
+    });
+  }, [socket]);
 
   return (
     <ChatContext.Provider
@@ -47,6 +58,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
         joinRoom,
         leaveRoom,
         switchSocketRoom,
+        messageReceived,
       }}
     >
       {children}

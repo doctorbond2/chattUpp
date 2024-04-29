@@ -10,6 +10,7 @@ import AdminPage from './pages/AdminPage';
 import { AuthProvider } from './utils/hooks/AuthContext';
 import { ChatProvider } from './utils/hooks/ChatContext';
 import ChatPage from './pages/ChatPage';
+import TestAndTry from './pages/TestAndTry';
 function App() {
   return (
     <>
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/chat" element={<ChatPage />} />
+                <Route path="test" element={<TestAndTry />} />
               </Route>
             </Routes>
           }

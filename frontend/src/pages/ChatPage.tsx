@@ -8,32 +8,30 @@ import ChatConvoList from '../components/CHAT/ChatConvoList';
 import UserAPI from '../utils/helper/apiHandlers/userApi';
 import ChatFriendList from '../components/CHAT/ChatFriendList';
 import { defaultProfileInfo, ProfileInfo } from '../types/userTypes';
+import { useChat } from '../utils/hooks/ChatContext';
 import { useAuth } from '../utils/hooks/AuthContext';
 type Props = {};
 const socket: Socket = io(import.meta.env.VITE_ServerPort);
 const ChatPage: React.FC<Props> = ({}) => {
   const { loggedIn } = useAuth();
+  const { room, joinRoom, switchSocketRoom } = useChat();
   const navigate = useNavigate();
   const redirectOnNoUser = () => {
     navigate('/login');
   };
-  const [room, setRoom] = useState('');
+
   const [conversations, setConversations] = useState([]);
   const [friends, setFriends] = useState([]);
   const [profileData, setProfileData] =
     useState<ProfileInfo>(defaultProfileInfo);
   const [roomInfo, setRoomInfo] = useState({});
-  const switchSocketRoom = () => {
-    if (room !== '') {
-      socket.emit('join_room', room);
-    }
-  };
+
   const handleActiveRoom = (target: string) => {
     if (target !== room) {
-      setRoom(target);
+      joinRoom(target);
+      switchSocketRoom();
     }
   };
-
   useEffect(() => {
     console.log('Current room: ', room);
   }, [room]);
@@ -73,9 +71,7 @@ const ChatPage: React.FC<Props> = ({}) => {
               <Col>
                 {' '}
                 {friends && (
-                  <ChatFriendList
-                    {...{ friends, handleActiveRoom, switchSocketRoom }}
-                  />
+                  <ChatFriendList {...{ friends, handleActiveRoom }} />
                 )}
               </Col>
               <Col>

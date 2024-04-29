@@ -14,6 +14,7 @@ export interface ChatContextInterface {
   room: string;
   messages: Message[];
   switchSocketRoom: () => void;
+  messageReceived: Message | {};
 }
 export const defaultChatContextState = {
   leaveRoom: () => {},
@@ -22,6 +23,7 @@ export const defaultChatContextState = {
   room: '',
   messages: [],
   switchSocketRoom: () => {},
+  messageReceived: {},
 };
 // textContent: {
 //     type: String,

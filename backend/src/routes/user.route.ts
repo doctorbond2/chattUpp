@@ -7,6 +7,7 @@ import {
   updateUserController,
   detailedUserController,
 } from '../controllers/user.controller.js';
+import { verifyTokensMiddleware } from '../middleware/auth.middleware.js';
 import { ENV } from '../config/serverKeys.js';
 const {
   user_route_CREATE,
@@ -17,7 +18,11 @@ const {
 } = process.env as unknown as ENV;
 router.post(user_route_CREATE, createUser);
 router.get(user_route_ID_PROFILE, getUserProfile);
-router.get(user_route_PROFILE_DETAILS, detailedUserController);
+router.get(
+  user_route_PROFILE_DETAILS,
+  verifyTokensMiddleware,
+  detailedUserController
+);
 router.get(user_route_LIST, getUserList);
 router.put(user_route_UPDATE_ONE_ID, updateUserController);
 export default router;

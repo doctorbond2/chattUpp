@@ -6,7 +6,7 @@ console.log(import.meta.env.VITE_ServerPort);
 const socket: Socket = io(import.meta.env.VITE_ServerPort);
 const TestAndTry: React.FC = ({}) => {
   const [message, setMessage] = useState('');
-  const [messageRecieved, setMessageRecieved] = useState('');
+  const [messageReceived, setMessageReceived] = useState('');
   const [room, setRoom] = useState('');
   const [currentRoom, setCurrentRoom] = useState(room || 'Join a room!');
   const sendMessage = () => {
@@ -30,14 +30,13 @@ const TestAndTry: React.FC = ({}) => {
   };
   useEffect(() => {
     socket.on('receive_message', (data) => {
-      setMessageRecieved(data.message);
+      setMessageReceived(data.message);
     });
   }, [socket]);
   type Props = {};
   return (
     <>
       <h3>Test Chat Area</h3>
-
       <div>
         <h1>ROOM: {currentRoom}</h1>
         <input type="text" onChange={handleMessage} />
@@ -49,7 +48,7 @@ const TestAndTry: React.FC = ({}) => {
         </select>
         <button onClick={joinRoom}>Join Room</button>
         <h2>Message:</h2>
-        {messageRecieved}
+        {messageReceived}
       </div>
       <Container>
         <Row>
