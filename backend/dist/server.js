@@ -43,11 +43,9 @@ io.on('connection', (socket) => {
         console.log('left the room: ', data);
         socket.leave(data);
     });
-    socket.on('send_message', (data) => {
-        console.log('socket on message');
-        console.log(data);
+    socket.on('send_message', (data) => __awaiter(void 0, void 0, void 0, function* () {
         socket.to(data.room).emit('receive_message', data.message);
         console.log('socket sent to: ', data.room);
-    });
+    }));
 });
 export default server;

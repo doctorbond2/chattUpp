@@ -3,7 +3,7 @@ import cors from 'cors';
 import { Server } from 'socket.io';
 import http from 'http';
 import app from './app.js';
-
+import User from './models/user.model.js';
 const ALLOWED_ORIGINS: string[] = [
   'http://localhost:5173',
   'https://chatt-upp-client.vercel.app',
@@ -37,9 +37,7 @@ io.on('connection', (socket) => {
     console.log('left the room: ', data);
     socket.leave(data);
   });
-  socket.on('send_message', (data) => {
-    console.log('socket on message');
-    console.log(data);
+  socket.on('send_message', async (data) => {
     socket.to(data.room).emit('receive_message', data.message);
     console.log('socket sent to: ', data.room);
   });

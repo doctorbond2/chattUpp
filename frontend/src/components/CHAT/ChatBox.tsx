@@ -1,14 +1,16 @@
 import React from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useChat } from '../../utils/hooks/ChatContext';
-type Props = {};
+import { ProfileInfo } from '../../types/userTypes';
+type Props = {
+  profileData: ProfileInfo;
+};
 
-const ChatBox: React.FC<Props> = ({}) => {
+const ChatBox: React.FC<Props> = ({ profileData }) => {
   const { messages, messageReceived } = useChat();
   console.log('Chatbox messages: ', messages);
   return (
     <>
-      {' '}
       <Container>
         <Row>
           <Col
