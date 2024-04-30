@@ -27,7 +27,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   const [room, setRoom] = useState('');
   const [messageReceived, setMessageReceived] = useState('');
   const [activeConversation, setActiveConversation] = useState('');
-
+  const [currentMessages, setCurrentMessages] = useState<Message[]>();
   const sendMessage = async (message: Message) => {
     console.log('Sent message: ' + message + ' ' + 'To Room:' + room);
     try {
@@ -47,10 +47,10 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
           const { data } = conversation;
           const { _id, messages } = data;
           socket.emit('join_room', _id);
+          setMessages([...messages].reverse());
           setRoom(_id);
           console.log('Current conversation: ', conversation);
-          setMessages([...messages] || []);
-          console.log(messages);
+
           // setActiveConversation(conversation);
         }
       } catch (err: any) {
@@ -77,16 +77,16 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     console.log('useEffect triggered socket');
     socket.on('receive_message', (message: Message) => {
       console.log('Incoming data: ', message);
+      setMessageReceived(message.textContent);
     });
     return () => {
       console.log('useEffect left socket');
-      socket.off('receive_message', () => {
-        setMessageReceived('');
-        setMessages([]);
-      });
+      socket.off('receive_message', () => {});
     };
   }, [socket]);
-
+  useEffect(() => {
+    console.log('Updated messages: ', messages);
+  }, [messages]);
   return (
     <ChatContext.Provider
       value={{

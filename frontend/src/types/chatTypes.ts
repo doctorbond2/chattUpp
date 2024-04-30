@@ -13,7 +13,7 @@ export interface ChatContextInterface {
   sendMessage: (message: Message) => Promise<void>;
   room: string;
   messages: Message[];
-  messageReceived: Message | {};
+  messageReceived: string;
   switchToConversation: (friendId: string) => Promise<void>;
 }
 export const defaultChatContextState = {
@@ -22,7 +22,7 @@ export const defaultChatContextState = {
   sendMessage: async (message: Message) => {},
   room: '',
   messages: [],
-  messageReceived: {},
+  messageReceived: '',
   switchToConversation: async (friendId: string) => {},
 };
 // textContent: {

@@ -15,7 +15,10 @@ export const createNewConvoController = async (
     if (existingConversation) {
       if (existingConversation.messages.length > 0) {
         console.log('messages: ', existingConversation.messages);
-        await existingConversation.populate('messages');
+        await existingConversation.populate({
+          path: 'messages',
+          options: { limit: 50, sort: { createdAt: -1 } },
+        });
       }
       console.log(
         'Sent back existing conversation between: ',

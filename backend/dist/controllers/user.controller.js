@@ -47,8 +47,10 @@ export const updateUserController = (req, res) => __awaiter(void 0, void 0, void
     }
     const { id } = req.params;
     try {
-        const _user = yield User.findByIdAndUpdate({ _id: id }, req.body);
+        const _user = yield User.findOne({ _id: id });
         if (_user) {
+            Object.assign(_user, req.body);
+            yield _user.save();
             res.status(200).send({ message: 'Updated' });
         }
     }

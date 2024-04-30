@@ -7,16 +7,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { hashPassword } from "../helpers/auth.helpers.js";
+import { hashPassword } from '../helpers/auth.helpers.js';
 export function hashHelper() {
     return __awaiter(this, void 0, void 0, function* () {
         const doc = this;
-        if (doc.isModified(doc.password) || doc.isNew) {
+        if (doc.isModified('password') || doc.isNew) {
             try {
                 doc.password = yield hashPassword(doc.password);
+                console.log('hashed the password');
             }
             catch (err) {
-                console.error("Error pre-saving user", err);
+                console.error('Error pre-saving user', err);
                 throw err;
             }
         }

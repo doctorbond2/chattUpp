@@ -19,7 +19,10 @@ export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, 
         if (existingConversation) {
             if (existingConversation.messages.length > 0) {
                 console.log('messages: ', existingConversation.messages);
-                yield existingConversation.populate('messages');
+                yield existingConversation.populate({
+                    path: 'messages',
+                    options: { limit: 50, sort: { createdAt: -1 } },
+                });
             }
             console.log('Sent back existing conversation between: ', existingConversation.participants[0].firstname, existingConversation.participants[1].firstname);
             return res.status(200).json(existingConversation);

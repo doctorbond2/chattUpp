@@ -75,6 +75,7 @@ userSchema.virtual('fullname').get(function () {
 // TODO
 // ANVÄND PRESAVE FÖR ATT IMPLEMENTERA BILDER!
 //PRE SAVE FÖR ATT KOLLA SPRÅKET -> AJA BAJA!!!
+
 userSchema.pre('save', hashHelper);
 // userSchema.pre("save");
 const User = model('User', userSchema);

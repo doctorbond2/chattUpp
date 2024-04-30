@@ -30,3 +30,11 @@ export async function addNewMessageToConversationController(
     return res.status(500);
   }
 }
+export async function deleteAllTheMessages(req: Request | any, res: Response) {
+  try {
+    await Message.find().deleteMany();
+    res.status(204).send('');
+  } catch (err: any) {
+    console.log(err.message);
+  }
+}

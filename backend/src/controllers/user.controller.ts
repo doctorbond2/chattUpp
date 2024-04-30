@@ -40,8 +40,10 @@ export const updateUserController = async (req: Request, res: Response) => {
   }
   const { id } = req.params;
   try {
-    const _user = await User.findByIdAndUpdate({ _id: id }, req.body);
+    const _user = await User.findOne({ _id: id });
     if (_user) {
+      Object.assign(_user, req.body);
+      await _user.save();
       res.status(200).send({ message: 'Updated' });
     }
   } catch (err: any) {

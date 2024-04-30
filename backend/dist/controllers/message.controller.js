@@ -38,3 +38,14 @@ export function addNewMessageToConversationController(req, res) {
         }
     });
 }
+export function deleteAllTheMessages(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            yield Message.find().deleteMany();
+            res.status(204).send('');
+        }
+        catch (err) {
+            console.log(err.message);
+        }
+    });
+}
