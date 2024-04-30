@@ -14,7 +14,7 @@ type Props = {};
 const socket: Socket = io(import.meta.env.VITE_ServerPort);
 const ChatPage: React.FC<Props> = ({}) => {
   const { loggedIn } = useAuth();
-  const { room, joinRoom, switchToConversation } = useChat();
+  const { room, switchToConversation, messages } = useChat();
   const navigate = useNavigate();
   const redirectOnNoUser = () => {
     navigate('/login');
@@ -22,13 +22,14 @@ const ChatPage: React.FC<Props> = ({}) => {
 
   const [conversations, setConversations] = useState([]);
   const [friends, setFriends] = useState([]);
+  const [activeFriendId, setActiveFriendId] = useState('');
   const [profileData, setProfileData] =
     useState<ProfileInfo>(defaultProfileInfo);
-
   const handleActiveConversation = async (friendId: string) => {
     console.log('You have targeted friend: ', friendId);
     if (friendId !== '') {
       await switchToConversation(friendId);
+      setActiveFriendId(friendId);
     }
   };
   // const handleActiveRoom = async (target: string) => {
@@ -70,8 +71,8 @@ const ChatPage: React.FC<Props> = ({}) => {
             <Row>
               <Col>
                 <h1>Room: {room}</h1>
-                <ChatInput />
-                <ChatBox />
+                {activeFriendId && <ChatBox />}
+                {activeFriendId && <ChatInput {...{ activeFriendId }} />}
               </Col>
               <Col>
                 {' '}

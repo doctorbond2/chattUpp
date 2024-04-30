@@ -15,7 +15,12 @@ export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, 
         const existingConversation = yield Conversation.findOne({
             participants: { $all: [userId, friendId] },
         }).populate('participants');
+        console.log('conversation? ', existingConversation);
         if (existingConversation) {
+            if (existingConversation.messages.length > 0) {
+                console.log('messages: ', existingConversation.messages);
+                yield existingConversation.populate('messages');
+            }
             console.log('Sent back existing conversation between: ', existingConversation.participants[0].firstname, existingConversation.participants[1].firstname);
             return res.status(200).json(existingConversation);
         }
@@ -29,6 +34,7 @@ export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, 
         }
     }
     catch (err) {
+        console.log(err.message);
         return res.status(500).json({ error: err.message });
     }
 });

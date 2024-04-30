@@ -82,6 +82,7 @@ user.interceptors.response.use(
           console.log('Trying to use refreshtoken');
           await AuthAPI.refreshToken();
           refreshStatus = false;
+          window.location.reload();
           return;
         } catch (err) {
           error = err;

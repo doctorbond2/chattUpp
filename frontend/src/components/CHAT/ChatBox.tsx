@@ -11,7 +11,7 @@ const ChatBox: React.FC<Props> = ({}) => {
           <Col
             xs={8}
             className={'border rounded'}
-            style={{ height: '100vh' }}
+            style={{ height: '40vh' }}
           ></Col>
           {/* <Col xs={4} className={'bg-danger'}>
       asd

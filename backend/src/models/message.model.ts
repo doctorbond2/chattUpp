@@ -11,7 +11,7 @@ const messageSchema = new Schema(
       ref: 'User',
       required: true,
     },
-    recievedBy: {
+    receivedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
@@ -25,3 +25,4 @@ const messageSchema = new Schema(
   { timestamps: true }
 );
 const Message = model('Message', messageSchema);
+export default Message;

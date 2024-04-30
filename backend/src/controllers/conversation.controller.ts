@@ -11,7 +11,12 @@ export const createNewConvoController = async (
     const existingConversation: any = await Conversation.findOne({
       participants: { $all: [userId, friendId] },
     }).populate('participants');
+    console.log('conversation? ', existingConversation);
     if (existingConversation) {
+      if (existingConversation.messages.length > 0) {
+        console.log('messages: ', existingConversation.messages);
+        await existingConversation.populate('messages');
+      }
       console.log(
         'Sent back existing conversation between: ',
         existingConversation.participants[0].firstname,
@@ -27,6 +32,7 @@ export const createNewConvoController = async (
       return res.status(201).json(newConversation);
     }
   } catch (err: any) {
+    console.log(err.message);
     return res.status(500).json({ error: err.message });
   }
 };

@@ -25,16 +25,12 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [room, setRoom] = useState('');
   const [messageReceived, setMessageReceived] = useState('');
-
+  const [activeConversation, setActiveConversation] = useState('');
   const sendMessage = (message: Message) => {
-    // Implement sending message logic
-    setMessages([...messages, message]);
+    console.log('Sent message: ' + message + ' ' + 'To Room:' + room);
+    socket.emit('send_message', { message, room });
   };
-  const switchSocketRoom = () => {
-    if (room !== '') {
-      socket.emit('join_room', room);
-    }
-  };
+
   const switchToConversation = async (friendId: string) => {
     if (friendId !== '') {
       //THIS RETURNS THE CONVERSATION ID
@@ -43,6 +39,8 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
         if (conversation !== '') {
           socket.emit('join_room', conversation);
           setRoom(conversation);
+          setMessages([...conversation.messages] || []);
+          // setActiveConversation(conversation);
         }
       } catch (err: any) {
         console.log(err.message);
@@ -67,6 +65,8 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   useEffect(() => {
     socket.on('receive_message', (data) => {
       setMessageReceived(data.message);
+      setMessages([...messages, data.message]);
+      console.log(messages);
     });
   }, [socket]);
 
@@ -78,7 +78,6 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
         sendMessage,
         joinRoom,
         leaveRoom,
-        switchSocketRoom,
         messageReceived,
         switchToConversation,
       }}
