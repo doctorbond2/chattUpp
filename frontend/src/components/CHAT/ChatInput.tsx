@@ -17,7 +17,9 @@ const ChatInput: React.FC<Props> = ({ activeFriendId }) => {
         onClick={() => {
           sendMessage({ textContent: messageText, receivedBy: activeFriendId });
         }}
-      ></button>
+      >
+        Send message
+      </button>
     </>
   );
 };

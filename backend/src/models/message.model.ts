@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-
+import Conversation from './conversation.model.js';
 const messageSchema = new Schema(
   {
     textContent: {
@@ -24,5 +24,18 @@ const messageSchema = new Schema(
   },
   { timestamps: true }
 );
+messageSchema.pre('save', async function () {
+  try {
+    const existingConversation: any = await Conversation.findById(
+      this.conversation
+    );
+    if (existingConversation) {
+      existingConversation.messages.push(this._id);
+      await existingConversation.save();
+    }
+  } catch (err) {
+    throw err;
+  }
+});
 const Message = model('Message', messageSchema);
 export default Message;

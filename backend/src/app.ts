@@ -3,6 +3,7 @@ import cors from 'cors';
 import userRouter from './routes/user.route.js';
 import authRouter from './routes/auth.route.js';
 import convoRouter from './routes/conversation.route.js';
+import messageRouter from './routes/message.route.js';
 const ALLOWED_ORIGINS: string[] = [
   'http://localhost:5173',
   'https://chatt-upp-client.vercel.app',
@@ -27,6 +28,7 @@ app.use(function (req, res, next) {
 app.use('/api/chatupp/user', userRouter);
 app.use('/api/chatupp/auth', authRouter);
 app.use('/api/chatupp/convo', convoRouter);
+app.use('/api/chatupp/message', messageRouter);
 app.use('/', (req, res) => {
   res.json({ message: 'Server is up and running!!' });
 });

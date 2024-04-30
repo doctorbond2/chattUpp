@@ -10,7 +10,7 @@ export interface Message {
 export interface ChatContextInterface {
   leaveRoom: (conversation: string) => void;
   joinRoom: (roomId: string) => void;
-  sendMessage: (message: Message) => void;
+  sendMessage: (message: Message) => Promise<void>;
   room: string;
   messages: Message[];
   messageReceived: Message | {};
@@ -19,7 +19,7 @@ export interface ChatContextInterface {
 export const defaultChatContextState = {
   leaveRoom: (conversation: string) => {},
   joinRoom: (roomId: string) => {},
-  sendMessage: (message: Message) => {},
+  sendMessage: async (message: Message) => {},
   room: '',
   messages: [],
   messageReceived: {},

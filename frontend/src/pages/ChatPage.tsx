@@ -71,7 +71,7 @@ const ChatPage: React.FC<Props> = ({}) => {
             <Row>
               <Col>
                 <h1>Room: {room}</h1>
-                {activeFriendId && <ChatBox />}
+                {activeFriendId && messages && <ChatBox />}
                 {activeFriendId && <ChatInput {...{ activeFriendId }} />}
               </Col>
               <Col>

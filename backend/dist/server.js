@@ -40,7 +40,10 @@ io.on('connection', (socket) => {
         socket.join(data);
     }));
     socket.on('send_message', (data) => {
-        socket.to(data.room).emit('receive_message', data);
+        console.log('socket on message');
+        console.log(data);
+        socket.to(data.room).emit('receive_message', data.message);
+        console.log('socket sent to: ', data.room);
     });
 });
 export default server;

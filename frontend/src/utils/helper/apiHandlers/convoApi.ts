@@ -1,12 +1,23 @@
 import { user } from '../../axiosInstanceConfig';
-const { VITE_conv_route_CREATE } = import.meta.env;
+const { VITE_conv_route_CREATE, VITE_message_route_CREATE } = import.meta.env;
 class ConvoAPIKit {
   constructor() {}
   async verifyConversation(friendId: string) {
-    console.log('Verifying conversation: ', friendId);
     try {
       const response = await user.post(VITE_conv_route_CREATE, { friendId });
       if (response) {
+        return response;
+      }
+    } catch (err: any) {
+      throw err;
+    }
+  }
+  async addNewMessage(message: any) {
+    try {
+      console.log(VITE_message_route_CREATE);
+      const response = await user.post(VITE_message_route_CREATE, message);
+      if (response) {
+        console.log('You got a response from the api:', response);
         return response.data._id;
       }
     } catch (err: any) {

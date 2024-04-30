@@ -13,7 +13,7 @@ import {
 } from '../../types/chatTypes';
 import { io, Socket } from 'socket.io-client';
 import convoAPI from '../helper/apiHandlers/convoApi';
-const socket: Socket = io(import.meta.env.VITE_ServerPort);
+
 const ChatContext = createContext<ChatContextInterface>(
   defaultChatContextState
 );
@@ -22,28 +22,39 @@ type ChatProviderProps = {
   children: ReactNode;
 };
 export const ChatProvider = ({ children }: ChatProviderProps) => {
+  const socket: Socket = io(import.meta.env.VITE_ServerPort);
   const [messages, setMessages] = useState<Message[]>([]);
   const [room, setRoom] = useState('');
   const [messageReceived, setMessageReceived] = useState('');
   const [activeConversation, setActiveConversation] = useState('');
-  const sendMessage = (message: Message) => {
+
+  const sendMessage = async (message: Message) => {
     console.log('Sent message: ' + message + ' ' + 'To Room:' + room);
-    socket.emit('send_message', { message, room });
+    try {
+      await convoAPI.addNewMessage(message);
+      socket.emit('send_message', { message, room });
+    } catch (err: any) {
+      console.log(err.message);
+    }
   };
 
   const switchToConversation = async (friendId: string) => {
     if (friendId !== '') {
       //THIS RETURNS THE CONVERSATION ID
       try {
-        const conversation = await convoAPI.verifyConversation(friendId);
-        if (conversation !== '') {
-          socket.emit('join_room', conversation);
-          setRoom(conversation);
-          setMessages([...conversation.messages] || []);
+        const conversation: any = await convoAPI.verifyConversation(friendId);
+        if (conversation.data._id !== '') {
+          const { data } = conversation;
+          const { _id, messages } = data;
+          socket.emit('join_room', _id);
+          setRoom(_id);
+          console.log('Current conversation: ', conversation);
+          setMessages([...messages] || []);
+          console.log(messages);
           // setActiveConversation(conversation);
         }
       } catch (err: any) {
-        console.log(err.message);
+        console.log('Error caught! ', err.message);
       }
     }
   };
@@ -63,11 +74,17 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     setRoom('');
   };
   useEffect(() => {
-    socket.on('receive_message', (data) => {
-      setMessageReceived(data.message);
-      setMessages([...messages, data.message]);
-      console.log(messages);
+    console.log('useEffect triggered socket');
+    socket.on('receive_message', (message: Message) => {
+      console.log('Incoming data: ', message);
     });
+    return () => {
+      console.log('useEffect left socket');
+      socket.off('receive_message', () => {
+        setMessageReceived('');
+        setMessages([]);
+      });
+    };
   }, [socket]);
 
   return (
