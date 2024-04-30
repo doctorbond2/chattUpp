@@ -9,16 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import Conversation from '../models/conversation.model.js';
 export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { userId } = req;
     const { friendId } = req.body;
     try {
         const existingConversation = yield Conversation.findOne({
             participants: { $all: [userId, friendId] },
         }).populate('participants');
-        console.log('conversation? ', existingConversation);
         if (existingConversation) {
             if (existingConversation.messages.length > 0) {
-                console.log('messages: ', existingConversation.messages);
+                console.log('messages: ', (_a = existingConversation.messages) === null || _a === void 0 ? void 0 : _a.length);
                 yield existingConversation.populate({
                     path: 'messages',
                     options: { limit: 50, sort: { createdAt: -1 } },

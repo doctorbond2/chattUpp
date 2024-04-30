@@ -41,6 +41,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   const switchToConversation = async (friendId: string) => {
     if (friendId !== '') {
       //THIS RETURNS THE CONVERSATION ID
+      socket.emit('leave_room', room);
       try {
         const conversation: any = await convoAPI.verifyConversation(friendId);
         if (conversation.data._id !== '') {
@@ -74,16 +75,17 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     setRoom('');
   };
   useEffect(() => {
-    console.log('useEffect triggered socket');
-    socket.on('receive_message', (message: Message) => {
+    const messageHandler = (message: Message) => {
       console.log('Incoming data: ', message);
-      setMessageReceived(message.textContent);
-    });
+      setMessages((prev) => [...prev, message]);
+    };
+    socket.on('receive_message', messageHandler);
     return () => {
       console.log('useEffect left socket');
-      socket.off('receive_message', () => {});
+      socket.off('receive_message', messageHandler);
     };
-  }, [socket]);
+  }, []);
+
   useEffect(() => {
     console.log('Updated messages: ', messages);
   }, [messages]);

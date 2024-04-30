@@ -39,6 +39,10 @@ io.on('connection', (socket) => {
         console.log('Room', data);
         socket.join(data);
     }));
+    socket.on('leave_room', (data) => {
+        console.log('left the room: ', data);
+        socket.leave(data);
+    });
     socket.on('send_message', (data) => {
         console.log('socket on message');
         console.log(data);
