@@ -40,7 +40,7 @@ export function tokenTestTwo(req, res, next) {
         }
     });
 }
-export function verifyTokensMiddleware(req, res, next) {
+export function verifyAccessTokenMiddleware(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         if (!req.headers.authorization) {
             return res.status(401).send('No access');

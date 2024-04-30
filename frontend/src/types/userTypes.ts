@@ -46,7 +46,8 @@ export type ProfileInfo = {
   password: string;
   friends?: [string];
   conversations?: [string];
-} | null;
+  id?: string;
+};
 export const defaultProfileInfo: ProfileInfo = {
   username: 'John',
   createdAt: new Date(),

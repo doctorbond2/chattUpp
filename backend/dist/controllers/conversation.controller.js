@@ -9,10 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import Conversation from '../models/conversation.model.js';
 export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req;
+    const { friendId } = req.body;
     try {
-        const _conversation = new Conversation(req.body);
-        yield _conversation.save();
-        res.status(200).send('Created new conversation');
+        const existingConversation = yield Conversation.findOne({
+            participants: { $all: [userId, friendId] },
+        }).populate('participants');
+        if (existingConversation) {
+            console.log('Sent back existing conversation between: ', existingConversation.participants[0].firstname, existingConversation.participants[1].firstname);
+            return res.status(200).json(existingConversation);
+        }
+        else {
+            const newConversation = new Conversation({
+                participants: [userId, friendId],
+            });
+            yield newConversation.save();
+            console.log('Created a new conversation');
+            return res.status(201).json(newConversation);
+        }
     }
     catch (err) {
         return res.status(500).json({ error: err.message });

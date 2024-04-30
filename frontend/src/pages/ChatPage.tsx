@@ -14,7 +14,7 @@ type Props = {};
 const socket: Socket = io(import.meta.env.VITE_ServerPort);
 const ChatPage: React.FC<Props> = ({}) => {
   const { loggedIn } = useAuth();
-  const { room, joinRoom, switchSocketRoom } = useChat();
+  const { room, joinRoom, switchToConversation } = useChat();
   const navigate = useNavigate();
   const redirectOnNoUser = () => {
     navigate('/login');
@@ -24,14 +24,19 @@ const ChatPage: React.FC<Props> = ({}) => {
   const [friends, setFriends] = useState([]);
   const [profileData, setProfileData] =
     useState<ProfileInfo>(defaultProfileInfo);
-  const [roomInfo, setRoomInfo] = useState({});
 
-  const handleActiveRoom = (target: string) => {
-    if (target !== room) {
-      joinRoom(target);
-      switchSocketRoom();
+  const handleActiveConversation = async (friendId: string) => {
+    console.log('You have targeted friend: ', friendId);
+    if (friendId !== '') {
+      await switchToConversation(friendId);
     }
   };
+  // const handleActiveRoom = async (target: string) => {
+  //   if (target !== room) {
+  //     // joinRoom(target);
+  //     // switchToConversation();
+  //   }
+  // };
   useEffect(() => {
     console.log('Current room: ', room);
   }, [room]);
@@ -71,11 +76,15 @@ const ChatPage: React.FC<Props> = ({}) => {
               <Col>
                 {' '}
                 {friends && (
-                  <ChatFriendList {...{ friends, handleActiveRoom }} />
+                  <ChatFriendList
+                    {...{ friends, handleActiveConversation, profileData }}
+                  />
                 )}
               </Col>
               <Col>
-                {conversations && <ChatConvoList {...{ conversations }} />}
+                {conversations && profileData && (
+                  <ChatConvoList {...{ conversations }} />
+                )}
               </Col>
             </Row>
           </Container>

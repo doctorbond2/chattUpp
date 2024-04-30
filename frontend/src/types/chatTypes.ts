@@ -15,6 +15,7 @@ export interface ChatContextInterface {
   messages: Message[];
   switchSocketRoom: () => void;
   messageReceived: Message | {};
+  switchToConversation: (friendId: string) => Promise<void>;
 }
 export const defaultChatContextState = {
   leaveRoom: () => {},
@@ -24,6 +25,7 @@ export const defaultChatContextState = {
   messages: [],
   switchSocketRoom: () => {},
   messageReceived: {},
+  switchToConversation: async (friendId: string) => {},
 };
 // textContent: {
 //     type: String,

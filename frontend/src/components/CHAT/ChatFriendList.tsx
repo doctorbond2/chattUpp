@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useChat } from '../../utils/hooks/ChatContext';
+import { ProfileInfo } from '../../types/userTypes';
 type Props = {
   friends: any;
-  handleActiveRoom: (target: string) => void;
+  handleActiveConversation: (friendId: string) => Promise<void>;
+  profileData: ProfileInfo;
 };
 
-const ChatFriendList: React.FC<Props> = ({ friends, handleActiveRoom }) => {
+const ChatFriendList: React.FC<Props> = ({
+  friends,
+  handleActiveConversation,
+  profileData,
+}) => {
   return (
     <>
       {friends &&
@@ -13,8 +19,8 @@ const ChatFriendList: React.FC<Props> = ({ friends, handleActiveRoom }) => {
           return (
             <>
               <div
-                onClick={() => {
-                  handleActiveRoom(f._id);
+                onClick={async () => {
+                  await handleActiveConversation(f._id);
                 }}
               >
                 <h2>{f.firstname}</h2>

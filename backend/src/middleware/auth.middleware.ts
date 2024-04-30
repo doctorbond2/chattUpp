@@ -42,7 +42,7 @@ export async function tokenTestTwo(
     return res.send('wrong test 2');
   }
 }
-export async function verifyTokensMiddleware(
+export async function verifyAccessTokenMiddleware(
   req: Request | any,
   res: Response,
   next: NextFunction
