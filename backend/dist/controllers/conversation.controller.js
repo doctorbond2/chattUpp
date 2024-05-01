@@ -24,7 +24,7 @@ export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, 
                     options: { limit: 50, sort: { createdAt: -1 } },
                 });
             }
-            console.log('Sent back existing conversation between: ', existingConversation.participants[0].firstname, existingConversation.participants[1].firstname);
+            console.log('Sent back existing conversation between: ', existingConversation.participants[0].firstname, ' and ', existingConversation.participants[1].firstname);
             return res.status(200).json(existingConversation);
         }
         else {

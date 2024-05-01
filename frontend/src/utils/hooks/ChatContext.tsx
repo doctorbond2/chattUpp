@@ -12,8 +12,10 @@ import {
   defaultChatContextState,
 } from '../../types/chatTypes';
 import { io, Socket } from 'socket.io-client';
+const socket: Socket = io(import.meta.env.VITE_ServerPort);
 import convoAPI from '../helper/apiHandlers/convoApi';
 import { Conversation } from '../../types/chatTypes';
+
 const ChatContext = createContext<ChatContextInterface>(
   defaultChatContextState
 );
@@ -22,7 +24,16 @@ type ChatProviderProps = {
   children: ReactNode;
 };
 export const ChatProvider = ({ children }: ChatProviderProps) => {
-  const socket: Socket = io(import.meta.env.VITE_ServerPort);
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Socket connected 1');
+    });
+    return () => {
+      socket.on('connect', () => {
+        console.log('Socket connected 2');
+      });
+    };
+  }, []);
   const [messages, setMessages] = useState<Message[]>([]);
   const [room, setRoom] = useState('');
   const [messageReceived, setMessageReceived] = useState('');
@@ -34,8 +45,8 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   const sendMessage = async (message: Message) => {
     console.log('Sent message: ' + message + ' ' + 'To Room:' + room);
     try {
-      await convoAPI.addNewMessage(message);
       socket.emit('send_message', { message, room });
+      await convoAPI.addNewMessage(message);
     } catch (err: any) {
       console.log(err.message);
     }
@@ -47,58 +58,55 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     }
   };
   const switchToConversation = async (friendId: string) => {
-    if (friendId !== '') {
-      //THIS RETURNS THE CONVERSATION ID
-      leaveRoom(room);
-      try {
-        const conversation: any = await convoAPI.verifyConversation(friendId);
-        if (conversation.data._id !== '') {
-          console.log(conversation);
-          const { data } = conversation;
-          const { _id, messages } = data;
-          socket.emit('join_room', _id);
-          setMessages([...messages].reverse());
-          setRoom(_id);
-          setActiveConversation(conversation.data);
-          const sender = returnSender(
-            conversation.data?.participants,
-            friendId
-          );
-          console.log('SENDER: ', sender, 'FRIEND: ', friendId);
-          setSender(sender);
-          console.log('Current conversation: ', conversation.data);
-        }
-      } catch (err: any) {
-        console.log('Error caught! ', err.message);
+    if (room.length > 0) {
+      leaveRoom();
+      console.log('Left the current room');
+    }
+    try {
+      const conversation: any = await convoAPI.verifyConversation(friendId);
+      if (conversation) {
+        const { data } = conversation;
+        const { _id, messages } = data;
+        await joinRoom(_id);
+        setMessages([...messages].reverse());
+        setActiveConversation(conversation.data);
+        const sender = returnSender(conversation.data?.participants, friendId);
+        setSender(sender);
       }
+    } catch (err: any) {
+      console.log('Error caught! ', err.message);
     }
   };
-  const joinRoom = async (conversation: string) => {
-    // if (conversation !== '') {
-    //   socket.emit('leave_room', conversation);
-    //   setRoom(conversation);
-    // }
-    // setRoom('');
+  const joinRoom = async (conversationId: string) => {
+    socket.emit('join_room', conversationId);
+    socket.on('receive_message', messageHandler);
+    console.log('Added messageHandler');
+    setRoom(conversationId);
   };
-
-  const leaveRoom = (conversation: string) => {
-    if (conversation !== '') {
-      socket.emit('leave_room', conversation);
-      setRoom(conversation);
+  const onMount = () => {
+    console.log('onMount');
+    console.log('current messages: ', messages);
+    socket.on('receive_message', messageHandler);
+  };
+  const offMount = () => {
+    console.log('offMount');
+    socket.off('receive_message', messageHandler);
+  };
+  const messageHandler = (message: Message) => {
+    console.log('Incoming data: ', message);
+    socket.off('receive_message', messageHandler);
+    setMessages((prev) => [...prev, message]);
+  };
+  const leaveRoom = async () => {
+    if (room !== '') {
+      try {
+        socket.emit('leave_room', room);
+      } catch (err: any) {
+        throw err;
+      }
     }
     setRoom('');
   };
-  useEffect(() => {
-    const messageHandler = (message: Message) => {
-      console.log('Incoming data: ', message);
-      setMessages((prev) => [...prev, message]);
-    };
-    socket.on('receive_message', messageHandler);
-    return () => {
-      console.log('useEffect left socket');
-      socket.off('receive_message', messageHandler);
-    };
-  }, []);
 
   useEffect(() => {
     console.log('Updated messages: ', messages);
@@ -113,6 +121,9 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
         leaveRoom,
         messageReceived,
         switchToConversation,
+        messageHandler,
+        onMount,
+        offMount,
       }}
     >
       {children}

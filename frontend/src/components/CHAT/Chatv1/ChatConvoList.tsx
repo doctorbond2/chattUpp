@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ChatConvoListItem from './ChatConvoListItem';
-import { Conversation } from '../../types/chatTypes';
+import { Conversation } from '../../../types/chatTypes';
 type Props = {
   conversations: Conversation[];
 };
@@ -17,7 +17,7 @@ const ChatConvoList: React.FC<Props> = ({ conversations }) => {
   return (
     <>
       {conversations.map((convo: Conversation, i) => {
-        return <ChatConvoListItem {...{ convo }} />;
+        return <ChatConvoListItem key={'c-' + i} {...{ convo }} />;
       })}
     </>
   );

@@ -5,7 +5,6 @@ export async function addNewMessageToConversationController(
   req: Request | any,
   res: Response
 ) {
-  console.log('HELLO FROM THE MESSAGE CONTROLLER!');
   const { userId } = req;
   const { receivedBy, textContent } = req.body;
   console.log(userId, receivedBy, textContent);

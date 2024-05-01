@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { Server } from 'socket.io';
 import http from 'http';
 import app from './app.js';
@@ -33,19 +24,47 @@ const io = new Server(server, {
         ],
     },
 });
+// io.on('connection', (socket) => {
+//   console.log('connected: ', socket.id);
+//   socket.on('send_message', (data) => {
+//     console.log('correct', data);
+//     socket.emit('receive_message', data);
+//     socket.broadcast.emit('receive_message', data);
+//   });
+// });
 io.on('connection', (socket) => {
     console.log('User Connected: ' + socket.id);
-    socket.on('join_room', (data) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('Room', data);
+    socket.on('join_room', (data) => {
+        console.log('joined', data);
+        if (data === '6630952f52a7c7e21b4abd1d') {
+            console.log('User joined  room: ', data);
+        }
+        else if (data === '662eaa9d7151ec85f1660d13') {
+            console.log('User joined room: ', data);
+        }
         socket.join(data);
-    }));
-    socket.on('leave_room', (data) => {
-        console.log('left the room: ', data);
-        socket.leave(data);
     });
-    socket.on('send_message', (data) => __awaiter(void 0, void 0, void 0, function* () {
+    socket.on('leave_room', (data) => {
+        try {
+            if (!data) {
+                throw new Error('Room name is required.');
+            }
+            socket.leave(data);
+            if (data === '6630952f52a7c7e21b4abd1d') {
+                console.log('User left the room: 1', data);
+            }
+            else if (data === '662eaa9d7151ec85f1660d13') {
+                console.log('User left the room: 2', data);
+            }
+        }
+        catch (error) {
+            console.error('Error leaving room:', error.message);
+        }
+    });
+    socket.on('send_message', (data) => {
+        console.log('Incoming from room: ', data.room);
         socket.to(data.room).emit('receive_message', data.message);
-        console.log('socket sent to: ', data.room);
-    }));
+        socket.emit('receive_message', data.message);
+    });
 });
 export default server;

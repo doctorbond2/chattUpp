@@ -14,10 +14,9 @@ class ConvoAPIKit {
   }
   async addNewMessage(message: any) {
     try {
-      console.log(VITE_message_route_CREATE);
       const response = await user.post(VITE_message_route_CREATE, message);
       if (response) {
-        console.log('You got a response from the api:', response);
+        // console.log('You got a response from the api:', response);
         return response.data._id;
       }
     } catch (err: any) {

@@ -1,11 +1,13 @@
 export interface Conversation {
   participants: string[];
   messages: string[];
+  _id?: string;
 }
 export interface Message {
   textContent: string;
   sentBy?: string;
   receivedBy?: string;
+  conversation?: string;
 }
 export interface ChatContextInterface {
   leaveRoom: (conversation: string) => void;
@@ -15,6 +17,9 @@ export interface ChatContextInterface {
   messages: Message[];
   messageReceived: string;
   switchToConversation: (friendId: string) => Promise<void>;
+  messageHandler: (message: Message) => void;
+  onMount: () => void;
+  offMount: () => void;
 }
 export const defaultChatContextState = {
   leaveRoom: (conversation: string) => {},
@@ -24,6 +29,9 @@ export const defaultChatContextState = {
   messages: [],
   messageReceived: '',
   switchToConversation: async (friendId: string) => {},
+  messageHandler: () => {},
+  onMount: () => {},
+  offMount: () => {},
 };
 // textContent: {
 //     type: String,

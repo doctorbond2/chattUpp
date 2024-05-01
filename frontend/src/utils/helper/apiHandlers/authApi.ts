@@ -13,7 +13,6 @@ class AuthAPIKit {
   async loginRequest(data: LoginStateType) {
     try {
       const response = await client.post(VITE_auth_route_LOGIN, data);
-      console.log(response);
       return response.data;
     } catch (err: any) {
       throw err;
@@ -30,13 +29,13 @@ class AuthAPIKit {
   async refreshToken() {
     const tokens = localStorageKit.getTokensFromStorage();
     const refreshToken = tokens?.refresh;
-    console.log('REFRESHTOKEN', refreshToken);
+    // console.log('REFRESHTOKEN', refreshToken);
     try {
       const response = await client.post(VITE_auth_route_REFRESH_TOKEN, {
         refresh: refreshToken,
       });
       if (response) {
-        console.log('Set new tokens LOOK HERE');
+        // console.log('Set new tokens LOOK HERE');
         localStorageKit.setTokensInStorage(response.data);
       }
     } catch (err: any) {

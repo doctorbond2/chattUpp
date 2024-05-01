@@ -11,7 +11,7 @@ const TestAndTry: React.FC = ({}) => {
   const [currentRoom, setCurrentRoom] = useState(room || 'Join a room!');
   const sendMessage = () => {
     console.log('Sent message: ' + message + ' ' + 'To Room:' + room);
-    socket.emit('send_message', { message, room });
+    socket.emit('send_message', { message: 'hello' });
   };
   const joinRoom = () => {
     if (room !== '') {
@@ -30,6 +30,7 @@ const TestAndTry: React.FC = ({}) => {
   };
   useEffect(() => {
     socket.on('receive_message', (data) => {
+      alert('message');
       setMessageReceived(data.message);
     });
   }, [socket]);
@@ -48,7 +49,7 @@ const TestAndTry: React.FC = ({}) => {
         </select>
         <button onClick={joinRoom}>Join Room</button>
         <h2>Message:</h2>
-        {messageReceived}
+        {messageReceived ? messageReceived : 'asd'}
       </div>
       <Container>
         <Row>

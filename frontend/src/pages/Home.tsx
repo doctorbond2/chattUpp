@@ -10,12 +10,10 @@ const Home: React.FC<Props> = ({}) => {
   const { loggedIn } = useAuth();
   const [test, setTest] = useState<any>(null);
   const BaseUrl = import.meta.env.VITE_BaseUrl;
-  console.log('BASE', BaseUrl);
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await GET_request('/user/list');
-        console.log('RESPONSE', response[2].firstname);
         if (response) {
           setTest(response[2].firstname);
         } else {

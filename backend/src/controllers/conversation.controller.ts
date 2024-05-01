@@ -22,6 +22,7 @@ export const createNewConvoController = async (
       console.log(
         'Sent back existing conversation between: ',
         existingConversation.participants[0].firstname,
+        ' and ',
         existingConversation.participants[1].firstname
       );
       return res.status(200).json(existingConversation);

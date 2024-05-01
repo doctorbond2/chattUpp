@@ -15,21 +15,19 @@ function App() {
   return (
     <>
       <AuthProvider>
-        <ChatProvider>
-          {
-            <Routes>
-              <Route element={<NavBar />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route path="/admin" element={<AdminPage />} />
-                <Route path="/chat" element={<ChatPage />} />
-                <Route path="test" element={<TestAndTry />} />
-              </Route>
-            </Routes>
-          }
-        </ChatProvider>
+        {
+          <Routes>
+            <Route element={<NavBar />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/chat" element={<ChatPage />} />
+              {/* <Route path="test" element={<TestAndTry />} /> */}
+            </Route>
+          </Routes>
+        }
       </AuthProvider>
     </>
   );

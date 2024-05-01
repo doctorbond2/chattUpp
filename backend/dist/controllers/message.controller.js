@@ -11,7 +11,6 @@ import Conversation from '../models/conversation.model.js';
 import Message from '../models/message.model.js';
 export function addNewMessageToConversationController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log('HELLO FROM THE MESSAGE CONTROLLER!');
         const { userId } = req;
         const { receivedBy, textContent } = req.body;
         console.log(userId, receivedBy, textContent);
