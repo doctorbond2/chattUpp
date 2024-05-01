@@ -8,6 +8,7 @@ export interface Message {
   sentBy?: string;
   receivedBy?: string;
   conversation?: string;
+  date?: Date | string;
 }
 export interface ChatContextInterface {
   leaveRoom: (conversation: string) => void;

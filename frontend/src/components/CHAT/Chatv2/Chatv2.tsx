@@ -39,7 +39,7 @@ const Chatv2: React.FC<Props> = ({
     messages: [],
     _id: '',
   });
-  const [activeFriendId, setActiveFriendId] = useState('');
+  const [activeFriendId, setActiveFriendId] = useState<string>('');
   //FUNCTIONS
   const sendMessage = async (message: Message) => {
     console.log('Sent message: ' + message + ' ' + 'To Room:' + room);
@@ -68,15 +68,42 @@ const Chatv2: React.FC<Props> = ({
       if (conversation) {
         const { data } = conversation;
         const { _id, messages } = data;
-        console.log('MEESSAAGEGESS: ', messages);
+        console.log('MEESSAAGEGESS: ', data);
         await joinRoom(_id);
-        setMessages([...messages].reverse());
         setActiveConversation(conversation.data);
         const sender = returnSender(conversation.data?.participants, friendId);
         setSender(sender);
+        if (messages && messages.length > 0) {
+          const parsedMessages: Message[] = parseLatestMessages(messages);
+          setMessages(parsedMessages);
+        }
       }
     } catch (err: any) {
       console.log('Error caught! ', err.message);
+    }
+  };
+  const parseLatestMessages = (messages: Message[]): any => {
+    const c: any[] = activeConversation.participants;
+    console.log('asd', c[0]);
+    const parsedMessages = messages
+      .map((m, i) => {
+        let parsedMessage: Message = { ...m };
+
+        if (sender === c[0]) {
+          m.sentBy = c[0].firstname;
+          m.receivedBy = c[1].firstname;
+        } else {
+          m.sentBy = c[1].firstname;
+          m.receivedBy = c[0].firstname;
+        }
+        return parsedMessage;
+      })
+      .reverse();
+    if (parsedMessages) {
+      return parsedMessages;
+    } else {
+      console.log('error');
+      return;
     }
   };
   const handleActiveConversation = async (friendId: string) => {
@@ -127,7 +154,7 @@ const Chatv2: React.FC<Props> = ({
             <Row>
               <Col>
                 <h1>Room: {room}</h1>
-                {activeFriendId && (
+                {activeFriendId && messages && (
                   <ChatBox
                     {...{
                       profileData,

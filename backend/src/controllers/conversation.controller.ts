@@ -10,7 +10,7 @@ export const createNewConvoController = async (
   try {
     const existingConversation: any = await Conversation.findOne({
       participants: { $all: [userId, friendId] },
-    }).populate('participants', { password: 0 });
+    }).populate('participants', { username: 1, firstname: 1, lastname: 1 });
     if (existingConversation) {
       if (existingConversation.messages.length > 0) {
         console.log('messages: ', existingConversation.messages?.length);

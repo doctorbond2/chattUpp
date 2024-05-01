@@ -15,7 +15,7 @@ export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, 
     try {
         const existingConversation = yield Conversation.findOne({
             participants: { $all: [userId, friendId] },
-        }).populate('participants', { password: 0 });
+        }).populate('participants', { username: 1, firstname: 1, lastname: 1 });
         if (existingConversation) {
             if (existingConversation.messages.length > 0) {
                 console.log('messages: ', (_a = existingConversation.messages) === null || _a === void 0 ? void 0 : _a.length);

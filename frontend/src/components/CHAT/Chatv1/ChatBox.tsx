@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { ProfileInfo } from '../../../types/userTypes';
 import { io, Socket } from 'socket.io-client';
 import { Message } from '../../../types/chatTypes';
+import ChatMessage from './ChatMessage';
+
 type Props = {
   profileData: ProfileInfo;
   messages: Message[];
@@ -20,6 +22,12 @@ const ChatBox: React.FC<Props> = ({
   room,
   socket,
 }) => {
+  const chatWindow: any = useRef(null);
+  const scrollToBottom = () => {
+    if (chatWindow.current) {
+      chatWindow.current.scrollTop = chatWindow.current.scrollHeight;
+    }
+  };
   console.log('Chatbox messages: ', messages);
   useEffect(() => {
     console.log('trying to mount');
@@ -28,7 +36,9 @@ const ChatBox: React.FC<Props> = ({
       offMount();
     };
   }, [socket]);
-
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
   return (
     <>
       <Container>
@@ -37,12 +47,14 @@ const ChatBox: React.FC<Props> = ({
             xs={8}
             className={'border rounded'}
             style={{ height: '40vh', overflow: 'auto' }}
+            ref={chatWindow}
           >
             <>
               {' '}
-              {messages.reverse() &&
-                messages.reverse().map((message: any, i: number) => {
-                  return <p key={'messagea194' + i}>{message.textContent}</p>;
+              {profileData &&
+                messages &&
+                messages.map((message: any, i: number) => {
+                  return <ChatMessage {...{ message, profileData }} />;
                 })}
             </>
           </Col>
