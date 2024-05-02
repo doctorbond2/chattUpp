@@ -1,5 +1,6 @@
+import { ProfileInfo } from './userTypes';
 export interface Conversation {
-  participants: string[];
+  participants: ProfileInfo[];
   messages: string[];
   _id?: string;
 }

@@ -54,7 +54,7 @@ const ChatBox: React.FC<Props> = ({
               {profileData &&
                 messages &&
                 messages.map((message: any, i: number) => {
-                  return <ChatMessage {...{ message, profileData }} />;
+                  return <ChatMessage key={i} {...{ message, profileData }} />;
                 })}
             </>
           </Col>

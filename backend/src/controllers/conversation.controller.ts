@@ -39,3 +39,23 @@ export const createNewConvoController = async (
     return res.status(500).json({ error: err.message });
   }
 };
+export const getConversations = async (req: Request | any, res: Response) => {
+  console.log('hi');
+  const { userId } = req;
+  try {
+    const _conversations = await Conversation.find({
+      participants: userId,
+    }).populate('participants', {
+      firstname: 1,
+      lastname: 1,
+      avatar: 1,
+      username: 1,
+    });
+    if (_conversations) {
+      return res.status(200).json(_conversations);
+    }
+  } catch (err: any) {
+    console.log(err);
+    return res.status(500).json({ error: err.message });
+  }
+};

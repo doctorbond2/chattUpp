@@ -3,13 +3,18 @@ import { ENV } from '../config/serverKeys.js';
 const router = express.Router();
 import Conversation from '../models/conversation.model.js';
 import { verifyAccessTokenMiddleware } from '../middleware/auth.middleware.js';
-import { createNewConvoController } from '../controllers/conversation.controller.js';
-const { conv_route_CREATE } = process.env as unknown as ENV;
+import {
+  createNewConvoController,
+  getConversations,
+} from '../controllers/conversation.controller.js';
+const { conv_route_CREATE, conv_route_GET_LIST } =
+  process.env as unknown as ENV;
 router.post(
   conv_route_CREATE,
   verifyAccessTokenMiddleware,
   createNewConvoController
 );
+router.get(conv_route_GET_LIST, verifyAccessTokenMiddleware, getConversations);
 router.put('/update', async (req, res) => {
   console.log('hi');
   try {

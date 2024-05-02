@@ -41,3 +41,24 @@ export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, 
         return res.status(500).json({ error: err.message });
     }
 });
+export const getConversations = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('hi');
+    const { userId } = req;
+    try {
+        const _conversations = yield Conversation.find({
+            participants: userId,
+        }).populate('participants', {
+            firstname: 1,
+            lastname: 1,
+            avatar: 1,
+            username: 1,
+        });
+        if (_conversations) {
+            return res.status(200).json(_conversations);
+        }
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json({ error: err.message });
+    }
+});

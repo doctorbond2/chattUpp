@@ -19,7 +19,7 @@ const ChatFriendList: React.FC<Props> = ({
             <button
               key={'f-1a' + i}
               onClick={async () => {
-                await handleActiveConversation(f._id);
+                handleActiveConversation(f._id);
               }}
             >
               <h2>{f.firstname}</h2>

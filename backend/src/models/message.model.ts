@@ -37,5 +37,6 @@ messageSchema.pre('save', async function () {
     throw err;
   }
 });
+
 const Message = model('Message', messageSchema);
 export default Message;

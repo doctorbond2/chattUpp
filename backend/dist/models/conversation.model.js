@@ -13,6 +13,10 @@ const conversationSchema = new Schema({
         default: [],
         index: true,
     },
+    active: {
+        type: Boolean,
+        required: true,
+    },
 }, { timestamps: true });
 const Conversation = model('Conversation', conversationSchema);
 export default Conversation;

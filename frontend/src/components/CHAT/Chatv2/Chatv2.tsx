@@ -6,11 +6,13 @@ import convoAPI from '../../../utils/helper/apiHandlers/convoApi';
 
 import { Conversation } from '../../../types/chatTypes';
 import { ProfileInfo } from '../../../types/userTypes';
+import chatParserw from '../../../utils/helper/parseKit';
 import ChatInput from '../Chatv1/ChatInput';
 import { useAuth } from '../../../utils/hooks/AuthContext';
 import ChatBox from '../Chatv1/ChatBox';
 import ChatConvoList from '../Chatv1/ChatConvoList';
 import ChatFriendList from '../Chatv1/ChatFriendList';
+import chatParser from '../../../utils/helper/parseKit';
 type Props = {
   profileData: ProfileInfo;
   friends: any;
@@ -65,45 +67,26 @@ const Chatv2: React.FC<Props> = ({
     }
     try {
       const conversation: any = await convoAPI.verifyConversation(friendId);
-      if (conversation) {
+      if (conversation.data) {
         const { data } = conversation;
-        const { _id, messages } = data;
+        const { _id, messages, participants } = data;
         console.log('MEESSAAGEGESS: ', data);
         await joinRoom(_id);
         setActiveConversation(conversation.data);
-        const sender = returnSender(conversation.data?.participants, friendId);
+        const sender = returnSender(participants, friendId);
         setSender(sender);
-        if (messages && messages.length > 0) {
-          const parsedMessages: Message[] = parseLatestMessages(messages);
+        if (messages && messages.length > 0 && participants && friendId) {
+          const parsedMessages: Message[] = chatParser.parseChatMessages(
+            messages,
+            participants,
+            friendId
+          );
+          console.log('PARSED MESSAGES: ', parsedMessages);
           setMessages(parsedMessages);
         }
       }
     } catch (err: any) {
       console.log('Error caught! ', err.message);
-    }
-  };
-  const parseLatestMessages = (messages: Message[]): any => {
-    const c: any[] = activeConversation.participants;
-    console.log('asd', c[0]);
-    const parsedMessages = messages
-      .map((m, i) => {
-        let parsedMessage: Message = { ...m };
-
-        if (sender === c[0]) {
-          m.sentBy = c[0].firstname;
-          m.receivedBy = c[1].firstname;
-        } else {
-          m.sentBy = c[1].firstname;
-          m.receivedBy = c[0].firstname;
-        }
-        return parsedMessage;
-      })
-      .reverse();
-    if (parsedMessages) {
-      return parsedMessages;
-    } else {
-      console.log('error');
-      return;
     }
   };
   const handleActiveConversation = async (friendId: string) => {
@@ -131,7 +114,16 @@ const Chatv2: React.FC<Props> = ({
   };
   const handleMessage = (message: any) => {
     console.log('Incoming data: ', message);
-    setMessages((prev) => [...prev, message]);
+    if (activeFriendId && activeConversation.participants && message) {
+      const parsedMessage: Message = chatParser.parseOneMessage(
+        message,
+        activeConversation.participants,
+        activeFriendId
+      );
+      setMessages((prev) => [...prev, parsedMessage]);
+    } else {
+      console.log('Something went wrong with updating chat.');
+    }
   };
   const onMount = () => {
     socket.on('receive_message', handleMessage);
@@ -154,7 +146,7 @@ const Chatv2: React.FC<Props> = ({
             <Row>
               <Col>
                 <h1>Room: {room}</h1>
-                {activeFriendId && messages && (
+                {activeFriendId && messages && activeConversation && (
                   <ChatBox
                     {...{
                       profileData,
@@ -178,11 +170,7 @@ const Chatv2: React.FC<Props> = ({
                   />
                 )}
               </Col>
-              <Col>
-                {conversations && profileData && (
-                  <ChatConvoList {...{ conversations }} />
-                )}
-              </Col>
+              <Col>{conversations && profileData && <ChatConvoList />}</Col>
             </Row>
           </Container>
         </>
