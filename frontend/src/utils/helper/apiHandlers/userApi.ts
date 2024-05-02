@@ -9,6 +9,8 @@ const {
   VITE_auth_route_REFRESH_TOKEN,
   VITE_user_route_PROFILE_DETAILS,
   VITE_conv_route_GET_LIST,
+  VITE_user_route_ADD_FRIEND,
+  VITE_user_route_DELETE_FRIEND,
 } = import.meta.env;
 class UserAPIKit {
   constructor() {}

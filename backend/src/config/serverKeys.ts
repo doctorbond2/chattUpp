@@ -12,4 +12,5 @@ export interface ENV {
   conv_route_CREATE: string;
   conv_route_GET_LIST: string;
   message_route_CREATE: string;
+  user_route_DELETE_FRIEND: string;
 }

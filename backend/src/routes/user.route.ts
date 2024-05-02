@@ -19,6 +19,7 @@ const {
   user_route_UPDATE_ONE_ID,
   user_route_PROFILE_DETAILS,
   user_route_ADD_FRIEND,
+  user_route_DELETE_FRIEND,
 } = process.env as unknown as ENV;
 router.post(user_route_CREATE, createUser);
 router.get(user_route_ID_PROFILE, vKey, getUserProfile);
