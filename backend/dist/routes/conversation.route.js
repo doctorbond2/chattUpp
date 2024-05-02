@@ -10,11 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import express from 'express';
 const router = express.Router();
 import Conversation from '../models/conversation.model.js';
-import { verifyAccessTokenMiddleware } from '../middleware/auth.middleware.js';
+import { verifyAccessTokenMiddleware, VerifyKeyMiddleware as vKey, } from '../middleware/auth.middleware.js';
 import { createNewConvoController, getConversations, } from '../controllers/conversation.controller.js';
 const { conv_route_CREATE, conv_route_GET_LIST } = process.env;
 router.post(conv_route_CREATE, verifyAccessTokenMiddleware, createNewConvoController);
-router.get(conv_route_GET_LIST, verifyAccessTokenMiddleware, getConversations);
+router.get(conv_route_GET_LIST, vKey, verifyAccessTokenMiddleware, getConversations);
 router.put('/update', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('hi');
     try {

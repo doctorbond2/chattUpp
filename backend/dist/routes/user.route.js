@@ -1,11 +1,12 @@
 import express from 'express';
 const router = express.Router();
 import { createUser, getUserProfile, getUserList, updateUserController, detailedUserController, } from '../controllers/user.controller.js';
-import { verifyAccessTokenMiddleware } from '../middleware/auth.middleware.js';
-const { user_route_CREATE, user_route_ID_PROFILE, user_route_LIST, user_route_UPDATE_ONE_ID, user_route_PROFILE_DETAILS, } = process.env;
+import { verifyAccessTokenMiddleware, VerifyKeyMiddleware as vKey, } from '../middleware/auth.middleware.js';
+const { user_route_CREATE, user_route_ID_PROFILE, user_route_LIST, user_route_UPDATE_ONE_ID, user_route_PROFILE_DETAILS, user_route_ADD_FRIEND, } = process.env;
 router.post(user_route_CREATE, createUser);
-router.get(user_route_ID_PROFILE, getUserProfile);
-router.get(user_route_PROFILE_DETAILS, verifyAccessTokenMiddleware, detailedUserController);
-router.get(user_route_LIST, getUserList);
-router.put(user_route_UPDATE_ONE_ID, updateUserController);
+router.get(user_route_ID_PROFILE, vKey, getUserProfile);
+router.get(user_route_PROFILE_DETAILS, vKey, verifyAccessTokenMiddleware, detailedUserController);
+router.post(user_route_ADD_FRIEND);
+router.get(user_route_LIST, vKey, getUserList);
+router.put(user_route_UPDATE_ONE_ID, vKey, updateUserController);
 export default router;

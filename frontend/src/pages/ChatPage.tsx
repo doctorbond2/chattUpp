@@ -7,13 +7,12 @@ import { io, Socket } from 'socket.io-client';
 import Chatv2 from '../components/CHAT/Chatv2/Chatv2';
 type Props = {};
 const ChatPage: React.FC<Props> = ({}) => {
-  const { loggedIn } = useAuth();
+  const { loggedIn, profileData } = useAuth();
   const navigate = useNavigate();
   const redirectOnNoUser = () => {
     navigate('/login');
   };
-  const [profileData, setProfileData] =
-    useState<ProfileInfo>(defaultProfileInfo);
+
   const [friends, setFriends] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [socket, setSocket] = useState<any>(null);
@@ -48,7 +47,6 @@ const ChatPage: React.FC<Props> = ({}) => {
       try {
         const response = await UserAPI.getUserDetails();
         if (response) {
-          setProfileData(response.data);
           setConversations(response.data.conversations);
           setFriends(response.data.friends);
         }
@@ -61,7 +59,7 @@ const ChatPage: React.FC<Props> = ({}) => {
   }, [loggedIn]);
   return (
     <>
-      {profileData && loggedIn.access && socket && (
+      {profileData && loggedIn.access && socket && conversations && (
         <Chatv2 {...{ profileData, friends, conversations, socket }} />
       )}
     </>

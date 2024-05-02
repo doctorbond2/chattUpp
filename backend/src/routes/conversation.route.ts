@@ -2,7 +2,10 @@ import express from 'express';
 import { ENV } from '../config/serverKeys.js';
 const router = express.Router();
 import Conversation from '../models/conversation.model.js';
-import { verifyAccessTokenMiddleware } from '../middleware/auth.middleware.js';
+import {
+  verifyAccessTokenMiddleware,
+  VerifyKeyMiddleware as vKey,
+} from '../middleware/auth.middleware.js';
 import {
   createNewConvoController,
   getConversations,
@@ -14,7 +17,12 @@ router.post(
   verifyAccessTokenMiddleware,
   createNewConvoController
 );
-router.get(conv_route_GET_LIST, verifyAccessTokenMiddleware, getConversations);
+router.get(
+  conv_route_GET_LIST,
+  vKey,
+  verifyAccessTokenMiddleware,
+  getConversations
+);
 router.put('/update', async (req, res) => {
   console.log('hi');
   try {

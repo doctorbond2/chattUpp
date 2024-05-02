@@ -85,6 +85,69 @@ export const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, fu
         });
     }
 });
+export const addFriendController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.body) {
+        return res.status(404).json({ message: 'Friend not found' });
+    }
+    const { userId } = req;
+    try {
+        const _friend = yield User.findById(req.body);
+        const _you = yield User.findById(userId);
+        if (_friend && _you) {
+            const hisFriends = _friend.friends;
+            const yourFriends = _you.friends;
+            if (!hisFriends.includes(_you._id) &&
+                !yourFriends.includes(_friend._id)) {
+                _friend.friends.push(userId);
+                _you.friends.push(_friend._id);
+                _friend.save();
+                _you.save();
+                return res
+                    .status(200)
+                    .json({ message: 'Added friend: ' + _friend.firstname });
+            }
+        }
+        else {
+            return res.status(404).json({ message: 'Neither found' });
+        }
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+export const removeFriendController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.params.id) {
+        return res.status(404).json({ error: 'No id provided' });
+    }
+    const { userId } = req;
+    try {
+        const _friend = yield User.findById(req.body);
+        const _you = yield User.findById(userId);
+        if (_friend && _you) {
+            const hisFriends = _friend.friends;
+            const yourFriends = _you.friends;
+            if (hisFriends.includes(_you._id) && yourFriends.includes(_friend._id)) {
+                const friendIndex = yourFriends.findIndex((f) => _friend._id === f._id);
+                const yourIndex = hisFriends.findIndex((f) => _you._id === f._id);
+                if (yourIndex !== -1 && friendIndex !== -1) {
+                    _friend.friends.splice(yourIndex, 1);
+                    _you.friends.splice(friendIndex, 1);
+                    _friend.save();
+                    _you.save();
+                    return res
+                        .status(204)
+                        .json({ message: 'Removed friend: ' + _friend.firstname });
+                }
+            }
+        }
+        else {
+            return res.status(404).json({ message: 'Neither found' });
+        }
+    }
+    catch (err) {
+        return res.status(500).json({ error: err.message });
+    }
+});
 export const detailedUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const _user = yield User.findById(req.userId)

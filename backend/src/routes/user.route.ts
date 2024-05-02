@@ -7,7 +7,10 @@ import {
   updateUserController,
   detailedUserController,
 } from '../controllers/user.controller.js';
-import { verifyAccessTokenMiddleware } from '../middleware/auth.middleware.js';
+import {
+  verifyAccessTokenMiddleware,
+  VerifyKeyMiddleware as vKey,
+} from '../middleware/auth.middleware.js';
 import { ENV } from '../config/serverKeys.js';
 const {
   user_route_CREATE,
@@ -15,14 +18,17 @@ const {
   user_route_LIST,
   user_route_UPDATE_ONE_ID,
   user_route_PROFILE_DETAILS,
+  user_route_ADD_FRIEND,
 } = process.env as unknown as ENV;
 router.post(user_route_CREATE, createUser);
-router.get(user_route_ID_PROFILE, getUserProfile);
+router.get(user_route_ID_PROFILE, vKey, getUserProfile);
 router.get(
   user_route_PROFILE_DETAILS,
+  vKey,
   verifyAccessTokenMiddleware,
   detailedUserController
 );
-router.get(user_route_LIST, getUserList);
-router.put(user_route_UPDATE_ONE_ID, updateUserController);
+router.post(user_route_ADD_FRIEND);
+router.get(user_route_LIST, vKey, getUserList);
+router.put(user_route_UPDATE_ONE_ID, vKey, updateUserController);
 export default router;

@@ -33,6 +33,7 @@ class ParseKit {
   ) {
     const c: any[] = participants;
     console.log('asd', c[0]?.firstname);
+    console.log('ASD', c[1]?.firstname);
     let parsedMessage: Message = { ...message };
     if (friendId !== c[0]) {
       parsedMessage.sentBy = c[0].firstname;

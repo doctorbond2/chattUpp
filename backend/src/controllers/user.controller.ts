@@ -76,6 +76,67 @@ export const getUserProfile = async (req: Request, res: Response) => {
     });
   }
 };
+export const addFriendController = async (req: any, res: Response) => {
+  if (!req.body) {
+    return res.status(404).json({ message: 'Friend not found' });
+  }
+  const { userId } = req;
+  try {
+    const _friend = await User.findById(req.body);
+    const _you = await User.findById(userId);
+    if (_friend && _you) {
+      const hisFriends = _friend.friends;
+      const yourFriends = _you.friends;
+      if (
+        !hisFriends.includes(_you._id) &&
+        !yourFriends.includes(_friend._id)
+      ) {
+        _friend.friends.push(userId);
+        _you.friends.push(_friend._id);
+        _friend.save();
+        _you.save();
+        return res
+          .status(200)
+          .json({ message: 'Added friend: ' + _friend.firstname });
+      }
+    } else {
+      return res.status(404).json({ message: 'Neither found' });
+    }
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+};
+export const removeFriendController = async (req: any, res: Response) => {
+  if (!req.params.id) {
+    return res.status(404).json({ error: 'No id provided' });
+  }
+  const { userId } = req;
+  try {
+    const _friend = await User.findById(req.body);
+    const _you = await User.findById(userId);
+    if (_friend && _you) {
+      const hisFriends = _friend.friends;
+      const yourFriends = _you.friends;
+      if (hisFriends.includes(_you._id) && yourFriends.includes(_friend._id)) {
+        const friendIndex = yourFriends.findIndex((f) => _friend._id === f._id);
+        const yourIndex = hisFriends.findIndex((f) => _you._id === f._id);
+        if (yourIndex !== -1 && friendIndex !== -1) {
+          _friend.friends.splice(yourIndex, 1);
+          _you.friends.splice(friendIndex, 1);
+          _friend.save();
+          _you.save();
+          return res
+            .status(204)
+            .json({ message: 'Removed friend: ' + _friend.firstname });
+        }
+      }
+    } else {
+      return res.status(404).json({ message: 'Neither found' });
+    }
+  } catch (err: any) {
+    return res.status(500).json({ error: err.message });
+  }
+};
 export const detailedUserController = async (req: any, res: Response) => {
   try {
     const _user = await User.findById(req.userId)

@@ -44,7 +44,6 @@ const Chatv2: React.FC<Props> = ({
   const [activeFriendId, setActiveFriendId] = useState<string>('');
   //FUNCTIONS
   const sendMessage = async (message: Message) => {
-    console.log('Sent message: ' + message + ' ' + 'To Room:' + room);
     try {
       const newChatMessage: Message = {
         ...message,
@@ -63,14 +62,12 @@ const Chatv2: React.FC<Props> = ({
   const switchToConversation = async (friendId: string) => {
     if (room.length > 0) {
       leaveRoom();
-      console.log('Left the current room');
     }
     try {
       const conversation: any = await convoAPI.verifyConversation(friendId);
       if (conversation.data) {
         const { data } = conversation;
         const { _id, messages, participants } = data;
-        console.log('MEESSAAGEGESS: ', data);
         await joinRoom(_id);
         setActiveConversation(conversation.data);
         const sender = returnSender(participants, friendId);
@@ -170,7 +167,7 @@ const Chatv2: React.FC<Props> = ({
                   />
                 )}
               </Col>
-              <Col>{conversations && profileData && <ChatConvoList />}</Col>
+              <Col>{profileData && <ChatConvoList {...{ profileData }} />}</Col>
             </Row>
           </Container>
         </>

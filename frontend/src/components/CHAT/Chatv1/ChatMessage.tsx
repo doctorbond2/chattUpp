@@ -8,7 +8,6 @@ type Props = {
 };
 
 const ChatMessage: React.FC<Props> = ({ message, profileData }) => {
-  console.log(message);
   return (
     <>
       <Card>

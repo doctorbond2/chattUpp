@@ -24,6 +24,7 @@ export const client = axios.create({
   timeout: 6000,
   headers: {
     'Content-Type': 'application/json',
+    'x-client-key': admin_request_key,
   },
 });
 client.interceptors.response.use(
@@ -53,6 +54,7 @@ export const user = axios.create({
   timeout: 6000,
   headers: {
     'Content-Type': 'application/json',
+    'x-client-key': admin_request_key,
   },
 });
 user.interceptors.request.use(
@@ -86,6 +88,7 @@ user.interceptors.response.use(
           return;
         } catch (err) {
           error = err;
+          return;
         }
       } else {
         return Promise.reject(error);

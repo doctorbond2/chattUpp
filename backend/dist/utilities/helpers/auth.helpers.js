@@ -7,7 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
+const admin_key_from_server = process.env.ADMIN_API_KEY;
 export const hashPassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
     const salt = 10;
     const hashedPassword = yield bcrypt.hash(password, salt);
@@ -17,15 +18,15 @@ export function compare_password(unhashed_input_password, hashed_document_passwo
     return __awaiter(this, void 0, void 0, function* () {
         const INPUT_PASSWORD = unhashed_input_password;
         const CORRECT_PASSWORD = hashed_document_password;
-        console.log("comparing passwords...");
+        console.log('comparing passwords...');
         if (!INPUT_PASSWORD || !CORRECT_PASSWORD) {
-            console.log("Error: provide password details.");
+            console.log('Error: provide password details.');
             return;
         }
         try {
             const passwordMatch = yield bcrypt.compare(INPUT_PASSWORD, CORRECT_PASSWORD);
             if (passwordMatch) {
-                console.log("Password match!");
+                console.log('Password match!');
                 return true;
             }
             else {
@@ -37,4 +38,8 @@ export function compare_password(unhashed_input_password, hashed_document_passwo
             console.log(err);
         }
     });
+}
+export function compare_api_keys(admin_key_from_client) {
+    console.log(admin_key_from_client, admin_key_from_server);
+    return admin_key_from_client === admin_key_from_server ? true : false;
 }

@@ -16,15 +16,17 @@ const ChatFriendList: React.FC<Props> = ({
       {friends &&
         friends.map((f: any, i: number) => {
           return (
-            <button
-              key={'f-1a' + i}
-              onClick={async () => {
-                handleActiveConversation(f._id);
-              }}
-            >
-              <h2>{f.firstname}</h2>
-              <h3>{f._id}</h3>
-            </button>
+            <>
+              <button
+                key={'f-1a' + i}
+                onClick={async () => {
+                  handleActiveConversation(f._id);
+                }}
+              >
+                <h2>{f.firstname}</h2>
+              </button>
+              <br></br>
+            </>
           );
         })}
     </>

@@ -47,6 +47,7 @@ export type ProfileInfo = {
   friends?: [string];
   conversations?: [string];
   id?: string;
+  _id: string;
 };
 export const defaultProfileInfo: ProfileInfo = {
   username: 'John',
@@ -58,4 +59,5 @@ export const defaultProfileInfo: ProfileInfo = {
   role: 'standard',
   avatar: '',
   password: '',
+  _id: '',
 };

@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import jwt from 'jsonwebtoken';
 import { generateAccessToken, verifyAccessToken, } from '../utilities/helpers/token.helpers.js';
+import { compare_api_keys, } from '../utilities/helpers/auth.helpers.js';
 const secret_key = String(process.env.JWT_ACCESS_SECRET);
 const refresh_secret = String(process.env.JWT_REFRESH_SECRET);
 export function tokenTestOne(req, res, next) {
@@ -55,6 +56,29 @@ export function verifyAccessTokenMiddleware(req, res, next) {
         }
         catch (err) {
             return res.status(401).json({ error: err });
+        }
+    });
+}
+export function VerifyKeyMiddleware(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        console.log('JABABA');
+        const key = req.headers['x-client-key'];
+        console.log(key);
+        try {
+            if (compare_api_keys(key)) {
+                console.log('Good!');
+                next();
+            }
+            else {
+                return res
+                    .status(401)
+                    .send('Bloop bloop what u tryna do bloop bloop bloop');
+            }
+        }
+        catch (err) {
+            return res
+                .status(401)
+                .send('Bloop bloop what u tryna do bloop bloop bloop');
         }
     });
 }
