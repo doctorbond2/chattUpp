@@ -81,9 +81,10 @@ export const addFriendController = async (req: any, res: Response) => {
     return res.status(404).json({ message: 'Friend not found' });
   }
   const { userId } = req;
+  const { friendId } = req.body;
   try {
-    const _friend = await User.findById(req.body);
-    const _you = await User.findById(userId);
+    const _friend = await User.findById({ _id: friendId });
+    const _you = await User.findById({ _id: userId });
     if (_friend && _you) {
       const hisFriends = _friend.friends;
       const yourFriends = _you.friends;
@@ -93,8 +94,8 @@ export const addFriendController = async (req: any, res: Response) => {
       ) {
         _friend.friends.push(userId);
         _you.friends.push(_friend._id);
-        _friend.save();
-        _you.save();
+        await _friend.save();
+        await _you.save();
         return res
           .status(200)
           .json({ message: 'Added friend: ' + _friend.firstname });
@@ -103,28 +104,42 @@ export const addFriendController = async (req: any, res: Response) => {
       return res.status(404).json({ message: 'Neither found' });
     }
   } catch (err: any) {
+    console.log(err.message);
     res.status(500).json({ error: err.message });
   }
 };
 export const removeFriendController = async (req: any, res: Response) => {
-  if (!req.params.id) {
-    return res.status(404).json({ error: 'No id provided' });
-  }
   const { userId } = req;
+  const { friendId } = req.body;
+  console.log('asd');
   try {
-    const _friend = await User.findById(req.body);
-    const _you = await User.findById(userId);
+    const _friend = await User.findById({ _id: friendId });
+    const _you = await User.findById({ _id: userId });
+
     if (_friend && _you) {
       const hisFriends = _friend.friends;
       const yourFriends = _you.friends;
+
       if (hisFriends.includes(_you._id) && yourFriends.includes(_friend._id)) {
-        const friendIndex = yourFriends.findIndex((f) => _friend._id === f._id);
-        const yourIndex = hisFriends.findIndex((f) => _you._id === f._id);
+        hisFriends.forEach((f) => {
+          console.log(f);
+          console.log(_you._id);
+        });
+        const friendIndex = yourFriends.findIndex(
+          (f) => _friend._id.toString() === f.toString()
+        );
+        const yourIndex = hisFriends.findIndex(
+          (f) => _you._id.toString() === f.toString()
+        );
+
+        console.log(friendIndex);
+        console.log(yourIndex);
         if (yourIndex !== -1 && friendIndex !== -1) {
+          console.log('test 2');
           _friend.friends.splice(yourIndex, 1);
           _you.friends.splice(friendIndex, 1);
-          _friend.save();
-          _you.save();
+          await _friend.save();
+          await _you.save();
           return res
             .status(204)
             .json({ message: 'Removed friend: ' + _friend.firstname });
@@ -134,6 +149,7 @@ export const removeFriendController = async (req: any, res: Response) => {
       return res.status(404).json({ message: 'Neither found' });
     }
   } catch (err: any) {
+    console.log(err.message);
     return res.status(500).json({ error: err.message });
   }
 };
@@ -151,6 +167,7 @@ export const detailedUserController = async (req: any, res: Response) => {
   }
 };
 export const getUserList = async (req: Request, res: Response) => {
+  console.log('You try here');
   let page: number = parseInt(req.query.page as string) || 1;
   let pageSize: number = parseInt(req.query.pageSize as string) || 10;
   let pageSkip = page - 1;

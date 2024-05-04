@@ -10,11 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import express from 'express';
 const router = express.Router();
 import Conversation from '../models/conversation.model.js';
-import { verifyAccessTokenMiddleware, VerifyKeyMiddleware as vKey, } from '../middleware/auth.middleware.js';
-import { createNewConvoController, getConversations, } from '../controllers/conversation.controller.js';
-const { conv_route_CREATE, conv_route_GET_LIST } = process.env;
-router.post(conv_route_CREATE, verifyAccessTokenMiddleware, createNewConvoController);
-router.get(conv_route_GET_LIST, vKey, verifyAccessTokenMiddleware, getConversations);
+import { verifyAccessTokenMiddleware as vToken, VerifyKeyMiddleware as vKey, } from '../middleware/auth.middleware.js';
+import { createNewConvoController, getConversations, deactivateConversation, } from '../controllers/conversation.controller.js';
+const { conv_route_CREATE, conv_route_GET_LIST, conv_route_DEACTIVATE } = process.env;
+router.post(conv_route_CREATE, vKey, vToken, createNewConvoController);
+router.get(conv_route_GET_LIST, vKey, vToken, getConversations);
 router.put('/update', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('hi');
     try {
@@ -25,4 +25,5 @@ router.put('/update', (req, res) => __awaiter(void 0, void 0, void 0, function* 
         return res.status(500).json('error');
     }
 }));
+router.put(conv_route_DEACTIVATE, vKey, vToken, deactivateConversation);
 export default router;

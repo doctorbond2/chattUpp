@@ -90,9 +90,10 @@ export const addFriendController = (req, res) => __awaiter(void 0, void 0, void 
         return res.status(404).json({ message: 'Friend not found' });
     }
     const { userId } = req;
+    const { friendId } = req.body;
     try {
-        const _friend = yield User.findById(req.body);
-        const _you = yield User.findById(userId);
+        const _friend = yield User.findById({ _id: friendId });
+        const _you = yield User.findById({ _id: userId });
         if (_friend && _you) {
             const hisFriends = _friend.friends;
             const yourFriends = _you.friends;
@@ -100,8 +101,8 @@ export const addFriendController = (req, res) => __awaiter(void 0, void 0, void 
                 !yourFriends.includes(_friend._id)) {
                 _friend.friends.push(userId);
                 _you.friends.push(_friend._id);
-                _friend.save();
-                _you.save();
+                yield _friend.save();
+                yield _you.save();
                 return res
                     .status(200)
                     .json({ message: 'Added friend: ' + _friend.firstname });
@@ -112,28 +113,35 @@ export const addFriendController = (req, res) => __awaiter(void 0, void 0, void 
         }
     }
     catch (err) {
+        console.log(err.message);
         res.status(500).json({ error: err.message });
     }
 });
 export const removeFriendController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.params.id) {
-        return res.status(404).json({ error: 'No id provided' });
-    }
     const { userId } = req;
+    const { friendId } = req.body;
+    console.log('asd');
     try {
-        const _friend = yield User.findById(req.body);
-        const _you = yield User.findById(userId);
+        const _friend = yield User.findById({ _id: friendId });
+        const _you = yield User.findById({ _id: userId });
         if (_friend && _you) {
             const hisFriends = _friend.friends;
             const yourFriends = _you.friends;
             if (hisFriends.includes(_you._id) && yourFriends.includes(_friend._id)) {
-                const friendIndex = yourFriends.findIndex((f) => _friend._id === f._id);
-                const yourIndex = hisFriends.findIndex((f) => _you._id === f._id);
+                hisFriends.forEach((f) => {
+                    console.log(f);
+                    console.log(_you._id);
+                });
+                const friendIndex = yourFriends.findIndex((f) => _friend._id.toString() === f.toString());
+                const yourIndex = hisFriends.findIndex((f) => _you._id.toString() === f.toString());
+                console.log(friendIndex);
+                console.log(yourIndex);
                 if (yourIndex !== -1 && friendIndex !== -1) {
+                    console.log('test 2');
                     _friend.friends.splice(yourIndex, 1);
                     _you.friends.splice(friendIndex, 1);
-                    _friend.save();
-                    _you.save();
+                    yield _friend.save();
+                    yield _you.save();
                     return res
                         .status(204)
                         .json({ message: 'Removed friend: ' + _friend.firstname });
@@ -145,6 +153,7 @@ export const removeFriendController = (req, res) => __awaiter(void 0, void 0, vo
         }
     }
     catch (err) {
+        console.log(err.message);
         return res.status(500).json({ error: err.message });
     }
 });
@@ -163,6 +172,7 @@ export const detailedUserController = (req, res) => __awaiter(void 0, void 0, vo
     }
 });
 export const getUserList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('You try here');
     let page = parseInt(req.query.page) || 1;
     let pageSize = parseInt(req.query.pageSize) || 10;
     let pageSkip = page - 1;

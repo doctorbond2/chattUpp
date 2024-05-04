@@ -1,4 +1,4 @@
-import { user } from '../../axiosInstanceConfig';
+import { user, client } from '../../axiosInstanceConfig';
 import localStorageKit from '../localstorageKit';
 
 const {
@@ -42,6 +42,40 @@ class UserAPIKit {
       console.log(response.data);
       return response;
     } catch (err: any) {
+      throw err;
+    }
+  }
+  async addNewFriend(friendId: string) {
+    if (friendId) {
+      try {
+        const response = await user.post(VITE_user_route_ADD_FRIEND, {
+          friendId,
+        });
+        return response;
+      } catch (err) {
+        throw err;
+      }
+    }
+  }
+  async removeFriend(friendId: string) {
+    if (friendId) {
+      try {
+        const response = await user.post(VITE_user_route_DELETE_FRIEND, {
+          friendId,
+        });
+        return response;
+      } catch (err) {
+        throw err;
+      }
+    }
+  }
+  async getUserList() {
+    try {
+      const response = await client.get(VITE_user_route_LIST);
+      if (response) {
+        return response;
+      }
+    } catch (err) {
       throw err;
     }
   }

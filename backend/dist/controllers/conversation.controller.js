@@ -30,10 +30,31 @@ export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, 
         else {
             const newConversation = new Conversation({
                 participants: [userId, friendId],
+                active: true,
             });
             yield newConversation.save();
             console.log('Created a new conversation');
             return res.status(201).json(newConversation);
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(500).json({ error: err.message });
+    }
+});
+export const updateConvo = () => { };
+export const deactivateConversation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req;
+    const { friendId } = req.body;
+    try {
+        const existingConversation = yield Conversation.findOne({
+            participants: { $all: [userId, friendId] },
+        }).populate('participants', { username: 1, firstname: 1, lastname: 1 });
+        if (existingConversation) {
+            existingConversation.active = false;
+            console.log('Deactivating conversation between: ', existingConversation.participants[0].firstname, ' and ', existingConversation.participants[1].firstname);
+            yield existingConversation.save();
+            return res.status(200).json(existingConversation);
         }
     }
     catch (err) {

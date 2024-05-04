@@ -38,7 +38,7 @@ client.interceptors.response.use(
   },
   (error) => {
     const status = error.response ? error.response.status : null;
-    const errorMessage = error.response.data.error;
+    const errorMessage = error.response.data;
     if (status === 401) {
       console.log('INTERCEPTOR ERROR:', status, errorMessage);
     } else if (status === 404) {

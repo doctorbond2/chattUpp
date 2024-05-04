@@ -44,8 +44,8 @@ export type ProfileInfo = {
   role: string;
   avatar: string;
   password: string;
-  friends?: [string];
-  conversations?: [string];
+  friends?: string[];
+  conversations?: string[];
   id?: string;
   _id: string;
 };
