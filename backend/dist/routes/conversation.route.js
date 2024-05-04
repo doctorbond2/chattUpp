@@ -11,19 +11,20 @@ import express from 'express';
 const router = express.Router();
 import Conversation from '../models/conversation.model.js';
 import { verifyAccessTokenMiddleware as vToken, VerifyKeyMiddleware as vKey, } from '../middleware/auth.middleware.js';
-import { createNewConvoController, getConversations, deactivateConversation, } from '../controllers/conversation.controller.js';
-const { conv_route_CREATE, conv_route_GET_LIST, conv_route_DEACTIVATE } = process.env;
+import { createNewConvoController, getConversations, deactivateConversation, activateConversation, deleteConversation, } from '../controllers/conversation.controller.js';
+const { conv_route_CREATE, conv_route_GET_LIST, conv_route_DEACTIVATE, conv_route_ACTIVATE, } = process.env;
 router.post(conv_route_CREATE, vKey, vToken, createNewConvoController);
 router.get(conv_route_GET_LIST, vKey, vToken, getConversations);
-router.put('/update', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put('/update/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log('hi');
     try {
-        const result = yield Conversation.findByIdAndUpdate('662eaa9d7151ec85f1660d13', req.body);
-        console.log(result);
+        const result = yield Conversation.findByIdAndUpdate(req.params.id, req.body);
     }
     catch (err) {
         return res.status(500).json('error');
     }
 }));
+router.delete('/delete/delete/:id', deleteConversation);
 router.put(conv_route_DEACTIVATE, vKey, vToken, deactivateConversation);
+router.put(conv_route_ACTIVATE, vKey, vToken, activateConversation);
 export default router;

@@ -15,6 +15,7 @@ export interface ENV {
   conv_route_CREATE: string;
   conv_route_GET_LIST: string;
   conv_route_DEACTIVATE: string;
+  conv_route_ACTIVATE: string;
 
   message_route_CREATE: string;
 }

@@ -1,6 +1,6 @@
 import { user, client } from '../../axiosInstanceConfig';
 import localStorageKit from '../localstorageKit';
-
+import convoAPI from './convoApi';
 const {
   VITE_user_route_CREATE,
   VITE_user_route_ID_PROFILE,
@@ -15,10 +15,8 @@ const {
 class UserAPIKit {
   constructor() {}
   async getUserInfo() {
-    console.log(VITE_user_route_PROFILE_DETAILS);
     try {
       const response = await user.get(VITE_user_route_PROFILE_DETAILS);
-      console.log(response.data);
       return response;
     } catch (err: any) {
       console.error(err.message);
@@ -28,7 +26,6 @@ class UserAPIKit {
   async getUserDetails() {
     try {
       const response = await user.get(VITE_user_route_PROFILE_DETAILS);
-      console.log(response.data);
       return response;
     } catch (err: any) {
       throw err;
@@ -37,9 +34,6 @@ class UserAPIKit {
   async getUserConversations() {
     try {
       const response = await user.get(VITE_conv_route_GET_LIST);
-      console.log('CHECK HERE');
-      console.log(VITE_conv_route_GET_LIST);
-      console.log(response.data);
       return response;
     } catch (err: any) {
       throw err;
@@ -51,6 +45,10 @@ class UserAPIKit {
         const response = await user.post(VITE_user_route_ADD_FRIEND, {
           friendId,
         });
+        if (response) {
+          await convoAPI.activateConvoWithFriend(friendId);
+          return response;
+        }
         return response;
       } catch (err) {
         throw err;
@@ -63,7 +61,10 @@ class UserAPIKit {
         const response = await user.post(VITE_user_route_DELETE_FRIEND, {
           friendId,
         });
-        return response;
+        if (response) {
+          await convoAPI.deactiveConvoWithFriend(friendId);
+          return response;
+        }
       } catch (err) {
         throw err;
       }

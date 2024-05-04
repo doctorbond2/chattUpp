@@ -3,6 +3,7 @@ import { checkIfFriend } from '../../../utils/hooks/generalHooks';
 import { Card } from 'react-bootstrap';
 import { ProfileInfo } from '../../../types/userTypes';
 import UserAPI from '../../../utils/helper/apiHandlers/userApi';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   profileData: ProfileInfo;
@@ -15,6 +16,7 @@ const ChatterWindow: React.FC<Props> = ({
   user,
   refreshChatterList,
 }) => {
+  const navigate = useNavigate();
   const friendChecker = (friendId: string) => {
     if (profileData.friends) {
       const yourFriends: any[] = profileData.friends;

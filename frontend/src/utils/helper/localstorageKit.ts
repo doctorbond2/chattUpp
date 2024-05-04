@@ -36,6 +36,24 @@ class LocalStorageKit {
     delete client.defaults.headers.common['Authorization'];
     delete admin.defaults.headers.common['Admin-Authorization'];
   }
+  notificationStorage(conversationId: any) {
+    const toStore = JSON.stringify(conversationId);
+    let currentStorage: any =
+      localStorage.getItem('notifications_list') || '[]';
+    let toUpdate = JSON.parse(currentStorage);
+    if (!toUpdate.includes(toStore)) {
+      toUpdate.push(toStore);
+    }
+    localStorage.setItem('notifications_list', JSON.stringify(toUpdate));
+  }
+  removeNotification(conversationId: any) {
+    let currentStorage: any =
+      localStorage.getItem('notifications_list') || '[]';
+    let toUpdate: any[] = JSON.parse(currentStorage);
+    const index = toUpdate.findIndex((x) => x === conversationId);
+    toUpdate.splice(index, 1);
+    localStorage.setItem('notifications_list', JSON.stringify(toUpdate));
+  }
 }
 
 const localStorageKit = new LocalStorageKit();

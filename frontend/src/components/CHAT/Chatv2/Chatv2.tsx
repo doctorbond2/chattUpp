@@ -36,6 +36,8 @@ const Chatv2: React.FC<Props> = ({
   const [room, setRoom] = useState('');
   const [messageReceived, setMessageReceived] = useState('');
   const [sender, setSender] = useState<any>();
+  const [activeChat, setActiveChat] = useState(false);
+  const [userInChat, setUserInChat] = useState(false);
   const [activeConversation, setActiveConversation] = useState<Conversation>({
     participants: [],
     messages: [],
@@ -43,6 +45,9 @@ const Chatv2: React.FC<Props> = ({
   });
   const [activeFriendId, setActiveFriendId] = useState<string>('');
   //FUNCTIONS
+  socket.on('disconnect', () => {
+    console.log('Disconnected from server');
+  });
   const sendMessage = async (message: Message) => {
     try {
       const newChatMessage: Message = {
@@ -56,9 +61,7 @@ const Chatv2: React.FC<Props> = ({
       console.log(err.message);
     }
   };
-  socket.on('disconnect', () => {
-    console.log('Disconnected from server');
-  });
+
   const switchToConversation = async (friendId: string) => {
     if (room.length > 0) {
       leaveRoom();
@@ -72,7 +75,7 @@ const Chatv2: React.FC<Props> = ({
         setActiveConversation(conversation.data);
         const sender = returnSender(participants, friendId);
         setSender(sender);
-        if (messages && messages.length > 0 && participants && friendId) {
+        if (messages && messages.length >= 0 && participants && friendId) {
           const parsedMessages: Message[] = chatParser.parseChatMessages(
             messages,
             participants,
@@ -101,19 +104,23 @@ const Chatv2: React.FC<Props> = ({
   const joinRoom = async (conversationId: string) => {
     socket.emit('join_room', conversationId);
     console.log('Joined Room: ', conversationId);
+    console.log(socket);
     setRoom(conversationId);
+    setUserInChat(true);
   };
   const leaveRoom = () => {
     if (room !== '') {
       socket.emit('leave_room', room);
+      console.log(socket);
       setRoom('');
+      setUserInChat(false);
     }
   };
-  const handleMessage = (message: any) => {
-    console.log('Incoming data: ', message);
-    if (activeFriendId && activeConversation.participants && message) {
+  const handleMessage = (data: any) => {
+    console.log('Incoming data: ', data);
+    if (activeFriendId && activeConversation.participants && data.message) {
       const parsedMessage: Message = chatParser.parseOneMessage(
-        message,
+        data.message,
         activeConversation.participants,
         activeFriendId
       );
@@ -128,10 +135,14 @@ const Chatv2: React.FC<Props> = ({
   const offMount = () => {
     socket.off('receive_message', handleMessage);
   };
+
   useEffect(() => {
     console.log('Current room: ', room);
     return () => {
       console.log('Current room: ', room);
+      if (activeChat && room !== '') {
+        leaveRoom();
+      }
     };
   }, []);
 
@@ -167,7 +178,18 @@ const Chatv2: React.FC<Props> = ({
                   />
                 )}
               </Col>
-              <Col>{profileData && <ChatConvoList {...{ profileData }} />}</Col>
+              <Col>
+                {profileData && (
+                  <ChatConvoList
+                    {...{
+                      profileData,
+                      socket,
+                      handleActiveConversation,
+                      activeChat,
+                    }}
+                  />
+                )}
+              </Col>
             </Row>
           </Container>
         </>

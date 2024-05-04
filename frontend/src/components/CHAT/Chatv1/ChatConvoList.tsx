@@ -3,18 +3,29 @@ import ChatConvoListItem from './ChatConvoListItem';
 import { Conversation } from '../../../types/chatTypes';
 import UserAPI from '../../../utils/helper/apiHandlers/userApi';
 import { ProfileInfo } from '../../../types/userTypes';
-type Props = { profileData: ProfileInfo };
+import localStorageKit from '../../../utils/helper/localstorageKit';
+type Props = {
+  profileData: ProfileInfo;
+  socket: any;
+  handleActiveConversation: (friendId: string) => Promise<void>;
+  activeChat: boolean;
+};
 const formattedTimestamp = (timestamp: string) => {
   const date = new Date(timestamp);
   return date.toLocaleString();
 };
 console.log(formattedTimestamp('2024-04-28T19:59:25.446Z'));
-const ChatConvoList: React.FC<Props> = ({ profileData }) => {
+const ChatConvoList: React.FC<Props> = ({
+  profileData,
+  socket,
+  handleActiveConversation,
+  activeChat,
+}) => {
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [filteredConvos, setFilteredConvos] = useState<Conversation[]>([]);
+  const [filterQuery, setFilterQuery] = useState<string>('');
   const [partakers, setPartakers] = useState<ProfileInfo[]>([]);
   useEffect(() => {
-    console.log('USED EFFECT!');
     const getConversationList = async () => {
       try {
         const response = await UserAPI.getUserConversations();
@@ -29,25 +40,106 @@ const ChatConvoList: React.FC<Props> = ({ profileData }) => {
     };
     getConversationList();
   }, [profileData]);
+
   const handleFilter = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase();
+    setFilterQuery(e.target.value.toLowerCase());
     console.log(query);
     const filter = conversationList.filter((c) =>
       c.participants[1].firstname.toLowerCase().includes(query)
     );
     setFilteredConvos(filter);
   };
+  // const updateFilterAtNotification = () => {
+  //   console.log('CONVERSATIONLIST ', conversationList);
+  //   setFilteredConvos(conversationList);
+  // };
+  // useEffect(() => {
+  //   updateFilterAtNotification();
+  // }, [conversationList]);
   useEffect(() => {
     console.log(filteredConvos);
   }, [filteredConvos]);
+
+  useEffect(() => {
+    mountNotificationSocket();
+    return () => {
+      unMountNotificationSocket();
+    };
+  }, [socket]);
+  const handleNotification = (data: any) => {
+    if (data.room) {
+      setConversationList((prevConversationList) => {
+        const updatedConvoList = prevConversationList.map((c) => {
+          if (data.room === c._id) {
+            console.log(c._id);
+            return { ...c, hasNewMessage: true };
+          }
+          return c;
+        });
+        return updatedConvoList;
+      });
+
+      setFilteredConvos((prevFilteredConvos) => {
+        const updatedFilteredConvos = prevFilteredConvos.map((c) => {
+          if (data.room === c._id) {
+            localStorageKit.notificationStorage(c._id);
+            return { ...c, hasNewMessage: true };
+          }
+          return c;
+        });
+        return updatedFilteredConvos;
+      });
+    }
+  };
+  const mountNotificationSocket = () => {
+    socket.on('notification_message', handleNotification);
+  };
+  const unMountNotificationSocket = () => {
+    socket.off('notification_message', handleNotification);
+  };
+  const resetNotification = (conversationId: string) => {
+    setConversationList((prevConversationList) => {
+      const updatedConvoList = prevConversationList.map((c) => {
+        if (conversationId === c._id) {
+          console.log(c._id);
+          return { ...c, hasNewMessage: false };
+        }
+        return c;
+      });
+      return updatedConvoList;
+    });
+    setFilteredConvos((prevFilteredConvos) => {
+      const updatedFilteredConvos = prevFilteredConvos.map((c) => {
+        if (conversationId === c._id) {
+          localStorageKit.removeNotification(c._id);
+          return { ...c, hasNewMessage: false };
+        }
+        return c;
+      });
+      return updatedFilteredConvos;
+    });
+  };
   return (
     <>
-      <label htmlFor="searchConvos-input">Search conversations</label>
+      gdfbhd <label htmlFor="searchConvos-input">Search conversations</label>
       <input id={'searchConvos-input"'} onChange={handleFilter} />
-      <div>
+      <div style={{ overflow: 'auto' }}>
         {filteredConvos &&
+          profileData &&
           filteredConvos.map((convo: Conversation, i) => {
-            return <ChatConvoListItem key={'c-' + i} {...{ convo }} />;
+            return (
+              <ChatConvoListItem
+                key={'c-' + i}
+                {...{
+                  convo,
+                  handleActiveConversation,
+                  profileData,
+                  socket,
+                  resetNotification,
+                }}
+              />
+            );
           })}
       </div>
     </>

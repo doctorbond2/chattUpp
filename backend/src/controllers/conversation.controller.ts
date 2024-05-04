@@ -1,6 +1,6 @@
 import Conversation from '../models/conversation.model.js';
 import { Response, Request } from 'express';
-
+import Message from '../models/message.model.js';
 export const createNewConvoController = async (
   req: Request | any,
   res: Response
@@ -40,7 +40,32 @@ export const createNewConvoController = async (
     return res.status(500).json({ error: err.message });
   }
 };
-export const updateConvo = () => {};
+export const activateConversation = async (
+  req: Request | any,
+  res: Response
+) => {
+  const { userId } = req;
+  const { friendId } = req.body;
+  try {
+    const existingConversation: any = await Conversation.findOne({
+      participants: { $all: [userId, friendId] },
+    });
+    if (existingConversation) {
+      existingConversation.active = true;
+      console.log(
+        'Activating conversation between: ',
+        existingConversation.participants[0].firstname,
+        ' and ',
+        existingConversation.participants[1].firstname
+      );
+      await existingConversation.save();
+      return res.status(200).json(existingConversation);
+    }
+  } catch (err: any) {
+    console.log(err.message);
+    return res.status(500).json({ error: err.message });
+  }
+};
 export const deactivateConversation = async (
   req: Request | any,
   res: Response
@@ -71,19 +96,57 @@ export const getConversations = async (req: Request | any, res: Response) => {
   console.log('hi');
   const { userId } = req;
   try {
-    const _conversations = await Conversation.find({
+    let conversationsResponse = [];
+    const active_conversations = await Conversation.find({
       participants: userId,
-    }).populate('participants', {
-      firstname: 1,
-      lastname: 1,
-      avatar: 1,
-      username: 1,
-    });
-    if (_conversations) {
-      return res.status(200).json(_conversations);
+      active: true,
+    })
+      .populate('participants', {
+        firstname: 1,
+        lastname: 1,
+        avatar: 1,
+        username: 1,
+        updatedAt: 1,
+      })
+      .sort({ updatedAt: 1 });
+    const nonActive_conversations =
+      (await Conversation.find({
+        participants: userId,
+        active: false,
+      })
+        .populate('participants', {
+          firstname: 1,
+          lastname: 1,
+          avatar: 1,
+          username: 1,
+          updatedAt: 1,
+        })
+        .sort({ updatedAt: 1 })) || [];
+
+    if (active_conversations.length > 0 || nonActive_conversations.length > 0) {
+      conversationsResponse = [
+        ...active_conversations,
+        ...nonActive_conversations,
+      ];
+      return res.status(200).json(conversationsResponse);
     }
   } catch (err: any) {
     console.log(err);
     return res.status(500).json({ error: err.message });
+  }
+};
+export const deleteConversation = async (req: Request | any, res: Response) => {
+  if (!req.params.id) {
+    res.status(404).send('no id');
+  }
+  const { id } = req.params;
+  try {
+    await Message.deleteMany({ conversation: id });
+    await Conversation.deleteOne({ _id: id });
+    console.log('Deleted');
+    res.status(204).send('');
+  } catch (err: any) {
+    console.log(err.message);
+    return res.status(500).json('');
   }
 };

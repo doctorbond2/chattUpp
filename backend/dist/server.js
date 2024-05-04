@@ -36,12 +36,6 @@ io.on('connection', (socket) => {
     console.log('User Connected: ' + socket.id);
     socket.on('join_room', (data) => {
         console.log('joined', data);
-        if (data === '6630952f52a7c7e21b4abd1d') {
-            console.log('User joined  room: ', data);
-        }
-        else if (data === '662eaa9d7151ec85f1660d13') {
-            console.log('User joined room: ', data);
-        }
         socket.join(data);
     });
     socket.on('leave_room', (data) => {
@@ -50,12 +44,6 @@ io.on('connection', (socket) => {
                 throw new Error('Room name is required.');
             }
             socket.leave(data);
-            if (data === '6630952f52a7c7e21b4abd1d') {
-                console.log('User left the room: 1', data);
-            }
-            else if (data === '662eaa9d7151ec85f1660d13') {
-                console.log('User left the room: 2', data);
-            }
         }
         catch (error) {
             console.error('Error leaving room:', error.message);
@@ -64,7 +52,8 @@ io.on('connection', (socket) => {
     socket.on('send_message', (data) => {
         console.log('Incoming from room: ', data.room);
         socket.to(data.room).emit('receive_message', data.message);
-        socket.emit('receive_message', data.message);
+        socket.emit('receive_message', data);
+        socket.broadcast.emit('notification_message', data);
     });
 });
 export default server;

@@ -3,6 +3,8 @@ export interface Conversation {
   participants: ProfileInfo[];
   messages: string[];
   _id?: string;
+  active?: boolean;
+  hasNewMessage?: boolean;
 }
 export interface Message {
   textContent: string;

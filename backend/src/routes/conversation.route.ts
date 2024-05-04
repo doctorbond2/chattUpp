@@ -10,22 +10,29 @@ import {
   createNewConvoController,
   getConversations,
   deactivateConversation,
+  activateConversation,
+  deleteConversation,
 } from '../controllers/conversation.controller.js';
-const { conv_route_CREATE, conv_route_GET_LIST, conv_route_DEACTIVATE } =
-  process.env as unknown as ENV;
+const {
+  conv_route_CREATE,
+  conv_route_GET_LIST,
+  conv_route_DEACTIVATE,
+  conv_route_ACTIVATE,
+} = process.env as unknown as ENV;
 router.post(conv_route_CREATE, vKey, vToken, createNewConvoController);
 router.get(conv_route_GET_LIST, vKey, vToken, getConversations);
-router.put('/update', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
   console.log('hi');
   try {
     const result = await Conversation.findByIdAndUpdate(
-      '662eaa9d7151ec85f1660d13',
+      req.params.id,
       req.body
     );
-    console.log(result);
   } catch (err) {
     return res.status(500).json('error');
   }
 });
+router.delete('/delete/delete/:id', deleteConversation);
 router.put(conv_route_DEACTIVATE, vKey, vToken, deactivateConversation);
+router.put(conv_route_ACTIVATE, vKey, vToken, activateConversation);
 export default router;

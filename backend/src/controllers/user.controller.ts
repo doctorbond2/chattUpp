@@ -3,6 +3,7 @@ import { Response, Request } from 'express';
 import { error_MESSAGE } from '../utilities/helpers/database.helper.js';
 import jwt from 'jsonwebtoken';
 import { verifyAccessToken } from '../utilities/helpers/token.helpers.js';
+import Conversation from '../models/conversation.model.js';
 export const createUser = async (req: Request, res: Response) => {
   if (!req.body) {
     return res.status(400).json({

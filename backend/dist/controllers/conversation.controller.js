@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import Conversation from '../models/conversation.model.js';
+import Message from '../models/message.model.js';
 export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const { userId } = req;
@@ -42,7 +43,25 @@ export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, 
         return res.status(500).json({ error: err.message });
     }
 });
-export const updateConvo = () => { };
+export const activateConversation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req;
+    const { friendId } = req.body;
+    try {
+        const existingConversation = yield Conversation.findOne({
+            participants: { $all: [userId, friendId] },
+        });
+        if (existingConversation) {
+            existingConversation.active = true;
+            console.log('Activating conversation between: ', existingConversation.participants[0].firstname, ' and ', existingConversation.participants[1].firstname);
+            yield existingConversation.save();
+            return res.status(200).json(existingConversation);
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(500).json({ error: err.message });
+    }
+});
 export const deactivateConversation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req;
     const { friendId } = req.body;
@@ -66,20 +85,57 @@ export const getConversations = (req, res) => __awaiter(void 0, void 0, void 0, 
     console.log('hi');
     const { userId } = req;
     try {
-        const _conversations = yield Conversation.find({
+        let conversationsResponse = [];
+        const active_conversations = yield Conversation.find({
             participants: userId,
-        }).populate('participants', {
+            active: true,
+        })
+            .populate('participants', {
             firstname: 1,
             lastname: 1,
             avatar: 1,
             username: 1,
-        });
-        if (_conversations) {
-            return res.status(200).json(_conversations);
+            updatedAt: 1,
+        })
+            .sort({ updatedAt: 1 });
+        const nonActive_conversations = (yield Conversation.find({
+            participants: userId,
+            active: false,
+        })
+            .populate('participants', {
+            firstname: 1,
+            lastname: 1,
+            avatar: 1,
+            username: 1,
+            updatedAt: 1,
+        })
+            .sort({ updatedAt: 1 })) || [];
+        if (active_conversations.length > 0 || nonActive_conversations.length > 0) {
+            conversationsResponse = [
+                ...active_conversations,
+                ...nonActive_conversations,
+            ];
+            return res.status(200).json(conversationsResponse);
         }
     }
     catch (err) {
         console.log(err);
         return res.status(500).json({ error: err.message });
+    }
+});
+export const deleteConversation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.params.id) {
+        res.status(404).send('no id');
+    }
+    const { id } = req.params;
+    try {
+        yield Message.deleteMany({ conversation: id });
+        yield Conversation.deleteOne({ _id: id });
+        console.log('Deleted');
+        res.status(204).send('');
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(500).json('');
     }
 });
