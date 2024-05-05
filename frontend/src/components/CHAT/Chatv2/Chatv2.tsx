@@ -15,23 +15,18 @@ import { useSocketV2 } from '../../../utils/hooks/SocketContextV2';
 type Props = {
   profileData: ProfileInfo;
   friends: any;
-  conversations: Conversation[];
+  // conversations: Conversation[];
   socket: any;
 };
 
-const Chatv2: React.FC<Props> = ({
-  profileData,
-  friends,
-  conversations,
-  socket,
-}) => {
+const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
   const { loggedIn } = useAuth();
   const { room, setRoom } = useSocketV2();
   //STATES
   const [messages, setMessages] = useState<Message[]>([]);
 
-  const [messageReceived, setMessageReceived] = useState('');
-  const [sender, setSender] = useState<any>();
+  // const [messageReceived, setMessageReceived] = useState('');
+  // const [sender, setSender] = useState<any>();
   const [activeChat, setActiveChat] = useState(false);
   const [userInChat, setUserInChat] = useState(false);
   const [senderMessage, setSenderMessage] = useState<any>(null);
@@ -75,8 +70,6 @@ const Chatv2: React.FC<Props> = ({
         console.log('MORE INFO: ', participants);
         joinRoom(_id);
         setActiveConversation(conversation.data);
-        const sender = returnSender(participants, friendId);
-        console.log('Sender: ', sender);
         setSenderMessage(() => {
           let object = {};
           if (friendId === participants[0]._id) {
@@ -93,7 +86,7 @@ const Chatv2: React.FC<Props> = ({
           return object;
         });
         console.log(senderMessage);
-        setSender(sender);
+        // setSender(sender);
         if (
           databaseMessages &&
           databaseMessages.length >= 0 &&
@@ -174,13 +167,6 @@ const Chatv2: React.FC<Props> = ({
 
   return (
     <>
-      <button
-        onClick={() => {
-          console.log(senderMessage);
-        }}
-      >
-        asd
-      </button>
       {profileData && loggedIn.access && (
         <>
           <Container>

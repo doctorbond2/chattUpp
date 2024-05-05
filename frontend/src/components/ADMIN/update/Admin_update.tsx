@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ActiveUser } from '../../../types/userTypes';
-import { noID, fullID } from '../../../styles/customReact/buttonStyles';
-import UpdateModal from './UpdateModal';
-import { GET_request } from '../../../utils/requestHelpers';
-import { ProfileInfo } from '../../../types/userTypes';
-import { Container, InputGroup, Form } from 'react-bootstrap';
+// import { noID, fullID } from '../../../styles/customReact/buttonStyles';
+// import UpdateModal from './UpdateModal';
+// import { GET_request } from '../../../utils/requestHelpers';
+// import { ProfileInfo } from '../../../types/userTypes';
+// import { Container, InputGroup, Form } from 'react-bootstrap';
 type Props = {
   loggedIn: ActiveUser;
 };

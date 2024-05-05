@@ -59,7 +59,7 @@ const ChatPage: React.FC<Props> = ({}) => {
   return (
     <>
       {profileData && loggedIn.access && socket && conversations && (
-        <Chatv2 {...{ profileData, friends, conversations, socket }} />
+        <Chatv2 {...{ profileData, friends, socket }} />
       )}
     </>
   );

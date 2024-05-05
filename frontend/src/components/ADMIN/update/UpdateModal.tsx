@@ -12,7 +12,7 @@ type Props = {
 //Modalen har del-forms. UserUpdateForm, ProductUpdateForm. Dessa applies beroende på vilken data.
 const UpdateForm: React.FC<Props> = ({ userToUpdate, setUserToUpdate }) => {
   //TODO Fixa types för incoming data
-  const [data, setData] = useState(null);
+  // const [data, setData] = useState(null);
   const [replica, setReplica] = useState<ProfileInfo | any>(null);
   //MODAL - - - - - - -
   const handleClose = () => setShow(false);

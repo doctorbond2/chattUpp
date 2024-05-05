@@ -20,6 +20,9 @@ const UpdateUserForm: React.FC<Props> = ({
       setReplica(userToUpdate);
     };
   }, []);
+  //REMOVE  LATER
+  console.log(setUserToUpdate);
+  //REMOVE  LATER
   return (
     <>
       <label htmlFor={'update-user-email-input'}>Email:</label>
