@@ -53,7 +53,7 @@ const ChatBox: React.FC<Props> = ({
               {' '}
               {profileData &&
                 messages &&
-                messages.map((message: any, i: number) => {
+                messages.reverse().map((message: any, i: number) => {
                   return (
                     <>
                       <p></p>

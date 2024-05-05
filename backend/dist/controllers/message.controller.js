@@ -13,7 +13,7 @@ export function addNewMessageToConversationController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const { userId } = req;
         const { receivedBy, textContent } = req.body;
-        console.log(userId, receivedBy, textContent);
+        console.log('TEST', userId, receivedBy, textContent);
         try {
             const _currentConversation = yield Conversation.findOne({
                 participants: { $all: [userId, receivedBy] },
@@ -26,6 +26,7 @@ export function addNewMessageToConversationController(req, res) {
                     receivedBy: receivedBy,
                     conversation: _currentConversation._id,
                 });
+                console.log('NEW MESSAGE: ', newMessage);
                 yield newMessage.save();
                 return res.status(201).json({ message: 'Created!' });
             }

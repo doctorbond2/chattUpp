@@ -7,7 +7,7 @@ export async function addNewMessageToConversationController(
 ) {
   const { userId } = req;
   const { receivedBy, textContent } = req.body;
-  console.log(userId, receivedBy, textContent);
+  console.log('TEST', userId, receivedBy, textContent);
   try {
     const _currentConversation = await Conversation.findOne({
       participants: { $all: [userId, receivedBy] },
@@ -20,6 +20,7 @@ export async function addNewMessageToConversationController(
         receivedBy: receivedBy,
         conversation: _currentConversation._id,
       });
+      console.log('NEW MESSAGE: ', newMessage);
       await newMessage.save();
       return res.status(201).json({ message: 'Created!' });
     } else {

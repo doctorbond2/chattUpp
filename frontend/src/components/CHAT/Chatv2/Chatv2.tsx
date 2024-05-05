@@ -57,6 +57,7 @@ const Chatv2: React.FC<Props> = ({
       };
       console.log('sending message:', newChatMessage);
       socket.emit('send_message', { message: newChatMessage, room });
+      console.log('to set in database:', message);
       await convoAPI.addNewMessage(message);
     } catch (err: any) {
       console.log(err.message);
@@ -101,15 +102,15 @@ const Chatv2: React.FC<Props> = ({
           participants &&
           friendId
         ) {
+          console.log("It's ok and now we parse");
           const parsedMessages: Message[] = chatParser.parseChatMessages(
             databaseMessages,
             participants,
             friendId
           );
-
           setMessages(parsedMessages);
         } else {
-          console.log('Hm?');
+          console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA?');
         }
       }
     } catch (err: any) {

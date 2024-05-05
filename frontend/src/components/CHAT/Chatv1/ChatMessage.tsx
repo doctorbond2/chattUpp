@@ -9,7 +9,7 @@ type Props = {
 
 const ChatMessage: React.FC<Props> = ({ message, profileData }) => {
   useEffect(() => {
-    console.log('NEW MESSAGE SENT BY: ', message.sentBy);
+    // console.log('NEW MESSAGE SENT BY: ', message.sentBy);
   }, []);
   return (
     <>
@@ -23,13 +23,13 @@ const ChatMessage: React.FC<Props> = ({ message, profileData }) => {
             width: '50%',
             backgroundColor:
               message.sentBy.firstname === profileData.firstname
-                ? 'green'
-                : 'red',
+                ? 'lightgreen'
+                : 'lightblue',
           }}
         >
-          <p>{message.textContent}</p>
-          <p>From: {message.sentBy?.firstname}</p>
-          <p>To: {message.receivedBy?.firstname}</p>
+          <p style={{ marginLeft: '1vw', fontFamily: 'initial' }}>
+            {message.textContent}
+          </p>
         </Card>
       )}
     </>

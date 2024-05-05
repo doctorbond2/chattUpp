@@ -8,21 +8,19 @@ class ParseKit {
     participants: ProfileInfo[],
     friendId: string
   ) {
-    const c: any[] = participants;
-    console.log('Participants: ', c);
+    const p: any[] = participants;
+    const you = p.find((item) => item._id !== friendId);
     const parsedMessages = messages.map((m: Message, i: number) => {
       let parsedMessage: Message = { ...m };
-      console.log('FriendId: ', friendId);
-      if (friendId !== m.sentBy) {
-        console.log('You sent this message');
-        parsedMessage.sentBy = c[0];
-        parsedMessage.receivedBy = c[1];
+
+      if (m.sentBy === friendId) {
+        parsedMessage.sentBy = friendId;
+        parsedMessage.receivedBy = you;
       } else {
-        console.log('Friend sent this message');
-        parsedMessage.sentBy = c[1];
-        parsedMessage.receivedBy = c[0];
+        parsedMessage.sentBy = you;
+        parsedMessage.receivedBy = friendId;
       }
-      console.log('m sentby: ', m.sentBy);
+      console.log('m sentby: ', m.sentBy, m);
       console.log(i, ' ');
       console.log(
         i,
