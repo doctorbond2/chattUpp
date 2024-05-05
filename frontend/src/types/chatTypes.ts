@@ -9,8 +9,8 @@ export interface Conversation {
 }
 export interface Message {
   textContent: string;
-  sentBy?: string;
-  receivedBy?: string;
+  sentBy?: any;
+  receivedBy?: any;
   conversation?: string;
   date?: Date | string;
 }

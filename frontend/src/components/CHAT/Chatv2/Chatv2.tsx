@@ -36,6 +36,7 @@ const Chatv2: React.FC<Props> = ({
   const [sender, setSender] = useState<any>();
   const [activeChat, setActiveChat] = useState(false);
   const [userInChat, setUserInChat] = useState(false);
+  const [senderMessage, setSenderMessage] = useState<any>(null);
   const [activeConversation, setActiveConversation] = useState<Conversation>({
     participants: [],
     messages: [],
@@ -50,9 +51,11 @@ const Chatv2: React.FC<Props> = ({
     try {
       const newChatMessage: Message = {
         ...message,
-        sentBy: sender,
+        sentBy: senderMessage.sentBy,
+        receivedBy: senderMessage.receivedBy,
         conversation: activeConversation._id,
       };
+      console.log('sending message:', newChatMessage);
       socket.emit('send_message', { message: newChatMessage, room });
       await convoAPI.addNewMessage(message);
     } catch (err: any) {
@@ -68,19 +71,45 @@ const Chatv2: React.FC<Props> = ({
       const conversation: any = await convoAPI.verifyConversation(friendId);
       if (conversation.data) {
         const { data } = conversation;
-        const { _id, messages, participants } = data;
-        await joinRoom(_id);
+        const { _id, messages: databaseMessages, participants } = data;
+        console.log('DATA INFORMATION: ', data);
+        console.log('MORE INFO: ', participants);
+        joinRoom(_id);
         setActiveConversation(conversation.data);
         const sender = returnSender(participants, friendId);
+        console.log('Sender: ', sender);
+        setSenderMessage(() => {
+          let object = {};
+          if (friendId === participants[0]._id) {
+            object = {
+              sentBy: participants[1],
+              receivedBy: participants[0],
+            };
+          } else {
+            object = {
+              sentBy: participants[0],
+              receivedBy: participants[1],
+            };
+          }
+          return object;
+        });
+        console.log(senderMessage);
         setSender(sender);
-        if (messages && messages.length >= 0 && participants && friendId) {
+        if (
+          databaseMessages &&
+          databaseMessages.length >= 0 &&
+          participants &&
+          friendId
+        ) {
           const parsedMessages: Message[] = chatParser.parseChatMessages(
-            messages,
+            databaseMessages,
             participants,
             friendId
           );
-          console.log('PARSED MESSAGES: ', parsedMessages);
+
           setMessages(parsedMessages);
+        } else {
+          console.log('Hm?');
         }
       }
     } catch (err: any) {
@@ -96,32 +125,32 @@ const Chatv2: React.FC<Props> = ({
   const returnSender = (both: string[], friend: string) => {
     const you: any = both.find((you) => you !== friend);
     if (you) {
-      return you._id;
+      return you.firstname;
     }
   };
+
   const joinRoom = async (conversationId: string) => {
     socket.emit('join_room', conversationId);
-    console.log('Joined Room: ', conversationId);
-    console.log(socket);
     setRoom(conversationId);
     setUserInChat(true);
   };
   const leaveRoom = () => {
     if (room !== '') {
       socket.emit('leave_room', room);
-      console.log(socket);
       setRoom('');
       setUserInChat(false);
     }
   };
   const handleMessage = (data: any) => {
     console.log('Incoming data: ', data);
-    if (activeFriendId && activeConversation.participants && data.message) {
-      const parsedMessage: Message = chatParser.parseOneMessage(
-        data.message,
-        activeConversation.participants,
-        activeFriendId
-      );
+    if (activeFriendId && activeConversation.participants && data) {
+      // const parsedMessage: Message = chatParser.parseOneMessage(
+      //   data,
+      //   activeConversation.participants,
+      //   activeFriendId
+      // );
+      // console.log('PARSED MESSAGE: ', parsedMessage);
+      const parsedMessage = data;
       setMessages((prev) => [...prev, parsedMessage]);
     } else {
       console.log('Something went wrong with updating chat.');
@@ -146,24 +175,34 @@ const Chatv2: React.FC<Props> = ({
 
   return (
     <>
+      <button
+        onClick={() => {
+          console.log(senderMessage);
+        }}
+      >
+        asd
+      </button>
       {profileData && loggedIn.access && (
         <>
           <Container>
             <Row>
               <Col>
                 <h1>Room: {room}</h1>
-                {activeFriendId && messages && activeConversation && (
-                  <ChatBox
-                    {...{
-                      profileData,
-                      messages,
-                      onMount,
-                      offMount,
-                      room,
-                      socket,
-                    }}
-                  />
-                )}
+                {activeFriendId &&
+                  messages &&
+                  activeConversation &&
+                  senderMessage && (
+                    <ChatBox
+                      {...{
+                        profileData,
+                        messages,
+                        onMount,
+                        offMount,
+                        room,
+                        socket,
+                      }}
+                    />
+                  )}
                 {activeFriendId && (
                   <ChatInput {...{ activeFriendId, sendMessage }} />
                 )}
