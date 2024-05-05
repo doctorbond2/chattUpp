@@ -1,13 +1,11 @@
-import { client, admin, user } from '../../axiosInstanceConfig';
+import { client, user } from '../../axiosInstanceConfig';
 const {
   VITE_auth_route_LOGIN,
-  VITE_auth_route_TEST_TEST,
   VITE_auth_route_START_VERIFY_TOKENS,
   VITE_auth_route_REFRESH_TOKEN,
 } = import.meta.env;
 import { LoginStateType } from '../../../types/userTypes';
 import localStorageKit from '../localstorageKit';
-import { TwoTokens } from '../../../types/authTypes';
 class AuthAPIKit {
   constructor() {}
   async loginRequest(data: LoginStateType) {

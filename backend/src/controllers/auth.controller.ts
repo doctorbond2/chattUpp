@@ -7,7 +7,6 @@ import {
   getBothTokens,
   verifyAccessToken,
   verifyRefreshToken,
-  verifyToken,
 } from '../utilities/helpers/token.helpers.js';
 type TheTokens = {
   access: string;

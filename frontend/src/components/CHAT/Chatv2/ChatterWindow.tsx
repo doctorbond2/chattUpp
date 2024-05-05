@@ -1,5 +1,4 @@
 import React from 'react';
-import { checkIfFriend } from '../../../utils/hooks/generalHooks';
 import { Card } from 'react-bootstrap';
 import { ProfileInfo } from '../../../types/userTypes';
 import UserAPI from '../../../utils/helper/apiHandlers/userApi';

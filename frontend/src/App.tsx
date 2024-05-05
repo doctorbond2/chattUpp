@@ -7,12 +7,8 @@ import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
 import Login from './pages/Login';
 import AdminPage from './pages/AdminPage';
-import { io, Socket } from 'socket.io-client';
 import { AuthProvider } from './utils/hooks/AuthContext';
-import { ChatProvider } from './utils/hooks/ChatContext';
 import ChatPage from './pages/ChatPage';
-import { useEffect, useState } from 'react';
-import TestAndTry from './pages/TestAndTry';
 import { SocketContextV2Provider } from './utils/hooks/SocketContextV2';
 function App() {
   return (

@@ -1,4 +1,4 @@
-import bcrypt, { hash } from 'bcrypt';
+import bcrypt from 'bcrypt';
 const admin_key_from_server = process.env.ADMIN_API_KEY;
 export const hashPassword = async (password: string) => {
   const salt = 10;

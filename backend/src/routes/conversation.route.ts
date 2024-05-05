@@ -11,7 +11,6 @@ import {
   getConversations,
   deactivateConversation,
   activateConversation,
-  deleteConversation,
   deleteConvoAndMessages,
 } from '../controllers/conversation.controller.js';
 const {

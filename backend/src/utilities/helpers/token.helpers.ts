@@ -1,7 +1,5 @@
 import jwt from 'jsonwebtoken';
 import User from '../../models/user.model.js';
-import { nextTick } from 'process';
-import { AnyError } from 'mongodb';
 const secret_key = String(process.env.JWT_ACCESS_SECRET);
 const refresh_secret_key = String(process.env.JWT_REFRESH_SECRET);
 interface TokenRequest extends Request {

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { Container, Col, Row } from 'react-bootstrap';
-import NotFound from '../../SIMPLE/NotFound';
 import { ProfileInfo } from '../../../types/userTypes';
 
 type Props = {

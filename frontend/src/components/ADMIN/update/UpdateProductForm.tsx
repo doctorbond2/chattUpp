@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
 type Props = {};
 
-const UpdateProductForm = ({}) => {
+const UpdateProductForm: React.FC<Props> = ({}) => {
   return <div>UpdateProductForm</div>;
 };
 

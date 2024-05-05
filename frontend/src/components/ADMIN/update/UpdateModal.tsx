@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
-import NotFound from "../../SIMPLE/NotFound";
-import { useState } from "react";
-import { Modal, Button } from "react-bootstrap";
-import { ProfileInfo } from "../../../types/userTypes";
-import UpdateUserForm from "./UpdateUserForm";
+import React from 'react';
+import NotFound from '../../SIMPLE/NotFound';
+import { useState } from 'react';
+import { Modal, Button } from 'react-bootstrap';
+import { ProfileInfo } from '../../../types/userTypes';
+import UpdateUserForm from './UpdateUserForm';
 type Props = {
   userToUpdate: ProfileInfo;
   setUserToUpdate: React.Dispatch<React.SetStateAction<ProfileInfo>>;
@@ -31,14 +31,14 @@ const UpdateForm: React.FC<Props> = ({ userToUpdate, setUserToUpdate }) => {
   };
   return (
     <>
-      <div style={{ border: "1px solid black" }}>
+      <div style={{ border: '1px solid black' }}>
         <Button
           variant="primary"
           onClick={handleShow}
           disabled={userToUpdate ? false : true}
         >
-          {" "}
-          {userToUpdate ? "Edit user" : "No user selected"}
+          {' '}
+          {userToUpdate ? 'Edit user' : 'No user selected'}
         </Button>
         <Modal
           show={show}
@@ -55,12 +55,12 @@ const UpdateForm: React.FC<Props> = ({ userToUpdate, setUserToUpdate }) => {
                   setUserToUpdate(replica);
                   setReplica(null);
                   handleClose();
-                  console.log("replicated:", userToUpdate);
+                  console.log('replicated:', userToUpdate);
                 }}
               >
                 Cancel
               </Button>
-              <Button type={"submit"} variant="primary">
+              <Button type={'submit'} variant="primary">
                 Update
               </Button>
             </form>

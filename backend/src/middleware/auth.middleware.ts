@@ -1,7 +1,5 @@
-import express, { NextFunction, Response, Request } from 'express';
+import { NextFunction, Response, Request } from 'express';
 import jwt from 'jsonwebtoken';
-import { CallbackWithoutResultAndOptionalError as n } from 'mongoose';
-import { hashPassword } from '../utilities/helpers/auth.helpers.js';
 import {
   generateAccessToken,
   verifyAccessToken,

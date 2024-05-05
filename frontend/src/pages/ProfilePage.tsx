@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ActiveUser } from '../types/userTypes';
 import { useNavigate } from 'react-router-dom';
 import { ProfileInfo, defaultProfileInfo } from '../types/userTypes';
-import { Container, Row, Col, Tab, Tabs } from 'react-bootstrap';
+import { Tab, Tabs } from 'react-bootstrap';
 import PrProfile from '../components/SOCIAL/profile/PrProfile';
 import UserAPI from '../utils/helper/apiHandlers/userApi';
 import NotFound from '../components/SIMPLE/NotFound';

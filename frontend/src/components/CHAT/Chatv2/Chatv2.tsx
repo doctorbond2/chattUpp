@@ -1,12 +1,10 @@
-import React, { useState, ReactNode, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Message } from '../../../types/chatTypes';
-import { io, Socket } from 'socket.io-client';
 import { Container, Col, Row } from 'react-bootstrap';
 import convoAPI from '../../../utils/helper/apiHandlers/convoApi';
 
 import { Conversation } from '../../../types/chatTypes';
 import { ProfileInfo } from '../../../types/userTypes';
-import chatParserw from '../../../utils/helper/parseKit';
 import ChatInput from '../Chatv1/ChatInput';
 import { useAuth } from '../../../utils/hooks/AuthContext';
 import ChatBox from '../Chatv1/ChatBox';

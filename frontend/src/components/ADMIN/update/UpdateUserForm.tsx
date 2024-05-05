@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
-import { ProfileInfo } from "../../../types/userTypes";
+import { ProfileInfo } from '../../../types/userTypes';
 type Props = {
   userToUpdate: ProfileInfo;
   setUserToUpdate: React.Dispatch<React.SetStateAction<ProfileInfo>>;
@@ -14,15 +14,15 @@ const UpdateUserForm: React.FC<Props> = ({
 }) => {
   useEffect(() => {
     setReplica(userToUpdate);
-    console.log("USERTO;", userToUpdate);
-    console.log("Replica:", userToUpdate);
+    console.log('USERTO;', userToUpdate);
+    console.log('Replica:', userToUpdate);
     return () => {
-      setReplica(null);
+      setReplica(userToUpdate);
     };
   }, []);
   return (
     <>
-      <label htmlFor={"update-user-email-input"}>Email:</label>
+      <label htmlFor={'update-user-email-input'}>Email:</label>
       <input
         id="update-user-email-input"
         type="email"
@@ -31,15 +31,15 @@ const UpdateUserForm: React.FC<Props> = ({
       />
       <br></br>
       <label htmlFor="update-user-firstname-input">Firstname:</label>
-      <input type={"text"} required value={userToUpdate?.firstname} />
+      <input type={'text'} required value={userToUpdate?.firstname} />
       <br></br>
       <label htmlFor="update-user-lastname-input">Lastname:</label>
-      <input type={"text"} required value={userToUpdate?.lastname} />
+      <input type={'text'} required value={userToUpdate?.lastname} />
       <br></br>
       <label>role</label>
       <select>
         <option selected={true}>{userToUpdate?.role}</option>
-        <option>{userToUpdate?.role === "admin" ? "standard" : "admin"}</option>
+        <option>{userToUpdate?.role === 'admin' ? 'standard' : 'admin'}</option>
       </select>
     </>
   );

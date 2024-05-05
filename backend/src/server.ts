@@ -1,9 +1,6 @@
-import express from 'express';
-import cors from 'cors';
 import { Server } from 'socket.io';
 import http from 'http';
 import app from './app.js';
-import User from './models/user.model.js';
 const ALLOWED_ORIGINS: string[] = [
   'http://localhost:5173',
   'https://chatt-upp-client.vercel.app',

@@ -1,6 +1,4 @@
-import express, { NextFunction, Response, Request } from 'express';
-import Conversation from '../models/conversation.model';
-import User from '../models/user.model';
+import { NextFunction, Response, Request } from 'express';
 export const existingConversationMiddleware = async (
   req: Request | any,
   res: Response,

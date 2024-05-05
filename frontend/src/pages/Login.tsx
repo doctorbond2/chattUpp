@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Login_Input from '../components/LOGIN/Login_Input';
 import { useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import { useAuth } from '../utils/hooks/AuthContext';
 import { defaultLoginState, LoginStateType } from '../types/userTypes';
 type Props = {};
-import AuthAPI from '../utils/helper/apiHandlers/authApi';
 const Login: React.FC<Props> = ({}) => {
   const { login, loggedIn } = useAuth();
   const [loginData, setLoginData] = useState<LoginStateType>(defaultLoginState);

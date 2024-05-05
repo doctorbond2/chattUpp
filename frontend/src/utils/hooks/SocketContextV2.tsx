@@ -1,14 +1,7 @@
-import React, {
-  useState,
-  useEffect,
-  ReactNode,
-  useContext,
-  createContext,
-} from 'react';
+import { useState, useEffect, useContext, createContext } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { defaultSCV2I, SocketContextV2Interface } from '../../types/chatTypes';
 import { useAuth } from './AuthContext';
-import localStorageKit from '../helper/localstorageKit';
 type Props = {};
 
 const SocketV2Context = createContext<SocketContextV2Interface>(defaultSCV2I);

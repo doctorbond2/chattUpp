@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 
 type Props = {};
 
-const NotFound = (props: Props) => {
+const NotFound: React.FC<Props> = ({}) => {
   return <div>404 Not Found</div>;
 };
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { ProfileInfo } from '../../../types/userTypes';
-import { io, Socket } from 'socket.io-client';
 import { Message } from '../../../types/chatTypes';
 import ChatMessage from './ChatMessage';
 

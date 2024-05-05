@@ -1,13 +1,10 @@
 import React from 'react';
 import { Container } from 'react-bootstrap';
 import { useEffect, useState } from 'react';
-import { GET_request } from '../utils/requestHelpers';
 import { ProfileInfo } from '../types/userTypes';
 import { useAuth } from '../utils/hooks/AuthContext';
-import { checkIfFriend } from '../utils/hooks/generalHooks';
 import ChatterWindow from '../components/CHAT/Chatv2/ChatterWindow';
 import UserAPI from '../utils/helper/apiHandlers/userApi';
-import { Card } from 'react-bootstrap';
 type Props = {};
 const Home: React.FC<Props> = ({}) => {
   const { loggedIn, profileData } = useAuth();
