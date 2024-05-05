@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
   console.log('User Connected: ' + socket.id);
   socket.on('join_room', (data) => {
     console.log('joined', data);
-
+    socket.broadcast.emit('join_notification', data);
     socket.join(data);
   });
   socket.on('leave_room', (data) => {

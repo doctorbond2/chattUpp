@@ -10,7 +10,14 @@ type Props = {
 const ChatMessage: React.FC<Props> = ({ message, profileData }) => {
   return (
     <>
-      <Card>
+      <Card
+        style={{
+          marginLeft: message.sentBy === profileData.firstname ? '10px' : '0px',
+          width: '50%',
+          backgroundColor:
+            message.sentBy === profileData.firstname ? 'red' : 'green',
+        }}
+      >
         <p>{message.textContent}</p>
         <p>From: {message.sentBy}</p>
         <p>To: {message.receivedBy}</p>

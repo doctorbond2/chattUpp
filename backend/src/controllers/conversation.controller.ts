@@ -150,3 +150,26 @@ export const deleteConversation = async (req: Request | any, res: Response) => {
     return res.status(500).json('');
   }
 };
+export const deleteConvoAndMessages = async (
+  req: Request | any,
+  res: Response
+) => {
+  if (!req.params.id) {
+    return res.status(404).json({ error: 'ID not found.' });
+  }
+  const { userId } = req;
+  const { id } = req.params;
+  try {
+    const existingConversation: any = await Conversation.findOne({
+      participants: { $all: [userId, id] },
+    });
+    console.log('EXISTING: ', existingConversation);
+    await Message.deleteMany({ conversation: existingConversation._id });
+    await Conversation.deleteOne({ _id: existingConversation._id });
+    console.log('Deleted');
+    res.status(204).send('');
+  } catch (err: any) {
+    console.log(err.message);
+    return res.status(500).json('');
+  }
+};

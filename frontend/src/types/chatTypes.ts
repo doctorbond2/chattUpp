@@ -5,6 +5,7 @@ export interface Conversation {
   _id?: string;
   active?: boolean;
   hasNewMessage?: boolean;
+  hasChatter?: boolean;
 }
 export interface Message {
   textContent: string;
@@ -36,6 +37,16 @@ export const defaultChatContextState = {
   messageHandler: () => {},
   onMount: () => {},
   offMount: () => {},
+};
+export interface SocketContextV2Interface {
+  socket: any;
+  room: string;
+  setRoom: React.Dispatch<React.SetStateAction<string>>;
+}
+export const defaultSCV2I = {
+  socket: null,
+  room: '',
+  setRoom: () => {},
 };
 // textContent: {
 //     type: String,

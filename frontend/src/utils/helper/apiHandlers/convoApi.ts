@@ -4,6 +4,7 @@ const {
   VITE_message_route_CREATE,
   VITE_conv_route_DEACTIVATE,
   VITE_conv_route_ACTIVATE,
+  VITE_conv_route_DELETE_ONE_CONVERSATION,
 } = import.meta.env;
 class ConvoAPIKit {
   constructor() {}
@@ -40,6 +41,18 @@ class ConvoAPIKit {
   async activateConvoWithFriend(friendId: string) {
     try {
       const response = await user.put(VITE_conv_route_ACTIVATE, { friendId });
+      if (response) {
+        return response;
+      }
+    } catch (err: any) {
+      throw err;
+    }
+  }
+  async deleteConvoWithFriend(friendId: string) {
+    try {
+      const response = await user.delete(
+        VITE_conv_route_DELETE_ONE_CONVERSATION + friendId
+      );
       if (response) {
         return response;
       }

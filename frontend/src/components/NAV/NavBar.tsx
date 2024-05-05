@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useAuth } from '../../utils/hooks/AuthContext';
-import { NavDropdown } from 'react-bootstrap';
+import { NavDropdown, Button } from 'react-bootstrap';
+import Spinner from 'react-bootstrap/Spinner';
 import { Outlet } from 'react-router';
 import { useNavigate } from 'react-router-dom';
+import { useSocketV2 } from '../../utils/hooks/SocketContextV2';
 import localStorageKit from '../../utils/helper/localstorageKit';
 type Props = {
   // loggedIn: ActiveUser;
@@ -15,6 +17,54 @@ type Props = {
 const mainNavBar: React.FC<Props> = ({}) => {
   const { loggedIn, logout } = useAuth();
   const navigate = useNavigate();
+  const { socket, room: activeRoom } = useSocketV2();
+  const [newNotifications, setNewNotifications] = useState<boolean>(false);
+  const handleNavNotification = (data: any) => {
+    if (activeRoom !== data.room) {
+      const currentNotifications = localStorageKit.getNavNotification();
+      if (!currentNotifications.includes(data.room)) {
+        localStorageKit.notificationStorage(data.room);
+        const updatedNotifications = localStorageKit.getNavNotification();
+        setNewNotifications((prev) => updatedNotifications.length);
+      }
+    }
+  };
+  const handleJoinNotification = (data: string) => {
+    if (data === activeRoom) {
+      setNewNotifications(false);
+      console.log(newNotifications);
+    }
+  };
+  const mountNotificationSocket = () => {
+    socket.on('notification_message', handleNavNotification);
+    socket.on('join_notification', handleJoinNotification);
+  };
+  const unMountNotificationSocket = () => {
+    socket.off('notification_message', handleNavNotification);
+    socket.off('join_notification', handleJoinNotification);
+  };
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
+    console.log('mounting for nav');
+    mountNotificationSocket();
+    return () => {
+      if (!socket) {
+        return;
+      }
+      unMountNotificationSocket();
+    };
+  }, [socket, loggedIn]);
+
+  useEffect(() => {
+    const news = localStorageKit.getNavNotification();
+    if (news.length > 0) {
+      setNewNotifications(true);
+    } else {
+      setNewNotifications(false);
+    }
+  }, [activeRoom]);
 
   return (
     <>
@@ -46,9 +96,6 @@ const mainNavBar: React.FC<Props> = ({}) => {
                 <NavDropdown.Item onClick={() => navigate('/register')}>
                   {loggedIn.access ? 'Friendlist' : 'Sign up'}
                 </NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">
-                  Something
-                </NavDropdown.Item>
                 {loggedIn.adminToken && (
                   <>
                     <NavDropdown.Divider />
@@ -73,6 +120,12 @@ const mainNavBar: React.FC<Props> = ({}) => {
               >
                 Chat
               </Nav.Link>
+              <div>
+                {/* {newNotifications && loggedIn.access && newNotifications} */}
+                {newNotifications && loggedIn.access && (
+                  <Spinner animation="grow" />
+                )}
+              </div>
 
               {loggedIn.access ? (
                 <Nav.Link
@@ -87,7 +140,15 @@ const mainNavBar: React.FC<Props> = ({}) => {
               )}
             </Nav>
           </Navbar.Collapse>
-          {loggedIn.access && <button onClick={logout}>LOG OUT</button>}
+          {loggedIn.access && (
+            <Button
+              onClick={logout}
+              className="bg-warning"
+              style={{ color: 'black', fontFamily: 'Arial' }}
+            >
+              LOG OUT
+            </Button>
+          )}
         </Container>
       </Navbar>
       <Outlet />

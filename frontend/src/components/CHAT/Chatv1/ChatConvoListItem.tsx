@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Conversation } from '../../../types/chatTypes';
 import { Card, Button } from 'react-bootstrap';
+import convoAPI from '../../../utils/helper/apiHandlers/convoApi';
+import Spinner from 'react-bootstrap/Spinner';
 type Props = {
   convo: Conversation;
   handleActiveConversation: (friendId: string) => Promise<void>;
@@ -29,6 +31,19 @@ const ChatConvoListItem: React.FC<Props> = ({
       setFriend(convo.participants[0]);
     }
   }, [convo, profileData]);
+  const handleConvoDeletion = async () => {
+    const yes = confirm(
+      'Are you sure you want to delete this conversation and all its messages?'
+    );
+    if (!yes) {
+      return;
+    }
+    try {
+      const response = await convoAPI.deleteConvoWithFriend(friend._id);
+    } catch (err: any) {
+      console.log(err.message);
+    }
+  };
   // const handleNotification = (data: any) => {
   //   if (data.room === convo._id) {
   //     console.log(data.room);
@@ -47,29 +62,42 @@ const ChatConvoListItem: React.FC<Props> = ({
     <>
       {friend && profileData && (
         <Card style={convoStyling}>
+          <Card.Header>
+            {convo.hasNewMessage && <Spinner animation="grow" />}
+            {convo.hasNewMessage && 'New messages!'}
+          </Card.Header>
           <Card.Body>
-            <h2>Firstname {friend.firstname}</h2>
-
+            <h2>{friend.firstname}</h2>
             <h3>
               {convo.active ? 'Active conversation' : 'Not friends, not active'}
             </h3>
             <Card.Footer>
               {convo.active && (
-                <Button
-                  onClick={async () => {
-                    if (friend._id) {
-                      handleActiveConversation(friend._id);
-                    }
-                    if (convo._id) {
-                      resetNotification(convo._id);
-                    }
-                  }}
-                >
-                  Start chat!
-                </Button>
+                <>
+                  <div>
+                    <Button
+                      onClick={async () => {
+                        if (friend._id) {
+                          handleActiveConversation(friend._id);
+                        }
+                        if (convo._id) {
+                          resetNotification(convo._id);
+                        }
+                      }}
+                    >
+                      Chat!
+                    </Button>
+                    <Button
+                      style={{ backgroundColor: 'red' }}
+                      onClick={handleConvoDeletion}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </>
               )}
+
               {test && <div>sdsd</div>}
-              {convo.hasNewMessage ? 'New messages!' : 'No new messages.'}
             </Card.Footer>
           </Card.Body>
         </Card>

@@ -12,7 +12,7 @@ export async function addNewMessageToConversationController(
     const _currentConversation = await Conversation.findOne({
       participants: { $all: [userId, receivedBy] },
     });
-    if (_currentConversation) {
+    if (_currentConversation && _currentConversation.active) {
       console.log('Found the conversation np');
       const newMessage = new Message({
         textContent: textContent,
@@ -22,6 +22,8 @@ export async function addNewMessageToConversationController(
       });
       await newMessage.save();
       return res.status(201).json({ message: 'Created!' });
+    } else {
+      return res.status(401).json({ message: 'Conversation is not active.' });
     }
   } catch (err: any) {
     console.log('Something went wrong adding new message');

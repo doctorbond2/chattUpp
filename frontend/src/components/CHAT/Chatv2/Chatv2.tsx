@@ -13,6 +13,7 @@ import ChatBox from '../Chatv1/ChatBox';
 import ChatConvoList from '../Chatv1/ChatConvoList';
 import ChatFriendList from '../Chatv1/ChatFriendList';
 import chatParser from '../../../utils/helper/parseKit';
+import { useSocketV2 } from '../../../utils/hooks/SocketContextV2';
 type Props = {
   profileData: ProfileInfo;
   friends: any;
@@ -27,13 +28,10 @@ const Chatv2: React.FC<Props> = ({
   socket,
 }) => {
   const { loggedIn } = useAuth();
-  socket.on('connect', () => {
-    console.log('Socket connected');
-  });
-
+  const { room, setRoom } = useSocketV2();
   //STATES
   const [messages, setMessages] = useState<Message[]>([]);
-  const [room, setRoom] = useState('');
+
   const [messageReceived, setMessageReceived] = useState('');
   const [sender, setSender] = useState<any>();
   const [activeChat, setActiveChat] = useState(false);
@@ -174,7 +172,11 @@ const Chatv2: React.FC<Props> = ({
                 {' '}
                 {friends && (
                   <ChatFriendList
-                    {...{ friends, handleActiveConversation, profileData }}
+                    {...{
+                      friends,
+                      handleActiveConversation,
+                      profileData,
+                    }}
                   />
                 )}
               </Col>
@@ -187,6 +189,7 @@ const Chatv2: React.FC<Props> = ({
                       handleActiveConversation,
                       activeChat,
                     }}
+                    activeRoom={room}
                   />
                 )}
               </Col>

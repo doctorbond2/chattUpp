@@ -7,27 +7,31 @@ import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
 import Login from './pages/Login';
 import AdminPage from './pages/AdminPage';
+import { io, Socket } from 'socket.io-client';
 import { AuthProvider } from './utils/hooks/AuthContext';
 import { ChatProvider } from './utils/hooks/ChatContext';
 import ChatPage from './pages/ChatPage';
+import { useEffect, useState } from 'react';
 import TestAndTry from './pages/TestAndTry';
+import { SocketContextV2Provider } from './utils/hooks/SocketContextV2';
 function App() {
   return (
     <>
       <AuthProvider>
-        {
-          <Routes>
-            <Route element={<NavBar />}>
-              <Route path="/" element={<Home />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/admin" element={<AdminPage />} />
-              <Route path="/chat" element={<ChatPage />} />
-              {/* <Route path="test" element={<TestAndTry />} /> */}
-            </Route>
-          </Routes>
-        }
+        <SocketContextV2Provider>
+          {
+            <Routes>
+              <Route element={<NavBar />}>
+                <Route path="/" element={<Home />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/chat" element={<ChatPage />} />
+              </Route>
+            </Routes>
+          }
+        </SocketContextV2Provider>
       </AuthProvider>
     </>
   );

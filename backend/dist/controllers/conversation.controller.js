@@ -139,3 +139,24 @@ export const deleteConversation = (req, res) => __awaiter(void 0, void 0, void 0
         return res.status(500).json('');
     }
 });
+export const deleteConvoAndMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.params.id) {
+        return res.status(404).json({ error: 'ID not found.' });
+    }
+    const { userId } = req;
+    const { id } = req.params;
+    try {
+        const existingConversation = yield Conversation.findOne({
+            participants: { $all: [userId, id] },
+        });
+        console.log('EXISTING: ', existingConversation);
+        yield Message.deleteMany({ conversation: existingConversation._id });
+        yield Conversation.deleteOne({ _id: existingConversation._id });
+        console.log('Deleted');
+        res.status(204).send('');
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(500).json('');
+    }
+});

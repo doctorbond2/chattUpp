@@ -18,7 +18,7 @@ export function addNewMessageToConversationController(req, res) {
             const _currentConversation = yield Conversation.findOne({
                 participants: { $all: [userId, receivedBy] },
             });
-            if (_currentConversation) {
+            if (_currentConversation && _currentConversation.active) {
                 console.log('Found the conversation np');
                 const newMessage = new Message({
                     textContent: textContent,
@@ -28,6 +28,9 @@ export function addNewMessageToConversationController(req, res) {
                 });
                 yield newMessage.save();
                 return res.status(201).json({ message: 'Created!' });
+            }
+            else {
+                return res.status(401).json({ message: 'Conversation is not active.' });
             }
         }
         catch (err) {

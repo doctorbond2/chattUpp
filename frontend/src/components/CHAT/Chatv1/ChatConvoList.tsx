@@ -9,6 +9,7 @@ type Props = {
   socket: any;
   handleActiveConversation: (friendId: string) => Promise<void>;
   activeChat: boolean;
+  activeRoom: string;
 };
 const formattedTimestamp = (timestamp: string) => {
   const date = new Date(timestamp);
@@ -20,6 +21,7 @@ const ChatConvoList: React.FC<Props> = ({
   socket,
   handleActiveConversation,
   activeChat,
+  activeRoom,
 }) => {
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [filteredConvos, setFilteredConvos] = useState<Conversation[]>([]);
@@ -31,8 +33,10 @@ const ChatConvoList: React.FC<Props> = ({
         const response = await UserAPI.getUserConversations();
         if (response) {
           console.log('YOU GOT RESPONSE: ', response.data);
-          setConversationList(response.data);
-          setFilteredConvos(response.data);
+          setConversationList(
+            localStorageKit.getNotificationList(response.data)
+          );
+          setFilteredConvos(localStorageKit.getNotificationList(response.data));
         }
       } catch (err: any) {
         console.log('ERROR getting conversations', err.message);
@@ -67,11 +71,14 @@ const ChatConvoList: React.FC<Props> = ({
       unMountNotificationSocket();
     };
   }, [socket]);
+  useEffect(() => {
+    console.log('Room has changed: ', activeRoom);
+  }, [activeRoom]);
   const handleNotification = (data: any) => {
-    if (data.room) {
+    if (data.room && data.room !== activeRoom) {
       setConversationList((prevConversationList) => {
         const updatedConvoList = prevConversationList.map((c) => {
-          if (data.room === c._id) {
+          if (data.room === c._id && c.active === true) {
             console.log(c._id);
             return { ...c, hasNewMessage: true };
           }
@@ -82,12 +89,13 @@ const ChatConvoList: React.FC<Props> = ({
 
       setFilteredConvos((prevFilteredConvos) => {
         const updatedFilteredConvos = prevFilteredConvos.map((c) => {
-          if (data.room === c._id) {
+          if (data.room === c._id && c.active === true) {
             localStorageKit.notificationStorage(c._id);
             return { ...c, hasNewMessage: true };
           }
           return c;
         });
+
         return updatedFilteredConvos;
       });
     }
@@ -127,20 +135,31 @@ const ChatConvoList: React.FC<Props> = ({
       <div style={{ overflow: 'auto' }}>
         {filteredConvos &&
           profileData &&
-          filteredConvos.map((convo: Conversation, i) => {
-            return (
-              <ChatConvoListItem
-                key={'c-' + i}
-                {...{
-                  convo,
-                  handleActiveConversation,
-                  profileData,
-                  socket,
-                  resetNotification,
-                }}
-              />
-            );
-          })}
+          filteredConvos
+            .sort((a, b) => {
+              if (a.hasNewMessage && !b.hasNewMessage) {
+                return -1;
+              }
+              if (!a.hasNewMessage && b.hasNewMessage) {
+                return 1;
+              }
+              return 0;
+            })
+            .filter((c) => c._id !== activeRoom)
+            .map((convo: Conversation, i) => {
+              return (
+                <ChatConvoListItem
+                  key={'c-' + i}
+                  {...{
+                    convo,
+                    handleActiveConversation,
+                    profileData,
+                    socket,
+                    resetNotification,
+                  }}
+                />
+              );
+            })}
       </div>
     </>
   );

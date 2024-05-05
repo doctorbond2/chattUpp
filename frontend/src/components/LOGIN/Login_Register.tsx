@@ -1,8 +1,9 @@
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { Container, Col } from "react-bootstrap";
-import { RegisterFormType } from "../../types/userTypes";
-import { useState } from "react";
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import { Container, Col } from 'react-bootstrap';
+import { RegisterFormType } from '../../types/userTypes';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 type Props = {
   registerForm: RegisterFormType;
   handleRegister: any;
@@ -14,6 +15,7 @@ const Login_Register: React.FC<Props> = ({
   registerForm,
   handleRegister,
 }) => {
+  const navigate = useNavigate();
   const [regErr, setRegErr] = useState<boolean>(false);
   return (
     <>
@@ -28,6 +30,7 @@ const Login_Register: React.FC<Props> = ({
                   setRegErr(false);
                 }, 4000);
               }
+              navigate('/login');
             }}
           >
             <Form.Group className="mb-3" controlId="register-form-username">
@@ -129,13 +132,13 @@ const Login_Register: React.FC<Props> = ({
             </Form.Group>
             <Button variant="primary" type="submit">
               Let's go!
-            </Button>{" "}
+            </Button>{' '}
             {regErr ? (
-              <p style={{ color: "red" }}>
+              <p style={{ color: 'red' }}>
                 Something went wrong, invalid login
               </p>
             ) : (
-              ""
+              ''
             )}
           </Form>
         </Col>

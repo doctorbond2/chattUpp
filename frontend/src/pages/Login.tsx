@@ -25,17 +25,33 @@ const Login: React.FC<Props> = ({}) => {
       console.log('Login error: ', err.message);
     }
   };
-  const checkTokens = async () => {
-    try {
-      await AuthAPI.refreshVerifyTokens();
-    } catch (err: any) {
-      console.log(err);
-    }
-  };
+  // const checkTokens = async () => {
+  //   try {
+  //     await AuthAPI.refreshVerifyTokens();
+  //   } catch (err: any) {
+  //     console.log(err);
+  //   }
+  // };
   return (
     <>
       <Stack direction="horizontal" gap={3}>
-        <div style={{ border: '2px solid black' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '60vh',
+            marginLeft: '25%',
+          }}
+        >
+          <h4>
+            {loggedIn && loggedIn?.access && 'You are logged in, go chat!'}
+          </h4>
+          {!loggedIn.access && (
+            <>
+              <h2>Welcome to Chat up!</h2>
+            </>
+          )}
           {!loggedIn.access && (
             <Login_Input
               {...{
@@ -45,15 +61,6 @@ const Login: React.FC<Props> = ({}) => {
               }}
             />
           )}
-          <h3>Are you logged in?</h3>
-          <h4>{loggedIn && loggedIn?.access ? 'Yes' : 'No'}</h4>
-          <button
-            onClick={() => {
-              checkTokens();
-            }}
-          >
-            refresh
-          </button>
         </div>
       </Stack>
     </>

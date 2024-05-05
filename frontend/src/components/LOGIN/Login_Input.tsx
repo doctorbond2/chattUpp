@@ -1,6 +1,6 @@
-import React from "react";
-import { LoginStateType } from "../../types/userTypes";
-import { Button } from "react-bootstrap";
+import React from 'react';
+import { LoginStateType } from '../../types/userTypes';
+import { Button } from 'react-bootstrap';
 type Props = {
   submit_login_info: (e: any) => void;
   handleLoginData: (
@@ -17,31 +17,31 @@ const Login_Input: React.FC<Props> = ({
 }) => {
   return (
     <>
-      {" "}
+      {' '}
       <form onSubmit={submit_login_info}>
-        <label htmlFor={"LOGIN-INPUT-FIELD-USERNAME"}>Username</label>
+        <label htmlFor={'LOGIN-INPUT-FIELD-USERNAME'}>Username</label>
         <input
-          id={"LOGIN-INPUT-FIELD-USERNAME"}
+          id={'LOGIN-INPUT-FIELD-USERNAME'}
           name="username"
-          type={"text"}
+          type={'text'}
           min={0}
           max={50}
           value={loginData.username}
           onChange={(e) => {
-            handleLoginData(e, "username");
+            handleLoginData(e, 'username');
           }}
         ></input>
-        <label htmlFor={"LOGIN-INPUT-FIELD-PASSWORD"}></label>
+        <label htmlFor={'LOGIN-INPUT-FIELD-PASSWORD'}>Password</label>
         <input
           type="password"
           name="password"
-          id={"LOGIN-INPUT-FIELD-PASSWORD"}
+          id={'LOGIN-INPUT-FIELD-PASSWORD'}
           value={loginData.password}
           onChange={(e) => {
-            handleLoginData(e, "password");
+            handleLoginData(e, 'password');
           }}
         ></input>
-        <Button type={"submit"} className="bg-success rounded-pill">
+        <Button type={'submit'} className="bg-success rounded-pill">
           Login!
         </Button>
       </form>

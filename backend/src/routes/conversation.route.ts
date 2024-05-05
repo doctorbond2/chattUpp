@@ -12,12 +12,14 @@ import {
   deactivateConversation,
   activateConversation,
   deleteConversation,
+  deleteConvoAndMessages,
 } from '../controllers/conversation.controller.js';
 const {
   conv_route_CREATE,
   conv_route_GET_LIST,
   conv_route_DEACTIVATE,
   conv_route_ACTIVATE,
+  conv_route_DELETE_ONE_CONVERSATION,
 } = process.env as unknown as ENV;
 router.post(conv_route_CREATE, vKey, vToken, createNewConvoController);
 router.get(conv_route_GET_LIST, vKey, vToken, getConversations);
@@ -32,7 +34,14 @@ router.put('/update/:id', async (req, res) => {
     return res.status(500).json('error');
   }
 });
-router.delete('/delete/delete/:id', deleteConversation);
+// router.delete('/delete/delete/:id', vKey, vToken, deleteConversation);
+router.delete(
+  conv_route_DELETE_ONE_CONVERSATION,
+  vKey,
+  vToken,
+  deleteConvoAndMessages
+);
 router.put(conv_route_DEACTIVATE, vKey, vToken, deactivateConversation);
 router.put(conv_route_ACTIVATE, vKey, vToken, activateConversation);
+
 export default router;

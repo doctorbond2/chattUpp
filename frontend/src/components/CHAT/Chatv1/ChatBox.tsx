@@ -46,7 +46,7 @@ const ChatBox: React.FC<Props> = ({
           <Col
             xs={8}
             className={'border rounded'}
-            style={{ height: '40vh', overflow: 'auto' }}
+            style={{ height: '70vh', overflow: 'auto', width: '600px' }}
             ref={chatWindow}
           >
             <>
