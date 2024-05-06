@@ -69,7 +69,7 @@ const ChatterWindow: React.FC<Props> = ({
       return;
     }
   };
-  useEffect(() => {}, [handleAddNewFriend, handleRemoveFriend]);
+
   return (
     <>
       {user && (

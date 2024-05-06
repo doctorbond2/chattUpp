@@ -145,7 +145,7 @@ const ChatConvoList: React.FC<Props> = ({
               }
               return 0;
             })
-            .filter((c) => c._id !== activeRoom)
+            // .filter((c) => c._id !== activeRoom)
             .map((convo: Conversation, i) => {
               return (
                 <ChatConvoListItem

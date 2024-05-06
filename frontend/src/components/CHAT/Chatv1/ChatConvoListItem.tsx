@@ -60,7 +60,7 @@ const ChatConvoListItem: React.FC<Props> = ({
   // }, [socket]);
   return (
     <>
-      {friend && profileData && (
+      {friend && profileData && convo.messages.length > 0 ? (
         <Card style={convoStyling}>
           <Card.Header>
             {convo.hasNewMessage && <Spinner animation="grow" />}
@@ -85,7 +85,49 @@ const ChatConvoListItem: React.FC<Props> = ({
                         }
                       }}
                     >
-                      Chat!
+                      Join chat!
+                    </Button>
+                    <Button
+                      style={{ backgroundColor: 'red' }}
+                      onClick={handleConvoDeletion}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </>
+              )}
+
+              {test && <div>sdsd</div>}
+            </Card.Footer>
+          </Card.Body>
+        </Card>
+      ) : (
+        /////// SECOND CARD EMPTY MESSAGES
+        <Card style={convoStyling}>
+          <Card.Header>
+            {convo.hasNewMessage && <Spinner animation="grow" />}
+            {convo.hasNewMessage && 'New messages!'}
+          </Card.Header>
+          <Card.Body>
+            <h2>{friend?.firstname}</h2>
+            <h3>
+              {convo.active ? 'Active conversation' : 'Not friends, not active'}
+            </h3>
+            <Card.Footer>
+              {convo.active && (
+                <>
+                  <div>
+                    <Button
+                      onClick={async () => {
+                        if (friend._id) {
+                          handleActiveConversation(friend._id);
+                        }
+                        if (convo._id) {
+                          resetNotification(convo._id);
+                        }
+                      }}
+                    >
+                      Start new chat!
                     </Button>
                     <Button
                       style={{ backgroundColor: 'red' }}

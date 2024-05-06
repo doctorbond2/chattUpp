@@ -29,6 +29,7 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
   // const [sender, setSender] = useState<any>();
   const [activeChat, setActiveChat] = useState(false);
   const [userInChat, setUserInChat] = useState(false);
+  const [activeRooms, setActiveRooms] = useState<Conversation[]>([]);
   const [senderMessage, setSenderMessage] = useState<any>(null);
   const [activeConversation, setActiveConversation] = useState<Conversation>({
     participants: [],
@@ -56,10 +57,10 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
       console.log(err.message);
     }
   };
-
   const switchToConversation = async (friendId: string) => {
-    if (room.length > 0) {
+    if (room.length > 0 && room !== '') {
       leaveRoom();
+      console.log('LEFT ROOM');
     }
     try {
       const conversation: any = await convoAPI.verifyConversation(friendId);
@@ -156,10 +157,9 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
   };
 
   useEffect(() => {
-    console.log('Current room: ', room);
     return () => {
       console.log('Current room: ', room);
-      if (activeChat && room !== '') {
+      if (room !== '') {
         leaveRoom();
       }
     };
@@ -173,22 +173,19 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
             <Row>
               <Col>
                 <h1>Room: {room}</h1>
-                {activeFriendId &&
-                  messages &&
-                  activeConversation &&
-                  senderMessage && (
-                    <ChatBox
-                      {...{
-                        profileData,
-                        messages,
-                        onMount,
-                        offMount,
-                        room,
-                        socket,
-                      }}
-                    />
-                  )}
-                {activeFriendId && (
+                {room && activeFriendId && (
+                  <ChatBox
+                    {...{
+                      profileData,
+                      messages,
+                      onMount,
+                      offMount,
+                      room,
+                      socket,
+                    }}
+                  />
+                )}
+                {room && activeFriendId && (
                   <ChatInput {...{ activeFriendId, sendMessage }} />
                 )}
               </Col>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { ProfileInfo } from '../../../types/userTypes';
+import { useAuth } from '../../../utils/hooks/AuthContext';
 type Props = {
   friends: any;
   handleActiveConversation: (friendId: string) => Promise<void>;
