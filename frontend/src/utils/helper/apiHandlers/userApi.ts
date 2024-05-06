@@ -42,10 +42,9 @@ class UserAPIKit {
           friendId,
         });
         if (response) {
-          await convoAPI.activateConvoWithFriend(friendId);
+          console.log(response);
           return response;
         }
-        return response;
       } catch (err) {
         throw err;
       }
@@ -58,7 +57,7 @@ class UserAPIKit {
           friendId,
         });
         if (response) {
-          await convoAPI.deactiveConvoWithFriend(friendId);
+          console.log(response);
           return response;
         }
       } catch (err) {

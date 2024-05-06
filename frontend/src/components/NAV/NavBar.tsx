@@ -15,7 +15,7 @@ type Props = {
 };
 
 const mainNavBar: React.FC<Props> = ({}) => {
-  const { loggedIn, logout } = useAuth();
+  const { loggedIn, logout, profileData } = useAuth();
   const navigate = useNavigate();
   const { socket, room: activeRoom } = useSocketV2();
   const [newNotifications, setNewNotifications] = useState<boolean>(false);
@@ -70,7 +70,10 @@ const mainNavBar: React.FC<Props> = ({}) => {
     <>
       <Navbar expand="lg" className="bg-info border-bottom">
         <Container>
-          <Navbar.Brand onClick={() => navigate('/')}>
+          <Navbar.Brand
+            onClick={() => navigate('/')}
+            style={{ cursor: 'pointer' }}
+          >
             <Nav.Item className="d-inline-flex">
               {' '}
               <img
@@ -111,7 +114,9 @@ const mainNavBar: React.FC<Props> = ({}) => {
                   navigate('/login');
                 }}
               >
-                Log in
+                {loggedIn.access
+                  ? 'Logged in as ' + profileData.firstname
+                  : 'Log in'}
               </Nav.Link>
               <Nav.Link
                 onClick={() => {

@@ -33,7 +33,7 @@ class ParseKit {
       return parsedMessage;
     });
 
-    return parsedMessages;
+    return parsedMessages.reverse();
   }
   parseOneMessage(
     message: Message,

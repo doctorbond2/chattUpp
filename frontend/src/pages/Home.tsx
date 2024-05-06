@@ -23,12 +23,14 @@ const Home: React.FC<Props> = ({}) => {
     try {
       const response = await UserAPI.getUserList();
       if (response) {
+        console.log('refreshed chatter list');
         setAllUsersList(response.data);
       }
     } catch (err: any) {
       console.error(err.message);
     }
   };
+
   return (
     <>
       <Container>

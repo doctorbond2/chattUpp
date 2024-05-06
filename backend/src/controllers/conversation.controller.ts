@@ -46,10 +46,12 @@ export const activateConversation = async (
 ) => {
   const { userId } = req;
   const { friendId } = req.body;
+  console.log('Test: ', userId, friendId);
   try {
     const existingConversation: any = await Conversation.findOne({
       participants: { $all: [userId, friendId] },
     });
+    console.log(existingConversation);
     if (existingConversation) {
       existingConversation.active = true;
       console.log(
@@ -60,6 +62,8 @@ export const activateConversation = async (
       );
       await existingConversation.save();
       return res.status(200).json(existingConversation);
+    } else {
+      return res.status(204).send('No conversation found.');
     }
   } catch (err: any) {
     console.log(err.message);
@@ -86,6 +90,8 @@ export const deactivateConversation = async (
       );
       await existingConversation.save();
       return res.status(200).json(existingConversation);
+    } else {
+      return res.status(204).send('No conversation found.');
     }
   } catch (err: any) {
     console.log(err.message);

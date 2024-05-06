@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card } from 'react-bootstrap';
 import { ProfileInfo } from '../../../types/userTypes';
 import UserAPI from '../../../utils/helper/apiHandlers/userApi';
+import convoAPI from '../../../utils/helper/apiHandlers/convoApi';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -32,8 +33,14 @@ const ChatterWindow: React.FC<Props> = ({
       try {
         const response = await UserAPI.addNewFriend(user._id);
         if (response) {
-          console.log(response.data);
-          refreshChatterList();
+          console.log('USER ADD RESPONSE: ', response.data);
+          const convoResponse = await convoAPI.activateConvoWithFriend(
+            user._id
+          );
+          if (convoResponse) {
+            console.log('CONVO RESPONSE: ', convoResponse);
+            refreshChatterList();
+          }
         }
       } catch (err: any) {
         console.log(err.message);
@@ -48,7 +55,12 @@ const ChatterWindow: React.FC<Props> = ({
         const response = await UserAPI.removeFriend(user._id);
         if (response) {
           console.log(response.data);
-          refreshChatterList();
+          const convoResponse = await convoAPI.deactiveConvoWithFriend(
+            user._id
+          );
+          if (convoResponse) {
+            console.log('CONVO RESPONSE: ', convoResponse);
+          }
         }
       } catch (err: any) {
         console.log(err.message);
@@ -57,6 +69,7 @@ const ChatterWindow: React.FC<Props> = ({
       return;
     }
   };
+  useEffect(() => {}, [handleAddNewFriend, handleRemoveFriend]);
   return (
     <>
       {user && (
@@ -80,7 +93,7 @@ const ChatterWindow: React.FC<Props> = ({
             <div>
               <h3>Not friends</h3>
               <button
-                onClick={async () => {
+                onClick={() => {
                   handleAddNewFriend(user);
                 }}
               >

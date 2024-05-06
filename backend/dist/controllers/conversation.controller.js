@@ -46,15 +46,20 @@ export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, 
 export const activateConversation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req;
     const { friendId } = req.body;
+    console.log('Test: ', userId, friendId);
     try {
         const existingConversation = yield Conversation.findOne({
             participants: { $all: [userId, friendId] },
         });
+        console.log(existingConversation);
         if (existingConversation) {
             existingConversation.active = true;
             console.log('Activating conversation between: ', existingConversation.participants[0].firstname, ' and ', existingConversation.participants[1].firstname);
             yield existingConversation.save();
             return res.status(200).json(existingConversation);
+        }
+        else {
+            return res.status(204).send('No conversation found.');
         }
     }
     catch (err) {
@@ -74,6 +79,9 @@ export const deactivateConversation = (req, res) => __awaiter(void 0, void 0, vo
             console.log('Deactivating conversation between: ', existingConversation.participants[0].firstname, ' and ', existingConversation.participants[1].firstname);
             yield existingConversation.save();
             return res.status(200).json(existingConversation);
+        }
+        else {
+            return res.status(204).send('No conversation found.');
         }
     }
     catch (err) {
