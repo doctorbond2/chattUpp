@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import Conversation from '../models/conversation.model.js';
+import User from '../models/user.model.js';
 import Message from '../models/message.model.js';
 export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
@@ -33,6 +34,14 @@ export const createNewConvoController = (req, res) => __awaiter(void 0, void 0, 
                 participants: [userId, friendId],
                 active: true,
             });
+            const _you = yield User.findById(userId);
+            const _they = yield User.findById(friendId);
+            if (_you && _they) {
+                _you.conversations.push(newConversation._id);
+                _they.conversations.push(newConversation._id);
+                yield _you.save();
+                yield _they.save();
+            }
             yield newConversation.save();
             console.log('Created a new conversation');
             return res.status(201).json(newConversation);
@@ -105,7 +114,7 @@ export const getConversations = (req, res) => __awaiter(void 0, void 0, void 0, 
             username: 1,
             updatedAt: 1,
         })
-            .sort({ updatedAt: 1 });
+            .sort({ updatedAt: -1 });
         const nonActive_conversations = (yield Conversation.find({
             participants: userId,
             active: false,
@@ -162,6 +171,22 @@ export const deleteConvoAndMessages = (req, res) => __awaiter(void 0, void 0, vo
         yield Conversation.deleteOne({ _id: existingConversation._id });
         console.log('Deleted');
         res.status(204).send('');
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(500).json('');
+    }
+});
+export const getOneConversation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.params.id) {
+        return res.status(404).json({ error: 'ID not found.' });
+    }
+    const { id } = req.params;
+    try {
+        const existingConversation = yield Conversation.findById(id);
+        if (existingConversation) {
+            res.status(200).json(existingConversation);
+        }
     }
     catch (err) {
         console.log(err.message);

@@ -1,4 +1,5 @@
 import Conversation from '../models/conversation.model.js';
+import User from '../models/user.model.js';
 import { Response, Request } from 'express';
 import Message from '../models/message.model.js';
 export const createNewConvoController = async (
@@ -31,6 +32,14 @@ export const createNewConvoController = async (
         participants: [userId, friendId],
         active: true,
       });
+      const _you = await User.findById(userId);
+      const _they = await User.findById(friendId);
+      if (_you && _they) {
+        _you.conversations.push(newConversation._id);
+        _they.conversations.push(newConversation._id);
+        await _you.save();
+        await _they.save();
+      }
       await newConversation.save();
       console.log('Created a new conversation');
       return res.status(201).json(newConversation);
@@ -114,7 +123,7 @@ export const getConversations = async (req: Request | any, res: Response) => {
         username: 1,
         updatedAt: 1,
       })
-      .sort({ updatedAt: 1 });
+      .sort({ updatedAt: -1 });
     const nonActive_conversations =
       (await Conversation.find({
         participants: userId,
@@ -174,6 +183,23 @@ export const deleteConvoAndMessages = async (
     await Conversation.deleteOne({ _id: existingConversation._id });
     console.log('Deleted');
     res.status(204).send('');
+  } catch (err: any) {
+    console.log(err.message);
+    return res.status(500).json('');
+  }
+};
+export const getOneConversation = async (req: Request | any, res: Response) => {
+  if (!req.params.id) {
+    return res.status(404).json({ error: 'ID not found.' });
+  }
+
+  const { id } = req.params;
+
+  try {
+    const existingConversation: any = await Conversation.findById(id);
+    if (existingConversation) {
+      res.status(200).json(existingConversation);
+    }
   } catch (err: any) {
     console.log(err.message);
     return res.status(500).json('');

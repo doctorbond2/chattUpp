@@ -11,6 +11,8 @@ export interface AuthUser {
   logout: () => void;
   setLoggedIn: React.Dispatch<React.SetStateAction<ActiveUser>>;
   profileData: ProfileInfo;
+  setProfileData: React.Dispatch<React.SetStateAction<ProfileInfo>>;
+  fetchUserProfile: () => Promise<void>;
 }
 export const defaultAuthUser = {
   loggedIn: LOGGED_OUT,
@@ -18,6 +20,8 @@ export const defaultAuthUser = {
   logout: () => {},
   setLoggedIn: () => {},
   profileData: defaultProfileInfo,
+  setProfileData: () => {},
+  fetchUserProfile: async () => {},
 };
 export interface TwoTokens {
   access: string;

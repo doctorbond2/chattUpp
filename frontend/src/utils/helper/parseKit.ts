@@ -20,16 +20,7 @@ class ParseKit {
         parsedMessage.sentBy = you;
         parsedMessage.receivedBy = friendId;
       }
-      console.log('m sentby: ', m.sentBy, m);
-      console.log(i, ' ');
-      console.log(
-        i,
-        ' ',
-        'sentby: ',
-        parsedMessage.sentBy.firstname,
-        'receivedby',
-        parsedMessage.receivedBy.firstname
-      );
+
       return parsedMessage;
     });
 

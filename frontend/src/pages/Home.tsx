@@ -5,10 +5,12 @@ import { ProfileInfo } from '../types/userTypes';
 import { useAuth } from '../utils/hooks/AuthContext';
 import ChatterWindow from '../components/CHAT/Chatv2/ChatterWindow';
 import UserAPI from '../utils/helper/apiHandlers/userApi';
+import { useNavigate } from 'react-router-dom';
 type Props = {};
 const Home: React.FC<Props> = ({}) => {
   const { loggedIn, profileData } = useAuth();
   const [allUsersList, setAllUsersList] = useState<ProfileInfo[]>([]);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -18,6 +20,9 @@ const Home: React.FC<Props> = ({}) => {
       }
     };
     fetchData();
+    if (loggedIn.access) {
+      navigate('/chat');
+    }
   }, []);
   const refreshChatterList = async () => {
     try {

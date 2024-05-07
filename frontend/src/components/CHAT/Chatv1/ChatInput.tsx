@@ -3,9 +3,14 @@ import { Message } from '../../../types/chatTypes';
 type Props = {
   activeFriendId: string;
   sendMessage: (message: Message) => void;
+  leaveRoom: () => void;
 };
 
-const ChatInput: React.FC<Props> = ({ activeFriendId, sendMessage }) => {
+const ChatInput: React.FC<Props> = ({
+  activeFriendId,
+  sendMessage,
+  leaveRoom,
+}) => {
   const [messageText, setMessageText] = useState('');
   const handleSetMessageText = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessageText(e.target.value);
@@ -15,7 +20,7 @@ const ChatInput: React.FC<Props> = ({ activeFriendId, sendMessage }) => {
       <input value={messageText} onChange={handleSetMessageText} />
       <button
         onClick={async () => {
-          await sendMessage({
+          sendMessage({
             textContent: messageText,
             receivedBy: activeFriendId,
           });
@@ -23,16 +28,7 @@ const ChatInput: React.FC<Props> = ({ activeFriendId, sendMessage }) => {
       >
         Send message
       </button>
-      <button
-        onClick={() => {
-          sendMessage({
-            textContent: messageText,
-            receivedBy: activeFriendId,
-          });
-        }}
-      >
-        testSend
-      </button>
+      <button onClick={leaveRoom}>Leave room</button>
     </>
   );
 };

@@ -1,6 +1,11 @@
 import { admin, client, user } from '../axiosInstanceConfig';
 import { AdminTokens } from '../../types/authTypes';
 import { Conversation } from '../../types/chatTypes';
+
+type StorageRoom = {
+  users: string[];
+  conversation: string;
+};
 class LocalStorageKit {
   constructor() {
     console.log('meme');
@@ -74,6 +79,92 @@ class LocalStorageKit {
       localStorage.getItem('notifications_list') || '[]';
     const notificationsList = JSON.parse(currentStorage);
     return notificationsList;
+  }
+  addToRoom(userId: string, roomId: string) {
+    let currentStorage: any = localStorage.getItem('room_list') || '[]';
+    let roomList: StorageRoom[] = JSON.parse(currentStorage);
+    if (roomList.length > 0) {
+      roomList.forEach((r) => {
+        if (r.users.includes(userId)) {
+          const index = r.users.findIndex((u) => u === userId);
+          r.users.splice(index, 1);
+        }
+        if (r.conversation === roomId) {
+          if (!r.users.includes(userId)) {
+            r.users.push(userId);
+          }
+        }
+      });
+      const index = roomList.findIndex((r) => r.conversation === roomId);
+      if (index === -1) {
+        const newRoom = {
+          conversation: roomId,
+          users: [userId],
+        };
+        roomList.push(newRoom);
+      }
+    } else {
+      console.log('Test room 2');
+      const newRoom = {
+        conversation: roomId,
+        users: [userId],
+      };
+      roomList.push(newRoom);
+    }
+
+    localStorage.setItem('room_list', JSON.stringify(roomList));
+  }
+  removeFromRoom(userId: string, roomId: string) {
+    let currentStorage: any = localStorage.getItem('room_list') || '[]';
+    let roomList: StorageRoom[] = JSON.parse(currentStorage);
+    if (roomList.length > 0) {
+      roomList.forEach((r) => {
+        if (r.conversation === roomId) {
+          if (r.users.includes(userId)) {
+            const index = r.users.findIndex((u) => u === userId);
+            r.users.splice(index, 1);
+            if (r.users.length <= 0) {
+              const index = roomList.findIndex(
+                (r) => r.conversation === roomId
+              );
+              roomList.splice(index, 1);
+            }
+          }
+        }
+      });
+    }
+    localStorage.setItem('room_list', JSON.stringify(roomList));
+  }
+  getRoomList() {
+    let currentStorage: any = localStorage.getItem('room_list') || '[]';
+    let roomList: StorageRoom[] = JSON.parse(currentStorage);
+    return roomList;
+  }
+  checkIfInActiveRoom(roomId: string, userId: string) {
+    const roomList = localStorageKit.getRoomList();
+    console.log('roomList: ', roomList);
+    return (
+      roomList.find(
+        (r) => r.conversation === roomId && r.users.includes(userId)
+      ) || null
+    );
+  }
+  clearUserFromRoomListOnRefresh(userId: string) {
+    const roomList = localStorageKit.getRoomList();
+    roomList.forEach((r, i: number) => {
+      const index = r.users.findIndex((u) => {
+        return u === userId;
+      });
+
+      if (index !== -1) {
+        r.users.splice(index, 1);
+      }
+      console.warn(r.users.length);
+      if (r.users.length <= 0) {
+        roomList.splice(i, 1);
+      }
+    });
+    localStorage.setItem('room_list', JSON.stringify(roomList));
   }
 }
 

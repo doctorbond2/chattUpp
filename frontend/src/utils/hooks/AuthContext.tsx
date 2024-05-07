@@ -69,10 +69,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
       fetchProfileData();
     }
   }, [loggedIn]);
-
+  async function fetchUserProfile() {
+    try {
+      const response = await UserAPI.getUserDetails();
+      if (response) {
+        console.log('Set profiledata', response);
+        setProfileData(response.data);
+      }
+    } catch (err: any) {
+      console.log('ERROR SETTING PROFILE', err.message);
+    }
+  }
   return (
     <AuthContext.Provider
-      value={{ loggedIn, login, logout, setLoggedIn, profileData }}
+      value={{
+        loggedIn,
+        login,
+        logout,
+        setLoggedIn,
+        profileData,
+        setProfileData,
+        fetchUserProfile,
+      }}
     >
       {children}
     </AuthContext.Provider>

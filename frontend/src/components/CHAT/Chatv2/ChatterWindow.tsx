@@ -4,6 +4,7 @@ import { ProfileInfo } from '../../../types/userTypes';
 import UserAPI from '../../../utils/helper/apiHandlers/userApi';
 import convoAPI from '../../../utils/helper/apiHandlers/convoApi';
 import { useNavigate } from 'react-router-dom';
+import { Conversation } from '../../../types/chatTypes';
 
 type Props = {
   profileData: ProfileInfo;
@@ -16,18 +17,24 @@ const ChatterWindow: React.FC<Props> = ({
   user,
   refreshChatterList,
 }) => {
-  const navigate = useNavigate();
-  const friendChecker = (friendId: string) => {
-    if (profileData.friends) {
-      const yourFriends: any[] = profileData.friends;
-      for (const friend of yourFriends) {
-        if (friend._id === friendId) {
-          return true;
-        }
-      }
-    }
-    return false;
-  };
+  useEffect(() => {
+    console.warn('ASDASD');
+  }, [profileData]);
+
+  // const friendChecker = (friendId: string) => {
+  //   if (profileData.friends) {
+  //     const index = profileData.friends.findIndex(
+  //       (f: any) => f._id === friendId
+  //     );
+  //     if (index >= 0) {
+  //       console.log('You are friends');
+  //     } else {
+  //       console.log('You are not friends');
+  //     }
+  //     return index !== -1;
+  //   }
+  //   return false;
+  // };
   const handleAddNewFriend = async (user: ProfileInfo) => {
     if (user) {
       try {
@@ -60,6 +67,7 @@ const ChatterWindow: React.FC<Props> = ({
           );
           if (convoResponse) {
             console.log('CONVO RESPONSE: ', convoResponse);
+            refreshChatterList();
           }
         }
       } catch (err: any) {
@@ -72,16 +80,17 @@ const ChatterWindow: React.FC<Props> = ({
 
   return (
     <>
-      {user && (
+      {user && user.friends && (
         <Card style={{ width: '10vw' }}>
-          <h2>{user.firstname}</h2>
-          <h3>No. Friends: {user.friends?.length}</h3>
-          {friendChecker(user._id) ? (
+          <h2>{user?.firstname}</h2>
+          <h6>No. Friends: {user.friends?.length}</h6>
+          {user?._id &&
+          profileData.friends?.find((f: any) => f._id === user._id) ? (
             <>
               <div>
-                <h3>Friends!</h3>
+                <h5>Friends!</h5>
                 <button
-                  onClick={async () => {
+                  onClick={() => {
                     handleRemoveFriend(user);
                   }}
                 >
@@ -101,6 +110,10 @@ const ChatterWindow: React.FC<Props> = ({
               </button>
             </div>
           )}
+          {profileData.conversations &&
+            profileData.conversations?.find((c: any) => {
+              return user.conversations?.includes(c._id);
+            }) && <button>asd</button>}
         </Card>
       )}
     </>

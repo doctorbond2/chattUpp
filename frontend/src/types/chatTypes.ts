@@ -6,6 +6,8 @@ export interface Conversation {
   active?: boolean;
   hasNewMessage?: boolean;
   hasChatter?: boolean;
+  updatedAt?: string;
+  createdAt?: string;
 }
 export interface Message {
   textContent: string;

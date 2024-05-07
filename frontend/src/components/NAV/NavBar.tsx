@@ -65,15 +65,17 @@ const mainNavBar: React.FC<Props> = ({}) => {
       setNewNotifications(false);
     }
   }, [activeRoom]);
-
+  //   <div>
+  //   {/* {newNotifications && loggedIn.access && newNotifications} */}
+  //   {newNotifications && loggedIn.access && (
+  //     <Spinner animation="grow" />
+  //   )}
+  // </div>
   return (
     <>
       <Navbar expand="lg" className="bg-info border-bottom">
         <Container>
-          <Navbar.Brand
-            onClick={() => navigate('/')}
-            style={{ cursor: 'pointer' }}
-          >
+          <Navbar.Brand>
             <Nav.Item className="d-inline-flex">
               {' '}
               <img
@@ -89,60 +91,39 @@ const mainNavBar: React.FC<Props> = ({}) => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <NavDropdown
-                title={loggedIn?.access ? 'Profile' : 'Logged out'}
-                id="basic-nav-dropdown"
-              >
-                <NavDropdown.Item onClick={() => navigate('/login')}>
-                  {loggedIn.access ? 'Profile' : 'Sign in'}
-                </NavDropdown.Item>
-                <NavDropdown.Item onClick={() => navigate('/register')}>
-                  {loggedIn.access ? 'Friendlist' : 'Sign up'}
-                </NavDropdown.Item>
-                {loggedIn.adminToken && (
-                  <>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item onClick={() => navigate('/admin')}>
-                      Admin page
-                    </NavDropdown.Item>
-                  </>
-                )}
-              </NavDropdown>
+              {!loggedIn.access && (
+                <NavDropdown
+                  title={loggedIn?.access ? 'Profile' : 'Logged out'}
+                  id="basic-nav-dropdown"
+                >
+                  <NavDropdown.Item onClick={() => navigate('/login')}>
+                    {loggedIn.access ? 'Profile' : 'Sign in'}
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item onClick={() => navigate('/register')}>
+                    {loggedIn.access ? 'Friendlist' : 'Sign up'}
+                  </NavDropdown.Item>
+                  {loggedIn.adminToken && <></>}
+                </NavDropdown>
+              )}
 
-              <Nav.Link
-                onClick={() => {
-                  navigate('/login');
-                }}
-              >
-                {loggedIn.access
-                  ? 'Logged in as ' + profileData.firstname
-                  : 'Log in'}
-              </Nav.Link>
-              <Nav.Link
+              {!loggedIn.access && (
+                <Nav.Link
+                  onClick={() => {
+                    navigate('/login');
+                  }}
+                ></Nav.Link>
+              )}
+              {loggedIn.access && (
+                <h2>Logged in as {profileData.firstname} </h2>
+              )}
+              {/* <Nav.Link
                 onClick={() => {
                   navigate('/chat');
                 }}
               >
                 Chat
-              </Nav.Link>
-              <div>
-                {/* {newNotifications && loggedIn.access && newNotifications} */}
-                {newNotifications && loggedIn.access && (
-                  <Spinner animation="grow" />
-                )}
-              </div>
-
-              {loggedIn.access ? (
-                <Nav.Link
-                  onClick={() => {
-                    navigate('/profile');
-                  }}
-                >
-                  Profile
-                </Nav.Link>
-              ) : (
-                ''
-              )}
+              </Nav.Link> */}
             </Nav>
           </Navbar.Collapse>
           {loggedIn.access && (
@@ -156,7 +137,9 @@ const mainNavBar: React.FC<Props> = ({}) => {
           )}
         </Container>
       </Navbar>
-      <Outlet />
+      <Container>
+        <Outlet />
+      </Container>
     </>
   );
 };

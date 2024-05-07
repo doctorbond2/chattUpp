@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Conversation } from '../../../types/chatTypes';
 import { Card, Button } from 'react-bootstrap';
 import convoAPI from '../../../utils/helper/apiHandlers/convoApi';
+import localStorageKit from '../../../utils/helper/localstorageKit';
 import Spinner from 'react-bootstrap/Spinner';
 type Props = {
   convo: Conversation;
@@ -19,7 +20,12 @@ const ChatConvoListItem: React.FC<Props> = ({
   resetNotification,
 }) => {
   const convoStyling = {
-    backgroundColor: convo.active ? 'white' : 'gray',
+    backgroundColor:
+      convo.active && convo.hasChatter
+        ? 'yellow'
+        : convo.active
+        ? 'white'
+        : 'gray',
     color: convo.active ? 'gray' : 'white',
   };
   const [friend, setFriend] = useState<any>(null);
@@ -31,6 +37,10 @@ const ChatConvoListItem: React.FC<Props> = ({
       setFriend(convo.participants[0]);
     }
   }, [convo, profileData]);
+  const formattedTimestamp = (timestamp: string) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
+  };
   const handleConvoDeletion = async () => {
     const yes = confirm(
       'Are you sure you want to delete this conversation and all its messages?'
@@ -58,6 +68,7 @@ const ChatConvoListItem: React.FC<Props> = ({
   //     socket.off('receive_message', handleNotification);
   //   };
   // }, [socket]);
+
   return (
     <>
       {friend && profileData && convo.messages.length > 0 ? (
@@ -67,10 +78,16 @@ const ChatConvoListItem: React.FC<Props> = ({
             {convo.hasNewMessage && 'New messages!'}
           </Card.Header>
           <Card.Body>
-            <h2>{friend.firstname}</h2>
-            <h3>
-              {convo.active ? 'Active conversation' : 'Not friends, not active'}
-            </h3>
+            <h5>{friend?.firstname + ' ' + friend?.lastname}</h5>
+            <h6>{!convo.active && 'Not friends, not active'}</h6>
+            <h6>{convo.hasChatter && 'ACTIVE CHAT'}</h6>
+            <h6>
+              {convo.updatedAt
+                ? formattedTimestamp(convo.updatedAt)
+                : convo.createdAt
+                ? formattedTimestamp(convo.createdAt)
+                : ''}
+            </h6>
             <Card.Footer>
               {convo.active && (
                 <>
@@ -109,10 +126,10 @@ const ChatConvoListItem: React.FC<Props> = ({
             {convo.hasNewMessage && 'New messages!'}
           </Card.Header>
           <Card.Body>
-            <h2>{friend?.firstname}</h2>
-            <h3>
-              {convo.active ? 'Active conversation' : 'Not friends, not active'}
-            </h3>
+            <h5>{friend?.firstname + ' ' + friend?.lastname}</h5>
+            <h6>
+              {convo.active ? 'Friend' : 'Not friends - blocked conversation.'}
+            </h6>
             <Card.Footer>
               {convo.active && (
                 <>

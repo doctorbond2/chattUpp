@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Message } from '../../../types/chatTypes';
 import { Container, Col, Row } from 'react-bootstrap';
 import convoAPI from '../../../utils/helper/apiHandlers/convoApi';
-
+import localStorageKit from '../../../utils/helper/localstorageKit';
+import UserAPI from '../../../utils/helper/apiHandlers/userApi';
 import { Conversation } from '../../../types/chatTypes';
 import { ProfileInfo } from '../../../types/userTypes';
 import ChatInput from '../Chatv1/ChatInput';
@@ -20,7 +21,7 @@ type Props = {
 };
 
 const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
-  const { loggedIn } = useAuth();
+  const { loggedIn, setProfileData } = useAuth();
   const { room, setRoom } = useSocketV2();
   //STATES
   const [messages, setMessages] = useState<Message[]>([]);
@@ -49,9 +50,7 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
         receivedBy: senderMessage.receivedBy,
         conversation: activeConversation._id,
       };
-      console.log('sending message:', newChatMessage);
       socket.emit('send_message', { message: newChatMessage, room });
-      console.log('to set in database:', message);
       await convoAPI.addNewMessage(message);
     } catch (err: any) {
       console.log(err.message);
@@ -60,16 +59,14 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
   const switchToConversation = async (friendId: string) => {
     if (room.length > 0 && room !== '') {
       leaveRoom();
-      console.log('LEFT ROOM');
     }
     try {
       const conversation: any = await convoAPI.verifyConversation(friendId);
       if (conversation.data) {
         const { data } = conversation;
         const { _id, messages: databaseMessages, participants } = data;
-        console.log('DATA INFORMATION: ', data);
-        console.log('MORE INFO: ', participants);
         joinRoom(_id);
+        console.warn('ROOM', room);
         setActiveConversation(conversation.data);
         setSenderMessage(() => {
           let object = {};
@@ -86,23 +83,18 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
           }
           return object;
         });
-        console.log(senderMessage);
-        // setSender(sender);
         if (
           databaseMessages &&
           databaseMessages.length >= 0 &&
           participants &&
           friendId
         ) {
-          console.log("It's ok and now we parse");
           const parsedMessages: Message[] = chatParser.parseChatMessages(
             databaseMessages,
             participants,
             friendId
           );
           setMessages(parsedMessages);
-        } else {
-          console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA?');
         }
       }
     } catch (err: any) {
@@ -115,21 +107,28 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
       setActiveFriendId(friendId);
     }
   };
-  const returnSender = (both: string[], friend: string) => {
-    const you: any = both.find((you) => you !== friend);
-    if (you) {
-      return you.firstname;
-    }
-  };
+  // const returnSender = (both: string[], friend: string) => {
+  //   const you: any = both.find((you) => you !== friend);
+  //   if (you) {
+  //     return you.firstname;
+  //   }
+  // };
 
   const joinRoom = async (conversationId: string) => {
-    socket.emit('join_room', conversationId);
+    const joinRoomInfo = {
+      room: conversationId,
+      joiner: profileData._id,
+    };
+    socket.emit('join_room', joinRoomInfo);
     setRoom(conversationId);
-    setUserInChat(true);
   };
   const leaveRoom = () => {
     if (room !== '') {
-      socket.emit('leave_room', room);
+      const leaverInfo = {
+        room: room,
+        leaver: profileData._id,
+      };
+      socket.emit('leave_room', leaverInfo);
       setRoom('');
       setUserInChat(false);
     }
@@ -155,8 +154,24 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
   const offMount = () => {
     socket.off('receive_message', handleMessage);
   };
-
+  // const returnToRoom = async (conversationId: string) => {
+  //   try {
+  //     const conversation = await convoAPI.getConversation(conversationId);
+  //     if (conversation) {
+  //       const { data } = conversation;
+  //       console.warn(data);
+  //       const { participants } = data;
+  //       const friendId = participants.filter(
+  //         (p: string) => p !== profileData._id
+  //       );
+  //       await switchToConversation(friendId);
+  //     }
+  //   } catch (err: any) {
+  //     console.error(err.message);
+  //   }
+  // };
   useEffect(() => {
+    localStorageKit.clearUserFromRoomListOnRefresh(profileData._id);
     return () => {
       console.log('Current room: ', room);
       if (room !== '') {
@@ -164,6 +179,20 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
       }
     };
   }, []);
+  // useEffect(() => {
+  //   const roomList = localStorageKit.getRoomList();
+  //   let room_id = '';
+  //   roomList.forEach((r) => {
+  //     if (r.users.includes(profileData._id)) {
+  //       room_id = r.conversation;
+  //     }
+  //   });
+  //   if (room_id !== '' && room_id) {
+  //     console.warn('RETURNING TO ROOM');
+  //     returnToRoom(room_id);
+  //   }
+  // }, []);
+  // Kolla om man är vän annars uppdatera inte localstorage
 
   return (
     <>
@@ -172,8 +201,20 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
           <Container>
             <Row>
               <Col>
-                <h1>Room: {room}</h1>
-                {room && activeFriendId && (
+                {' '}
+                {friends && profileData && (
+                  <ChatFriendList
+                    {...{
+                      friends,
+                      handleActiveConversation,
+                      profileData,
+                    }}
+                  />
+                )}
+              </Col>
+              <Col>
+                <h1>{room && 'Room:' + room}</h1>
+                {activeFriendId && activeConversation && room && (
                   <ChatBox
                     {...{
                       profileData,
@@ -186,21 +227,10 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
                   />
                 )}
                 {room && activeFriendId && (
-                  <ChatInput {...{ activeFriendId, sendMessage }} />
+                  <ChatInput {...{ activeFriendId, sendMessage, leaveRoom }} />
                 )}
               </Col>
-              <Col>
-                {' '}
-                {friends && (
-                  <ChatFriendList
-                    {...{
-                      friends,
-                      handleActiveConversation,
-                      profileData,
-                    }}
-                  />
-                )}
-              </Col>
+
               <Col>
                 {profileData && (
                   <ChatConvoList

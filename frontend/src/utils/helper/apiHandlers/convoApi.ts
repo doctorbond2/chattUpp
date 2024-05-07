@@ -5,9 +5,21 @@ const {
   VITE_conv_route_DEACTIVATE,
   VITE_conv_route_ACTIVATE,
   VITE_conv_route_DELETE_ONE_CONVERSATION,
+  VITE_conv_route_GET_ONE,
 } = import.meta.env;
 class ConvoAPIKit {
   constructor() {}
+  async getConversation(conversationId: string) {
+    console.warn(VITE_conv_route_GET_ONE + conversationId);
+    try {
+      const response = await user.get(VITE_conv_route_GET_ONE + conversationId);
+      if (response) {
+        return response;
+      }
+    } catch (err: any) {
+      throw err;
+    }
+  }
   async verifyConversation(friendId: string) {
     try {
       const response = await user.post(VITE_conv_route_CREATE, { friendId });

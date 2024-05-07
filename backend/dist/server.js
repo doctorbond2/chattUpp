@@ -35,16 +35,20 @@ const io = new Server(server, {
 io.on('connection', (socket) => {
     console.log('User Connected: ' + socket.id);
     socket.on('join_room', (data) => {
-        console.log('joined', data);
-        socket.broadcast.emit('join_notification', data);
-        socket.join(data);
+        console.log('joined', data.room);
+        socket.broadcast.emit('join_notification', data.room);
+        socket.broadcast.emit('join_room', data);
+        socket.emit('join_room', data);
+        socket.join(data.room);
     });
     socket.on('leave_room', (data) => {
         try {
             if (!data) {
                 throw new Error('Room name is required.');
             }
-            socket.leave(data);
+            socket.emit('leave_room', data);
+            socket.broadcast.emit('leave_room', data);
+            socket.leave(data.room);
         }
         catch (error) {
             console.error('Error leaving room:', error.message);
