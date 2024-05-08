@@ -35,17 +35,18 @@ export const defaultChatContextState = {
   },
   joinRoom: (roomId: string) => {
     let something = roomId;
-    something = '';
+    console.log(something);
   },
   sendMessage: async (message: Message) => {
     let something = message;
     something.textContent = '';
+    console.log(something.textContent);
   },
   room: '',
   messages: [],
   switchToConversation: async (friendId: string) => {
     let something = friendId;
-    something = '';
+    console.log(something);
   },
   messageHandler: () => {},
   onMount: () => {},
