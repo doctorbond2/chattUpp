@@ -37,7 +37,7 @@ const ChatConvoList: React.FC<Props> = ({
       }
     };
     getConversationList();
-  }, [profileData]);
+  }, [profileData, room]);
   const getConversationList = async () => {
     try {
       const response = await UserAPI.getUserConversations();
@@ -119,7 +119,6 @@ const ChatConvoList: React.FC<Props> = ({
       setConversationList((prevConversationList) => {
         const updatedConvoList = prevConversationList.map((c) => {
           if (data.room === c._id && c.active === true) {
-            console.log(c._id);
             return { ...c, hasNewMessage: true };
           }
           return c;
@@ -183,7 +182,12 @@ const ChatConvoList: React.FC<Props> = ({
         console.warn(data);
         if (c.participants.find((p) => p._id === data)) {
           console.log('test 1');
-          return { ...c, active: false };
+          return {
+            ...c,
+            active: false,
+            hasNewMessage: false,
+            hasChatter: false,
+          };
         }
         return c;
       });
@@ -192,7 +196,12 @@ const ChatConvoList: React.FC<Props> = ({
     setFilteredConvos((prevFilteredConvos) => {
       const updatedFilteredConvos = prevFilteredConvos.map((c) => {
         if (c.participants.find((p) => p._id === data)) {
-          return { ...c, active: false };
+          return {
+            ...c,
+            active: false,
+            hasNewMessage: false,
+            hasChatter: false,
+          };
         }
         return c;
       });
@@ -221,7 +230,6 @@ const ChatConvoList: React.FC<Props> = ({
     });
   };
   const activateConversation = (data: any) => {
-    console.warn('TESTEST');
     setConversationList((prevConversationList) => {
       const updatedConvoList = prevConversationList.map((c) => {
         if (c._id === data.room) {
@@ -277,15 +285,19 @@ const ChatConvoList: React.FC<Props> = ({
 
   return (
     <>
-      <button
-        onClick={() => {
-          console.log(activeRoom);
-        }}
-      >
-        check
-      </button>
-      <label htmlFor="searchConvos-input">Search conversations</label>
-      <input id={'searchConvos-input"'} onChange={handleFilter} />
+      {conversationList.length > 0 && filteredConvos.length > 0 ? (
+        <>
+          <label htmlFor="searchConvos-input" style={{ fontFamily: 'Arial' }}>
+            Search conversations
+          </label>
+          <input id={'searchConvos-input"'} onChange={handleFilter} />
+        </>
+      ) : (
+        <h3 style={{ marginRight: ' 20vw', marginTop: '20vh' }}>
+          Welcome! Why not start some new conversations?
+        </h3>
+      )}
+
       <div style={{ overflow: 'auto', height: '70vh' }}>
         {conversationList &&
           filteredConvos &&
@@ -302,6 +314,12 @@ const ChatConvoList: React.FC<Props> = ({
                 return -1;
               }
               if (!a.chatActive && b.chatActive) {
+                return 1;
+              }
+              if (a.active && !b.active) {
+                return -1;
+              }
+              if (!a.active && b.active) {
                 return 1;
               }
               return 0;

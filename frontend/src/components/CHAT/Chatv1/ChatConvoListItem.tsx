@@ -30,7 +30,7 @@ const ChatConvoListItem: React.FC<Props> = ({
     fontFamily: 'Arial',
   };
   const [friend, setFriend] = useState<any>(null);
-  const [latestMessage, setLatestMessage] = useState<Message>();
+  const [latestMessage, setLatestMessage] = useState<Message[]>([]);
   useEffect(() => {
     const getLatestMessage = async () => {
       if (convo._id) {
@@ -38,7 +38,8 @@ const ChatConvoListItem: React.FC<Props> = ({
           const response = await convoAPI.getLatestMessage(convo._id);
           if (response) {
             console.log(response.data[0]);
-            setLatestMessage(response.data[0] || null);
+            console.warn(response.data);
+            setLatestMessage(response.data);
           }
         } catch (err: any) {
           console.log(err.message);
@@ -73,6 +74,7 @@ const ChatConvoListItem: React.FC<Props> = ({
       if (response?.status === 204) {
         alert('Conversation deleted.');
         socket.emit('delete_conversation', convo._id);
+        window.location.reload();
       }
     } catch (err: any) {
       console.log(err.message);
@@ -86,8 +88,10 @@ const ChatConvoListItem: React.FC<Props> = ({
       !convo.hasNewMessage ? (
         <Card style={convoStyling}>
           <Card.Header>
-            {convo.hasNewMessage && <Spinner animation="grow" />}
-            {convo.hasNewMessage && 'New messages!'}
+            {convo.hasNewMessage && convo.active && (
+              <Spinner animation="grow" />
+            )}
+            {convo.hasNewMessage && convo.active && 'New messages!'}
           </Card.Header>
           <Card.Body>
             <h5>{friend?.firstname + ' ' + friend?.lastname}</h5>
@@ -117,7 +121,7 @@ const ChatConvoListItem: React.FC<Props> = ({
                       Join chat!
                     </Button>
                     <Button
-                      style={{ backgroundColor: 'red' }}
+                      style={{ backgroundColor: 'red', marginLeft: '5px' }}
                       onClick={handleConvoDeletion}
                     >
                       Delete
@@ -125,8 +129,20 @@ const ChatConvoListItem: React.FC<Props> = ({
                   </div>
                 </>
               )}
+              {!convo.active && (
+                <Button
+                  style={{ backgroundColor: 'red' }}
+                  onClick={handleConvoDeletion}
+                >
+                  Delete
+                </Button>
+              )}
             </Card.Footer>
-            {latestMessage?.sentBy !== profileData._id &&
+            {latestMessage &&
+              convo.active &&
+              latestMessage.length > 0 &&
+              latestMessage[0]?.sentBy !== profileData._id &&
+              latestMessage[0]?.sentBy !== null &&
               `Latest message from: ${friend?.firstname}`}
           </Card.Body>
         </Card>
@@ -134,8 +150,10 @@ const ChatConvoListItem: React.FC<Props> = ({
         /////// SECOND CARD EMPTY MESSAGES
         <Card style={convoStyling}>
           <Card.Header>
-            {convo.hasNewMessage && <Spinner animation="grow" />}
-            {convo.hasNewMessage && 'New messages!'}
+            {convo.hasNewMessage && convo.active && (
+              <Spinner animation="grow" />
+            )}
+            {convo.hasNewMessage && convo.active && 'New messages!'}
           </Card.Header>
           <Card.Body>
             <h5>{friend?.firstname + ' ' + friend?.lastname}</h5>
@@ -159,7 +177,7 @@ const ChatConvoListItem: React.FC<Props> = ({
                       Join Chat!
                     </Button>
                     <Button
-                      style={{ backgroundColor: 'red' }}
+                      style={{ backgroundColor: 'red', marginLeft: '5px' }}
                       onClick={handleConvoDeletion}
                     >
                       Delete
@@ -167,8 +185,20 @@ const ChatConvoListItem: React.FC<Props> = ({
                   </div>
                 </>
               )}
+              {!convo.active && (
+                <Button
+                  style={{ backgroundColor: 'red' }}
+                  onClick={handleConvoDeletion}
+                >
+                  Delete
+                </Button>
+              )}
             </Card.Footer>
-            {latestMessage?.sentBy !== profileData._id &&
+            {latestMessage &&
+              convo.active &&
+              latestMessage.length > 0 &&
+              latestMessage[0]?.sentBy !== profileData._id &&
+              latestMessage[0]?.sentBy !== null &&
               `Latest message from: ${friend?.firstname}`}
           </Card.Body>
         </Card>

@@ -22,7 +22,6 @@ const mainNavBar: React.FC<Props> = ({}) => {
     if (activeRoom !== data.room) {
       const currentNotifications = localStorageKit.getNavNotification();
       if (!currentNotifications.includes(data.room)) {
-        localStorageKit.notificationStorage(data.room);
         const updatedNotifications = localStorageKit.getNavNotification();
         setNewNotifications(() => updatedNotifications.length);
       }
@@ -84,7 +83,7 @@ const mainNavBar: React.FC<Props> = ({}) => {
                 className="align-top "
                 alt="chattupp-logo"
               />
-              <h1>CHATT UPP</h1>
+              <h1>CHAT UP</h1>
             </Nav.Item>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />

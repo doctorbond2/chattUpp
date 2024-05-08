@@ -35,7 +35,9 @@ const ChatInput: React.FC<Props> = ({
         Send message
       </Button>
       <Button
-        onClick={leaveRoom}
+        onClick={() => {
+          leaveRoom();
+        }}
         style={{ backgroundColor: 'red', color: 'black', fontFamily: 'Arial' }}
       >
         Leave room

@@ -6,13 +6,13 @@ import ChatterWindow from '../Chatv2/ChatterWindow';
 // import { Container, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 type Props = {
-  // friends: any;
+  friends: any;
   // handleActiveConversation: (friendId: string) => Promise<void>;
   profileData: ProfileInfo;
   socket: any;
 };
 
-const ChatFriendList: React.FC<Props> = ({ profileData, socket }) => {
+const ChatFriendList: React.FC<Props> = ({ profileData, socket, friends }) => {
   const { loggedIn, fetchUserProfile } = useAuth();
   const [allUsersList, setAllUsersList] = useState<ProfileInfo[]>([]);
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const ChatFriendList: React.FC<Props> = ({ profileData, socket }) => {
     if (loggedIn.access) {
       navigate('/chat');
     }
-  }, []);
+  }, [friends]);
   const refreshChatterList = async () => {
     try {
       const response = await UserAPI.getUserList();

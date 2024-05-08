@@ -227,6 +227,7 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
                     {...{
                       profileData,
                       socket,
+                      friends,
                     }}
                   />
                 )}
