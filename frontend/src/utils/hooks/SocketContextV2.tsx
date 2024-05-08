@@ -3,12 +3,11 @@ import { io, Socket } from 'socket.io-client';
 import { defaultSCV2I, SocketContextV2Interface } from '../../types/chatTypes';
 import { useAuth } from './AuthContext';
 import localStorageKit from '../helper/localstorageKit';
-type Props = {};
 
 const SocketV2Context = createContext<SocketContextV2Interface>(defaultSCV2I);
 export const useSocketV2 = () => useContext(SocketV2Context);
 export const SocketContextV2Provider = ({ children }: any) => {
-  const { loggedIn, profileData } = useAuth();
+  const { loggedIn } = useAuth();
   const newSocket: Socket = io(import.meta.env.VITE_ServerPort);
   const [room, setRoom] = useState('');
   const [socket, setSocket] = useState<any>(null);

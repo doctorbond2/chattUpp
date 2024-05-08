@@ -1,6 +1,4 @@
 import { user, client } from '../../axiosInstanceConfig';
-import localStorageKit from '../localstorageKit';
-import convoAPI from './convoApi';
 const {
   VITE_user_route_LIST,
   VITE_user_route_PROFILE_DETAILS,

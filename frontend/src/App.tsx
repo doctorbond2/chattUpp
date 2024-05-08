@@ -6,12 +6,10 @@ import Register from './pages/subpages/Register';
 import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
 import Login from './pages/Login';
-import AdminPage from './pages/AdminPage';
 import { AuthProvider } from './utils/hooks/AuthContext';
 import { Container } from 'react-bootstrap';
 import ChatPage from './pages/ChatPage';
 import { SocketContextV2Provider } from './utils/hooks/SocketContextV2';
-import { useEffect } from 'react';
 function App() {
   return (
     <>

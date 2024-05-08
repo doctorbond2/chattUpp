@@ -3,7 +3,8 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import { io, Socket } from 'socket.io-client';
 console.log(import.meta.env.VITE_ServerPort);
 const socket: Socket = io(import.meta.env.VITE_ServerPort);
-const TestAndTry: React.FC = ({}) => {
+type Props = {};
+const TestAndTry: React.FC<Props> = ({}) => {
   const [message, setMessage] = useState('');
   const [messageReceived, setMessageReceived] = useState('');
   const [room, setRoom] = useState('');
@@ -33,7 +34,7 @@ const TestAndTry: React.FC = ({}) => {
       setMessageReceived(data.message);
     });
   }, [socket]);
-  type Props = {};
+
   return (
     <>
       <h3>Test Chat Area</h3>

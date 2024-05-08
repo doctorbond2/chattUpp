@@ -6,7 +6,7 @@ console.log(import.meta.env.VITE_ServerPort);
 const socket: Socket = io(import.meta.env.VITE_ServerPort);
 //-----------------------------
 //States
-const ChatRoom: React.FC = ({}) => {
+const ChatRoom: React.FC<Props> = ({}) => {
   const [message, setMessage] = useState('');
   const [messageRecieved, setMessageRecieved] = useState('');
   const [room, setRoom] = useState('');

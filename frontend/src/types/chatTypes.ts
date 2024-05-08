@@ -22,20 +22,30 @@ export interface ChatContextInterface {
   sendMessage: (message: Message) => Promise<void>;
   room: string;
   messages: Message[];
-  messageReceived: string;
   switchToConversation: (friendId: string) => Promise<void>;
   messageHandler: (message: Message) => void;
   onMount: () => void;
   offMount: () => void;
 }
 export const defaultChatContextState = {
-  leaveRoom: (conversation: string) => {},
-  joinRoom: (roomId: string) => {},
-  sendMessage: async (message: Message) => {},
+  leaveRoom: (conversation: string) => {
+    let something = conversation;
+    something = '';
+  },
+  joinRoom: (roomId: string) => {
+    let something = roomId;
+    something = '';
+  },
+  sendMessage: async (message: Message) => {
+    let something = message;
+    something.textContent = '';
+  },
   room: '',
   messages: [],
-  messageReceived: '',
-  switchToConversation: async (friendId: string) => {},
+  switchToConversation: async (friendId: string) => {
+    let something = friendId;
+    something = '';
+  },
   messageHandler: () => {},
   onMount: () => {},
   offMount: () => {},

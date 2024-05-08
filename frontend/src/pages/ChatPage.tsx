@@ -4,7 +4,6 @@ import UserAPI from '../utils/helper/apiHandlers/userApi';
 import { useAuth } from '../utils/hooks/AuthContext';
 import Chatv2 from '../components/CHAT/Chatv2/Chatv2';
 import { useSocketV2 } from '../utils/hooks/SocketContextV2';
-import localStorageKit from '../utils/helper/localstorageKit';
 type Props = {};
 const ChatPage: React.FC<Props> = ({}) => {
   const { loggedIn, profileData } = useAuth();

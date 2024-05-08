@@ -1,7 +1,7 @@
 import React from 'react';
 import Login_Input from '../components/LOGIN/Login_Input';
 import { useState, useEffect } from 'react';
-import { Stack, Button } from 'react-bootstrap';
+import { Stack } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../utils/hooks/AuthContext';
 import Login_Register from '../components/LOGIN/Login_Register';

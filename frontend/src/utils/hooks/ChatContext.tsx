@@ -14,7 +14,7 @@ import {
 import { io, Socket } from 'socket.io-client';
 const socket: Socket = io(import.meta.env.VITE_ServerPort);
 import convoAPI from '../helper/apiHandlers/convoApi';
-import { Conversation } from '../../types/chatTypes';
+// import { Conversation } from '../../types/chatTypes';
 
 const ChatContext = createContext<ChatContextInterface>(
   defaultChatContextState
@@ -36,12 +36,11 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
   }, []);
   const [messages, setMessages] = useState<Message[]>([]);
   const [room, setRoom] = useState('');
-  const [messageReceived, setMessageReceived] = useState('');
-  const [sender, setSender] = useState<any>();
-  const [activeConversation, setActiveConversation] = useState<
-    Conversation | {}
-  >({});
-  const [currentMessages, setCurrentMessages] = useState<Message[]>();
+  // const [messageReceived, setMessageReceived] = useState('');
+  // const [activeConversation, setActiveConversation] = useState<
+  //   Conversation | {}
+  // >({});
+
   const sendMessage = async (message: Message) => {
     console.log('Sent message: ' + message + ' ' + 'To Room:' + room);
     try {
@@ -51,12 +50,12 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
       console.log(err.message);
     }
   };
-  const returnSender = (both: string[], friend: string) => {
-    const you: any = both.find((you) => you !== friend);
-    if (you) {
-      return you._id;
-    }
-  };
+  // const returnSender = (both: string[], friend: string) => {
+  //   const you: any = both.find((you) => you !== friend);
+  //   if (you) {
+  //     return you._id;
+  //   }
+  // };
   const switchToConversation = async (friendId: string) => {
     if (room.length > 0) {
       leaveRoom();
@@ -69,9 +68,8 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
         const { _id, messages } = data;
         await joinRoom(_id);
         setMessages([...messages].reverse());
-        setActiveConversation(conversation.data);
-        const sender = returnSender(conversation.data?.participants, friendId);
-        setSender(sender);
+        // setActiveConversation(conversation.data);
+        // const sender = returnSender(conversation.data?.participants, friendId);
       }
     } catch (err: any) {
       console.log('Error caught! ', err.message);
@@ -119,7 +117,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
         sendMessage,
         joinRoom,
         leaveRoom,
-        messageReceived,
+
         switchToConversation,
         messageHandler,
         onMount,

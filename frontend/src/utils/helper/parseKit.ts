@@ -10,7 +10,7 @@ class ParseKit {
   ) {
     const p: any[] = participants;
     const you = p.find((item) => item._id !== friendId);
-    const parsedMessages = messages.map((m: Message, i: number) => {
+    const parsedMessages = messages.map((m: Message) => {
       let parsedMessage: Message = { ...m };
 
       if (m.sentBy === friendId) {
