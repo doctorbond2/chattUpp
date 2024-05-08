@@ -32,6 +32,7 @@ export const defaultChatContextState = {
   leaveRoom: (conversation: string) => {
     let something = conversation;
     something = '';
+    console.log(something);
   },
   joinRoom: (roomId: string) => {
     let something = roomId;
