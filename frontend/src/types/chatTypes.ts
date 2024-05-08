@@ -6,6 +6,7 @@ export interface Conversation {
   active?: boolean;
   hasNewMessage?: boolean;
   hasChatter?: boolean;
+  chatActive?: boolean;
   updatedAt?: string;
   createdAt?: string;
 }

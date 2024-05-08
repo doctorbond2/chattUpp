@@ -52,3 +52,21 @@ export function deleteAllTheMessages(req, res) {
         }
     });
 }
+export const getLatestMessageFromConversation = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.params.id) {
+        return res.status(404).json({ error: 'ID not found.' });
+    }
+    const { id } = req.params;
+    try {
+        const _latestMessage = yield Message.find({ conversation: id })
+            .sort({
+            createdAt: -1,
+        })
+            .limit(1);
+        res.status(200).json(_latestMessage);
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(500).json('');
+    }
+});

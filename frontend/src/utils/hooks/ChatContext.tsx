@@ -91,7 +91,6 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     socket.off('receive_message', messageHandler);
   };
   const messageHandler = (message: Message) => {
-    console.log('Incoming data: ', message);
     socket.off('receive_message', messageHandler);
     setMessages((prev) => [...prev, message]);
   };
@@ -106,9 +105,7 @@ export const ChatProvider = ({ children }: ChatProviderProps) => {
     setRoom('');
   };
 
-  useEffect(() => {
-    console.log('Updated messages: ', messages);
-  }, [messages]);
+  useEffect(() => {}, [messages]);
   return (
     <ChatContext.Provider
       value={{

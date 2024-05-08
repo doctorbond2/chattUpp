@@ -4,25 +4,24 @@ import { Conversation } from '../../../types/chatTypes';
 import UserAPI from '../../../utils/helper/apiHandlers/userApi';
 import { ProfileInfo } from '../../../types/userTypes';
 import localStorageKit from '../../../utils/helper/localstorageKit';
-import { match } from 'assert';
+import { useSocketV2 } from '../../../utils/hooks/SocketContextV2';
 type Props = {
   profileData: ProfileInfo;
   socket: any;
   handleActiveConversation: (friendId: string) => Promise<void>;
-  activeChat: boolean;
-  activeRoom: string;
+  leaveRoom: () => void;
 };
 
 const ChatConvoList: React.FC<Props> = ({
   profileData,
   socket,
   handleActiveConversation,
-  activeChat,
-  activeRoom,
+  leaveRoom,
 }) => {
+  const [activeRoom, setActiveRoom] = useState<string>('');
+  const { room } = useSocketV2();
   const [conversationList, setConversationList] = useState<Conversation[]>([]);
   const [filteredConvos, setFilteredConvos] = useState<Conversation[]>([]);
-  const [filterQuery, setFilterQuery] = useState<string>('');
   useEffect(() => {
     const getConversationList = async () => {
       try {
@@ -39,10 +38,19 @@ const ChatConvoList: React.FC<Props> = ({
     };
     getConversationList();
   }, [profileData]);
-
+  const getConversationList = async () => {
+    try {
+      const response = await UserAPI.getUserConversations();
+      if (response) {
+        setConversationList(localStorageKit.getNotificationList(response.data));
+        setFilteredConvos(localStorageKit.getNotificationList(response.data));
+      }
+    } catch (err: any) {
+      console.log('ERROR getting conversations', err.message);
+    }
+  };
   const handleFilter = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value.toLowerCase().trim();
-    setFilterQuery(query);
     console.log(query);
     const queryWords = query.split(/\s+/);
     const filter = conversationList.filter((c) => {
@@ -71,12 +79,11 @@ const ChatConvoList: React.FC<Props> = ({
     console.warn(data, profileData.conversations);
     const roomList = localStorageKit.getRoomList();
     setConversationList((prevConversationList) => {
-      const updatedConvoList = prevConversationList.map((c, i: number) => {
+      const updatedConvoList = prevConversationList.map((c) => {
         const matchingRoom = roomList.find((r) => c._id === r.conversation);
         c.hasChatter = false;
         if (matchingRoom && !data.leaver) {
           if (matchingRoom.users.length > 0) {
-            console.warn(i + 1);
             c.hasChatter = true;
           }
         }
@@ -100,27 +107,9 @@ const ChatConvoList: React.FC<Props> = ({
       return updatedFilteredConvos;
     });
   };
-  useEffect(() => {
-    if (!socket) {
-      return;
-    }
-    socket.on('join_room', handleActiveRooms);
-    socket.on('leave_room', handleActiveRooms);
-    return () => {
-      socket.off('join_room', handleActiveRooms);
-      socket.off('leave_room', handleActiveRooms);
-    };
-  }, [socket]);
-  // useEffect(() => {}, [socket]);
-  useEffect(() => {
-    mountNotificationSocket();
-    return () => {
-      unMountNotificationSocket();
-    };
-  }, [socket]);
-  useEffect(() => {
-    console.log('Room has changed: ', activeRoom);
-  }, [activeRoom]);
+  const handleNewConversation = () => {
+    getConversationList();
+  };
   const handleNotification = (data: any) => {
     const inRoom = localStorageKit.checkIfInActiveRoom(
       data.room,
@@ -178,9 +167,123 @@ const ChatConvoList: React.FC<Props> = ({
       return updatedFilteredConvos;
     });
   };
+  const handleDeleteConversation = (data: any) => {
+    const isActive = localStorageKit.checkIfInActiveRoom(data, profileData._id);
+    if (isActive) {
+      alert('This conversation has been deleted.');
+      leaveRoom();
+      window.location.reload();
+    }
+    getConversationList();
+  };
+  const handleRemoveFriend = (data: any) => {
+    setConversationList((prevConversationList) => {
+      const updatedConvoList = prevConversationList.map((c) => {
+        console.warn(c.participants);
+        console.warn(data);
+        if (c.participants.find((p) => p._id === data)) {
+          console.log('test 1');
+          return { ...c, active: false };
+        }
+        return c;
+      });
+      return updatedConvoList;
+    });
+    setFilteredConvos((prevFilteredConvos) => {
+      const updatedFilteredConvos = prevFilteredConvos.map((c) => {
+        if (c.participants.find((p) => p._id === data)) {
+          return { ...c, active: false };
+        }
+        return c;
+      });
+      return updatedFilteredConvos;
+    });
+  };
+  const handleAddFriend = (data: any) => {
+    setConversationList((prevConversationList) => {
+      const updatedConvoList = prevConversationList.map((c) => {
+        if (c.participants.find((p) => p._id === data)) {
+          console.log('test 1');
+          return { ...c, active: true };
+        }
+        return c;
+      });
+      return updatedConvoList;
+    });
+    setFilteredConvos((prevFilteredConvos) => {
+      const updatedFilteredConvos = prevFilteredConvos.map((c) => {
+        if (c.participants.find((p) => p._id === data)) {
+          return { ...c, active: true };
+        }
+        return c;
+      });
+      return updatedFilteredConvos;
+    });
+  };
+  const activateConversation = (data: any) => {
+    console.warn('TESTEST');
+    setConversationList((prevConversationList) => {
+      const updatedConvoList = prevConversationList.map((c) => {
+        if (c._id === data.room) {
+          return { ...c, chatActive: true };
+        }
+        return c;
+      });
+      return updatedConvoList;
+    });
+    setFilteredConvos((prevFilteredConvos) => {
+      const updatedFilteredConvos = prevFilteredConvos.map((c) => {
+        if (c._id === data.room) {
+          return { ...c, chatActive: true };
+        }
+        return c;
+      });
+      return updatedFilteredConvos;
+    });
+  };
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
+    socket.on('add_friend', handleAddFriend);
+    socket.on('remove_friend', handleRemoveFriend);
+    socket.on('join_room', handleActiveRooms);
+    socket.on('leave_room', handleActiveRooms);
+    socket.on('new_conversation', handleNewConversation);
+    socket.on('delete_conversation', handleDeleteConversation);
+    socket.on('notification_message', activateConversation);
+    return () => {
+      socket.off('add_friend', handleAddFriend);
+      socket.off('remove_friend', handleRemoveFriend);
+      socket.off('join_room', handleActiveRooms);
+      socket.off('leave_room', handleActiveRooms);
+      socket.off('new_conversation', handleNewConversation);
+      socket.off('delete_conversation', handleDeleteConversation);
+      socket.off('notification_message', activateConversation);
+    };
+  }, [socket]);
+  useEffect(() => {
+    mountNotificationSocket();
+    return () => {
+      unMountNotificationSocket();
+    };
+  }, [socket]);
+  useEffect(() => {
+    setActiveRoom(room);
+  }, [room]);
+  useEffect(() => {
+    console.log('Room has changed: ', activeRoom);
+  }, [activeRoom]);
 
   return (
     <>
+      <button
+        onClick={() => {
+          console.log(activeRoom);
+        }}
+      >
+        check
+      </button>
       <label htmlFor="searchConvos-input">Search conversations</label>
       <input id={'searchConvos-input"'} onChange={handleFilter} />
       <div style={{ overflow: 'auto', height: '70vh' }}>
@@ -195,10 +298,10 @@ const ChatConvoList: React.FC<Props> = ({
               if (!a.hasNewMessage && b.hasNewMessage) {
                 return 1;
               }
-              if (a.hasChatter && !b.hasChatter) {
+              if (a.chatActive && !b.chatActive) {
                 return -1;
               }
-              if (!a.hasChatter && b.hasChatter) {
+              if (!a.chatActive && b.chatActive) {
                 return 1;
               }
               return 0;
@@ -212,8 +315,8 @@ const ChatConvoList: React.FC<Props> = ({
                     convo,
                     handleActiveConversation,
                     profileData,
-                    socket,
                     resetNotification,
+                    socket,
                   }}
                 />
               );

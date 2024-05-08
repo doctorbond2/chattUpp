@@ -41,6 +41,20 @@ io.on('connection', (socket) => {
     socket.emit('join_room', data);
     socket.join(data.room);
   });
+  socket.on('new_conversation', () => {
+    socket.broadcast.emit('new_conversation');
+  });
+  socket.on('delete_conversation', (data) => {
+    socket.broadcast.emit('delete_conversation', data);
+    socket.emit('delete_conversation', data);
+  });
+  socket.on('remove_friend', (data) => {
+    console.log('remove friend');
+    socket.broadcast.emit('remove_friend', data);
+  });
+  socket.on('add_friend', (data) => {
+    socket.broadcast.emit('add_friend', data);
+  });
   socket.on('leave_room', (data) => {
     try {
       if (!data) {

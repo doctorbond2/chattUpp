@@ -13,6 +13,7 @@ import {
   activateConversation,
   deleteConvoAndMessages,
   getOneConversation,
+  createOneNewConversation,
 } from '../controllers/conversation.controller.js';
 const {
   conv_route_CREATE,
@@ -21,6 +22,7 @@ const {
   conv_route_ACTIVATE,
   conv_route_DELETE_ONE_CONVERSATION,
   conv_route_GET_ONE,
+  conv_route_CREATE_ONE,
 } = process.env as unknown as ENV;
 router.post(conv_route_CREATE, vKey, vToken, createNewConvoController);
 router.get(conv_route_GET_LIST, vKey, vToken, getConversations);
@@ -45,4 +47,5 @@ router.delete(
 router.put(conv_route_DEACTIVATE, vKey, vToken, deactivateConversation);
 router.put(conv_route_ACTIVATE, vKey, vToken, activateConversation);
 router.get(conv_route_GET_ONE, vKey, vToken, getOneConversation);
+router.post(conv_route_CREATE_ONE, vKey, vToken, createOneNewConversation);
 export default router;

@@ -7,9 +7,7 @@ type StorageRoom = {
   conversation: string;
 };
 class LocalStorageKit {
-  constructor() {
-    console.log('meme');
-  }
+  constructor() {}
   STORAGE_TOKEN_KEY = import.meta.env.VITE_STORAGE_TOKEN_KEY;
   setTokensInStorage(tokens: AdminTokens) {
     localStorage.setItem(this.STORAGE_TOKEN_KEY, JSON.stringify(tokens));
@@ -104,7 +102,6 @@ class LocalStorageKit {
         roomList.push(newRoom);
       }
     } else {
-      console.log('Test room 2');
       const newRoom = {
         conversation: roomId,
         users: [userId],
@@ -142,11 +139,14 @@ class LocalStorageKit {
   }
   checkIfInActiveRoom(roomId: string, userId: string) {
     const roomList = localStorageKit.getRoomList();
-    console.log('roomList: ', roomList);
+
     return (
-      roomList.find(
-        (r) => r.conversation === roomId && r.users.includes(userId)
-      ) || null
+      roomList.find((r) => {
+        console.warn(r);
+        console.log(roomId);
+        console.error(userId);
+        return r.conversation === roomId && r.users.includes(userId);
+      }) || null
     );
   }
   clearUserFromRoomListOnRefresh(userId: string) {

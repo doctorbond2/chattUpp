@@ -6,6 +6,8 @@ const {
   VITE_conv_route_ACTIVATE,
   VITE_conv_route_DELETE_ONE_CONVERSATION,
   VITE_conv_route_GET_ONE,
+  VITE_conv_route_CREATE_ONE,
+  VITE_message_route_GET_LATEST_MESSAGE,
 } = import.meta.env;
 class ConvoAPIKit {
   constructor() {}
@@ -64,6 +66,30 @@ class ConvoAPIKit {
     try {
       const response = await user.delete(
         VITE_conv_route_DELETE_ONE_CONVERSATION + friendId
+      );
+      if (response) {
+        return response;
+      }
+    } catch (err: any) {
+      throw err;
+    }
+  }
+  async createOneNewConversation(friendId: string) {
+    try {
+      const response = await user.post(VITE_conv_route_CREATE_ONE, {
+        friendId,
+      });
+      if (response) {
+        return response;
+      }
+    } catch (err: any) {
+      throw err;
+    }
+  }
+  async getLatestMessage(conversationId: string) {
+    try {
+      const response = await user.get(
+        VITE_message_route_GET_LATEST_MESSAGE + conversationId
       );
       if (response) {
         return response;

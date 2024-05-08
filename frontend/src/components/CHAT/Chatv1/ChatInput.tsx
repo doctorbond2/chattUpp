@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Message } from '../../../types/chatTypes';
+import { Button } from 'react-bootstrap';
 type Props = {
   activeFriendId: string;
   sendMessage: (message: Message) => void;
@@ -18,7 +19,12 @@ const ChatInput: React.FC<Props> = ({
   return (
     <>
       <input value={messageText} onChange={handleSetMessageText} />
-      <button
+      <Button
+        style={{
+          backgroundColor: 'lightblue',
+          color: 'black',
+          fontFamily: 'Arial',
+        }}
         onClick={async () => {
           sendMessage({
             textContent: messageText,
@@ -27,8 +33,13 @@ const ChatInput: React.FC<Props> = ({
         }}
       >
         Send message
-      </button>
-      <button onClick={leaveRoom}>Leave room</button>
+      </Button>
+      <Button
+        onClick={leaveRoom}
+        style={{ backgroundColor: 'red', color: 'black', fontFamily: 'Arial' }}
+      >
+        Leave room
+      </Button>
     </>
   );
 };

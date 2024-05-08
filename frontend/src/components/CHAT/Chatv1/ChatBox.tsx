@@ -9,7 +9,6 @@ type Props = {
   messages: Message[];
   onMount: () => void;
   offMount: () => void;
-  room: string;
   socket: any;
 };
 
@@ -18,7 +17,6 @@ const ChatBox: React.FC<Props> = ({
   messages,
   onMount,
   offMount,
-  room,
   socket,
 }) => {
   const chatWindow: any = useRef(null);
@@ -27,9 +25,7 @@ const ChatBox: React.FC<Props> = ({
       chatWindow.current.scrollTop = chatWindow.current.scrollHeight;
     }
   };
-  console.log('Chatbox messages: ', messages);
   useEffect(() => {
-    console.log('trying to mount');
     onMount();
     return () => {
       offMount();

@@ -36,14 +36,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     if (loginData) {
       try {
         const response = await AuthAPI.loginRequest(loginData);
-        console.log('RESPONSE', response);
         if (response) {
           if (response.adminToken) {
             setLoggedIn(response);
-            console.log('LOGIN SUCCESS: Logged in as ADMIN');
           } else {
             setLoggedIn(response);
-            console.log('LOGIN SUCCESS: Logged in as standard user');
           }
           navigate('/');
         }
@@ -54,11 +51,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
   useEffect(() => {
     const fetchProfileData = async () => {
-      console.log('Fetching data');
       try {
         const response = await UserAPI.getUserDetails();
         if (response) {
-          console.log('Set profiledata', response);
           setProfileData(response.data);
         }
       } catch (err: any) {
@@ -73,7 +68,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     try {
       const response = await UserAPI.getUserDetails();
       if (response) {
-        console.log('Set profiledata', response);
         setProfileData(response.data);
       }
     } catch (err: any) {

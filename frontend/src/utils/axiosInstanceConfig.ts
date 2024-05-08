@@ -61,7 +61,6 @@ user.interceptors.request.use(
   async (config) => {
     const tokens = localStorageKit.getTokensFromStorage();
     if (tokens && tokens.access) {
-      console.log('Added token in interceptor request USER');
       config.headers.Authorization = `Bearer ${tokens.access}`;
     }
     return config;

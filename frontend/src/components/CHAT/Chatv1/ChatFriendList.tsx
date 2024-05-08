@@ -3,20 +3,16 @@ import { ProfileInfo } from '../../../types/userTypes';
 import { useAuth } from '../../../utils/hooks/AuthContext';
 import UserAPI from '../../../utils/helper/apiHandlers/userApi';
 import ChatterWindow from '../Chatv2/ChatterWindow';
-import { Container, Card } from 'react-bootstrap';
+// import { Container, Card } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { all } from 'axios';
 type Props = {
-  friends: any;
-  handleActiveConversation: (friendId: string) => Promise<void>;
+  // friends: any;
+  // handleActiveConversation: (friendId: string) => Promise<void>;
   profileData: ProfileInfo;
+  socket: any;
 };
 
-const ChatFriendList: React.FC<Props> = ({
-  friends,
-  handleActiveConversation,
-  profileData,
-}) => {
+const ChatFriendList: React.FC<Props> = ({ profileData, socket }) => {
   const { loggedIn, fetchUserProfile } = useAuth();
   const [allUsersList, setAllUsersList] = useState<ProfileInfo[]>([]);
   const navigate = useNavigate();
@@ -38,11 +34,8 @@ const ChatFriendList: React.FC<Props> = ({
       const response = await UserAPI.getUserList();
       if (response) {
         console.log('refreshed chatter list');
-        console.log(response.data);
-        console.log(allUsersList);
         await fetchUserProfile();
         setAllUsersList(response.data);
-        console.log(allUsersList);
       }
     } catch (err: any) {
       console.error(err.message);
@@ -50,16 +43,29 @@ const ChatFriendList: React.FC<Props> = ({
   };
   return (
     <>
-      <div style={{ borderLeft: '1px solid lightgray', overflow: 'auto' }}>
+      <div
+        style={{
+          overflow: 'auto',
+          height: '100vh',
+          width: 'fit-content',
+          fontFamily: 'Arial',
+        }}
+      >
         <h2>All current chatters!</h2>
         {allUsersList &&
+          profileData &&
           allUsersList
             .filter((user) => user._id !== profileData._id)
             .map((user: ProfileInfo, i: number) => {
               return (
                 <ChatterWindow
                   key={'i' + i + 'chattUser'}
-                  {...{ profileData, user, refreshChatterList }}
+                  {...{
+                    profileData,
+                    user,
+                    refreshChatterList,
+                    socket,
+                  }}
                 />
               );
             })}

@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react';
-import { Card } from 'react-bootstrap';
+import { Card, Button } from 'react-bootstrap';
 import { ProfileInfo } from '../../../types/userTypes';
 import UserAPI from '../../../utils/helper/apiHandlers/userApi';
 import convoAPI from '../../../utils/helper/apiHandlers/convoApi';
-import { useNavigate } from 'react-router-dom';
-import { Conversation } from '../../../types/chatTypes';
-
 type Props = {
   profileData: ProfileInfo;
   user: ProfileInfo;
   refreshChatterList: () => Promise<void>;
+  // handleActiveConversation: (friendId: string) => Promise<void>;
+  socket: any;
 };
 
 const ChatterWindow: React.FC<Props> = ({
   profileData,
   user,
   refreshChatterList,
+  socket,
 }) => {
   useEffect(() => {
     console.warn('ASDASD');
@@ -40,12 +40,11 @@ const ChatterWindow: React.FC<Props> = ({
       try {
         const response = await UserAPI.addNewFriend(user._id);
         if (response) {
-          console.log('USER ADD RESPONSE: ', response.data);
           const convoResponse = await convoAPI.activateConvoWithFriend(
             user._id
           );
           if (convoResponse) {
-            console.log('CONVO RESPONSE: ', convoResponse);
+            socket.emit('add_friend', profileData._id);
             refreshChatterList();
           }
         }
@@ -57,16 +56,17 @@ const ChatterWindow: React.FC<Props> = ({
     }
   };
   const handleRemoveFriend = async (user: ProfileInfo) => {
+    console.log(user._id);
+
     if (user) {
       try {
         const response = await UserAPI.removeFriend(user._id);
         if (response) {
-          console.log(response.data);
           const convoResponse = await convoAPI.deactiveConvoWithFriend(
             user._id
           );
           if (convoResponse) {
-            console.log('CONVO RESPONSE: ', convoResponse);
+            socket.emit('remove_friend', profileData._id);
             refreshChatterList();
           }
         }
@@ -77,43 +77,69 @@ const ChatterWindow: React.FC<Props> = ({
       return;
     }
   };
-
+  const createNewConversation = async (friendId: string) => {
+    if (!friendId) {
+      return;
+    }
+    try {
+      const response = await convoAPI.createOneNewConversation(friendId);
+      if (response) {
+        alert('created new conversation');
+        socket.emit('new_conversation');
+        refreshChatterList();
+      }
+    } catch (err: any) {
+      console.log(err.message);
+    }
+  };
   return (
     <>
-      {user && user.friends && (
-        <Card style={{ width: '10vw' }}>
-          <h2>{user?.firstname}</h2>
+      {user && profileData && (
+        <Card style={{ width: '15vw', borderColor: 'blue', margin: '1px' }}>
+          <h4>{user?.username}</h4>
           <h6>No. Friends: {user.friends?.length}</h6>
           {user?._id &&
           profileData.friends?.find((f: any) => f._id === user._id) ? (
             <>
               <div>
                 <h5>Friends!</h5>
-                <button
+                <Button
+                  style={{ backgroundColor: 'red' }}
                   onClick={() => {
                     handleRemoveFriend(user);
                   }}
                 >
-                  Remove
-                </button>
+                  Unfriend
+                </Button>
+                {profileData.conversations &&
+                profileData.conversations?.find((c: any) => {
+                  return user.conversations?.includes(c._id);
+                }) ? (
+                  ''
+                ) : (
+                  <Button
+                    onClick={() => {
+                      createNewConversation(user._id);
+                    }}
+                  >
+                    New conversation!
+                  </Button>
+                )}
               </div>
             </>
           ) : (
             <div>
-              <h3>Not friends</h3>
-              <button
+              <h5>Not friends</h5>
+              <Button
+                style={{ backgroundColor: 'green' }}
                 onClick={() => {
                   handleAddNewFriend(user);
                 }}
               >
                 Add
-              </button>
+              </Button>
             </div>
           )}
-          {profileData.conversations &&
-            profileData.conversations?.find((c: any) => {
-              return user.conversations?.includes(c._id);
-            }) && <button>asd</button>}
         </Card>
       )}
     </>

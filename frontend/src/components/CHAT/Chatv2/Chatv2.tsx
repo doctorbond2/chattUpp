@@ -3,7 +3,6 @@ import { Message } from '../../../types/chatTypes';
 import { Container, Col, Row } from 'react-bootstrap';
 import convoAPI from '../../../utils/helper/apiHandlers/convoApi';
 import localStorageKit from '../../../utils/helper/localstorageKit';
-import UserAPI from '../../../utils/helper/apiHandlers/userApi';
 import { Conversation } from '../../../types/chatTypes';
 import { ProfileInfo } from '../../../types/userTypes';
 import ChatInput from '../Chatv1/ChatInput';
@@ -21,17 +20,15 @@ type Props = {
 };
 
 const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
-  const { loggedIn, setProfileData } = useAuth();
+  const { loggedIn } = useAuth();
   const { room, setRoom } = useSocketV2();
   //STATES
   const [messages, setMessages] = useState<Message[]>([]);
 
   // const [messageReceived, setMessageReceived] = useState('');
   // const [sender, setSender] = useState<any>();
-  const [activeChat, setActiveChat] = useState(false);
-  const [userInChat, setUserInChat] = useState(false);
-  const [activeRooms, setActiveRooms] = useState<Conversation[]>([]);
   const [senderMessage, setSenderMessage] = useState<any>(null);
+  // const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversation, setActiveConversation] = useState<Conversation>({
     participants: [],
     messages: [],
@@ -61,13 +58,16 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
       leaveRoom();
     }
     try {
+      console.warn('friend id: ' + friendId);
       const conversation: any = await convoAPI.verifyConversation(friendId);
       if (conversation.data) {
         const { data } = conversation;
+        console.log('DATA: ', data);
         const { _id, messages: databaseMessages, participants } = data;
-        joinRoom(_id);
-        console.warn('ROOM', room);
+        await joinRoom(_id);
+        setRoom(_id);
         setActiveConversation(conversation.data);
+        // setConversations(conversationData);
         setSenderMessage(() => {
           let object = {};
           if (friendId === participants[0]._id) {
@@ -101,18 +101,15 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
       console.log('Error caught! ', err.message);
     }
   };
+  useEffect(() => {
+    console.error(room);
+  }, [room]);
   const handleActiveConversation = async (friendId: string) => {
     if (friendId !== '') {
       await switchToConversation(friendId);
       setActiveFriendId(friendId);
     }
   };
-  // const returnSender = (both: string[], friend: string) => {
-  //   const you: any = both.find((you) => you !== friend);
-  //   if (you) {
-  //     return you.firstname;
-  //   }
-  // };
 
   const joinRoom = async (conversationId: string) => {
     const joinRoomInfo = {
@@ -120,9 +117,9 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
       joiner: profileData._id,
     };
     socket.emit('join_room', joinRoomInfo);
-    setRoom(conversationId);
   };
   const leaveRoom = () => {
+    console.log('room: ', room);
     if (room !== '') {
       const leaverInfo = {
         room: room,
@@ -130,7 +127,6 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
       };
       socket.emit('leave_room', leaverInfo);
       setRoom('');
-      setUserInChat(false);
     }
   };
   const handleMessage = (data: any) => {
@@ -148,6 +144,31 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
       console.log('Something went wrong with updating chat.');
     }
   };
+  const handleRemovedAsFriend = (data: any) => {
+    if (profileData.conversations) {
+      const sharedConversation: any = profileData.conversations.find(
+        (c: any) => {
+          return c.participants.includes(data);
+        }
+      );
+      if (sharedConversation) {
+        const isActive = localStorageKit.checkIfInActiveRoom(
+          sharedConversation._id,
+          profileData._id
+        );
+        if (isActive) {
+          alert('You were removed as friend.');
+          window.location.reload();
+        }
+      }
+    }
+  };
+  useEffect(() => {
+    socket.on('remove_friend', handleRemovedAsFriend);
+    return () => {
+      socket.off('remove_friend', handleRemovedAsFriend);
+    };
+  }, [socket]);
   const onMount = () => {
     socket.on('receive_message', handleMessage);
   };
@@ -172,12 +193,6 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
   // };
   useEffect(() => {
     localStorageKit.clearUserFromRoomListOnRefresh(profileData._id);
-    return () => {
-      console.log('Current room: ', room);
-      if (room !== '') {
-        leaveRoom();
-      }
-    };
   }, []);
   // useEffect(() => {
   //   const roomList = localStorageKit.getRoomList();
@@ -198,22 +213,25 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
     <>
       {profileData && loggedIn.access && (
         <>
-          <Container>
+          <Container
+            style={{
+              borderRight: '1px solid lightgray',
+              borderLeft: '1px solid lightgray',
+            }}
+          >
             <Row>
               <Col>
                 {' '}
                 {friends && profileData && (
                   <ChatFriendList
                     {...{
-                      friends,
-                      handleActiveConversation,
                       profileData,
+                      socket,
                     }}
                   />
                 )}
               </Col>
               <Col>
-                <h1>{room && 'Room:' + room}</h1>
                 {activeFriendId && activeConversation && room && (
                   <ChatBox
                     {...{
@@ -221,7 +239,6 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
                       messages,
                       onMount,
                       offMount,
-                      room,
                       socket,
                     }}
                   />
@@ -232,15 +249,14 @@ const Chatv2: React.FC<Props> = ({ profileData, friends, socket }) => {
               </Col>
 
               <Col>
-                {profileData && (
+                {profileData && messages && (
                   <ChatConvoList
                     {...{
                       profileData,
                       socket,
                       handleActiveConversation,
-                      activeChat,
+                      leaveRoom,
                     }}
-                    activeRoom={room}
                   />
                 )}
               </Col>

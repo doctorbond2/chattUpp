@@ -103,10 +103,11 @@ const Login_Register: React.FC<Props> = ({
               </Form.Group>
               <Form.Group className="mb-3" controlId="register-form-password-1">
                 <Form.Label>Password</Form.Label>
+
                 <Form.Control
                   type="password"
                   value={registerForm.password}
-                  placeholder="Password"
+                  placeholder="Must include uppercase letter, lowercase letter, and one digit."
                   required
                   onChange={(e) => {
                     setRegisterForm({

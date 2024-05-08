@@ -2,34 +2,53 @@ import React, { useEffect, useState } from 'react';
 import { Conversation } from '../../../types/chatTypes';
 import { Card, Button } from 'react-bootstrap';
 import convoAPI from '../../../utils/helper/apiHandlers/convoApi';
-import localStorageKit from '../../../utils/helper/localstorageKit';
 import Spinner from 'react-bootstrap/Spinner';
+import { Message } from '../../../types/chatTypes';
 type Props = {
   convo: Conversation;
   handleActiveConversation: (friendId: string) => Promise<void>;
   profileData: any;
-  socket: any;
   resetNotification: (conversationId: string) => void;
+  socket: any;
 };
 
 const ChatConvoListItem: React.FC<Props> = ({
   convo,
   handleActiveConversation,
   profileData,
-  socket,
   resetNotification,
+  socket,
 }) => {
   const convoStyling = {
     backgroundColor:
-      convo.active && convo.hasChatter
+      convo.active && convo.chatActive
         ? 'yellow'
         : convo.active
         ? 'white'
         : 'gray',
     color: convo.active ? 'gray' : 'white',
+    fontFamily: 'Arial',
   };
   const [friend, setFriend] = useState<any>(null);
-  const [test, setTest] = useState(false);
+  const [latestMessage, setLatestMessage] = useState<Message>();
+  useEffect(() => {
+    const getLatestMessage = async () => {
+      if (convo._id) {
+        try {
+          const response = await convoAPI.getLatestMessage(convo._id);
+          if (response) {
+            console.log(response.data[0]);
+            setLatestMessage(response.data[0] || null);
+          }
+        } catch (err: any) {
+          console.log(err.message);
+        }
+      }
+    };
+    if (convo._id) {
+      getLatestMessage();
+    }
+  }, [convo]);
   useEffect(() => {
     if (convo.participants[0]._id === profileData._id) {
       setFriend(convo.participants[1]);
@@ -42,6 +61,7 @@ const ChatConvoListItem: React.FC<Props> = ({
     return date.toLocaleString();
   };
   const handleConvoDeletion = async () => {
+    console.log(convo._id);
     const yes = confirm(
       'Are you sure you want to delete this conversation and all its messages?'
     );
@@ -50,28 +70,20 @@ const ChatConvoListItem: React.FC<Props> = ({
     }
     try {
       const response = await convoAPI.deleteConvoWithFriend(friend._id);
+      if (response?.status === 204) {
+        alert('Conversation deleted.');
+        socket.emit('delete_conversation', convo._id);
+      }
     } catch (err: any) {
       console.log(err.message);
     }
   };
-  // const handleNotification = (data: any) => {
-  //   if (data.room === convo._id) {
-  //     console.log(data.room);
-  //     setTest(true);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   socket.on('receive_message', handleNotification);
-
-  //   return () => {
-  //     socket.off('receive_message', handleNotification);
-  //   };
-  // }, [socket]);
-
   return (
     <>
-      {friend && profileData && convo.messages.length > 0 ? (
+      {friend &&
+      profileData &&
+      convo.messages.length > 0 &&
+      !convo.hasNewMessage ? (
         <Card style={convoStyling}>
           <Card.Header>
             {convo.hasNewMessage && <Spinner animation="grow" />}
@@ -113,9 +125,9 @@ const ChatConvoListItem: React.FC<Props> = ({
                   </div>
                 </>
               )}
-
-              {test && <div>sdsd</div>}
             </Card.Footer>
+            {latestMessage?.sentBy !== profileData._id &&
+              `Latest message from: ${friend?.firstname}`}
           </Card.Body>
         </Card>
       ) : (
@@ -144,7 +156,7 @@ const ChatConvoListItem: React.FC<Props> = ({
                         }
                       }}
                     >
-                      Start new chat!
+                      Join Chat!
                     </Button>
                     <Button
                       style={{ backgroundColor: 'red' }}
@@ -155,9 +167,9 @@ const ChatConvoListItem: React.FC<Props> = ({
                   </div>
                 </>
               )}
-
-              {test && <div>sdsd</div>}
             </Card.Footer>
+            {latestMessage?.sentBy !== profileData._id &&
+              `Latest message from: ${friend?.firstname}`}
           </Card.Body>
         </Card>
       )}

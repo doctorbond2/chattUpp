@@ -4,7 +4,6 @@ import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useAuth } from '../../utils/hooks/AuthContext';
 import { NavDropdown, Button } from 'react-bootstrap';
-import Spinner from 'react-bootstrap/Spinner';
 import { Outlet } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import { useSocketV2 } from '../../utils/hooks/SocketContextV2';
@@ -25,7 +24,7 @@ const mainNavBar: React.FC<Props> = ({}) => {
       if (!currentNotifications.includes(data.room)) {
         localStorageKit.notificationStorage(data.room);
         const updatedNotifications = localStorageKit.getNavNotification();
-        setNewNotifications((prev) => updatedNotifications.length);
+        setNewNotifications(() => updatedNotifications.length);
       }
     }
   };

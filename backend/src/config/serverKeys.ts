@@ -18,6 +18,8 @@ export interface ENV {
   conv_route_ACTIVATE: string;
   conv_route_DELETE_ONE_CONVERSATION: string;
   conv_route_GET_ONE: string;
+  conv_route_CREATE_ONE: string;
 
   message_route_CREATE: string;
+  message_route_GET_LATEST_MESSAGE: string;
 }

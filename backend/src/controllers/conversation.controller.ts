@@ -13,6 +13,9 @@ export const createNewConvoController = async (
       participants: { $all: [userId, friendId] },
     }).populate('participants', { username: 1, firstname: 1, lastname: 1 });
     if (existingConversation) {
+      if (!existingConversation.active) {
+        return res.status(401).send('');
+      }
       if (existingConversation.messages.length > 0) {
         console.log('messages: ', existingConversation.messages?.length);
         await existingConversation.populate({
@@ -32,6 +35,7 @@ export const createNewConvoController = async (
         participants: [userId, friendId],
         active: true,
       });
+
       const _you = await User.findById(userId);
       const _they = await User.findById(friendId);
       if (_you && _they) {
@@ -41,9 +45,47 @@ export const createNewConvoController = async (
         await _they.save();
       }
       await newConversation.save();
+      await newConversation.populate('participants', {
+        username: 1,
+        firstname: 1,
+        lastname: 1,
+      });
       console.log('Created a new conversation');
       return res.status(201).json(newConversation);
     }
+  } catch (err: any) {
+    console.log(err.message);
+    return res.status(500).json({ error: err.message });
+  }
+};
+export const createOneNewConversation = async (
+  req: Request | any,
+  res: Response
+) => {
+  const { userId } = req;
+  const { friendId } = req.body;
+  try {
+    const newConversation = new Conversation({
+      participants: [userId, friendId],
+      active: true,
+    });
+
+    const _you = await User.findById(userId);
+    const _they = await User.findById(friendId);
+    if (_you && _they) {
+      _you.conversations.push(newConversation._id);
+      _they.conversations.push(newConversation._id);
+      await _you.save();
+      await _they.save();
+    }
+    await newConversation.save();
+    await newConversation.populate('participants', {
+      username: 1,
+      firstname: 1,
+      lastname: 1,
+    });
+    console.log('Created a new conversation');
+    return res.status(201).json(newConversation);
   } catch (err: any) {
     console.log(err.message);
     return res.status(500).json({ error: err.message });
@@ -108,7 +150,6 @@ export const deactivateConversation = async (
   }
 };
 export const getConversations = async (req: Request | any, res: Response) => {
-  console.log('hi');
   const { userId } = req;
   try {
     let conversationsResponse = [];
