@@ -30,6 +30,7 @@ const ChatInput: React.FC<Props> = ({
             textContent: messageText,
             receivedBy: activeFriendId,
           });
+          setMessageText('');
         }}
       >
         Send message

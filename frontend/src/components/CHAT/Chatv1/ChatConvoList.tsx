@@ -285,7 +285,7 @@ const ChatConvoList: React.FC<Props> = ({
 
   return (
     <>
-      {conversationList.length > 0 && filteredConvos.length > 0 ? (
+      {conversationList.length > 0 ? (
         <>
           <label htmlFor="searchConvos-input" style={{ fontFamily: 'Arial' }}>
             Search conversations
