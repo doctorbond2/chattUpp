@@ -1,43 +1,59 @@
-import React from "react";
-import { LoginStateType } from "../../types/userTypes";
+import React from 'react';
+import { LoginStateType } from '../../types/userTypes';
+import { Button } from 'react-bootstrap';
 type Props = {
   submit_login_info: (e: any) => void;
-  setLoginData: React.Dispatch<React.SetStateAction<LoginStateType>>;
+  handleLoginData: (
+    e: React.ChangeEvent<HTMLInputElement>,
+    input: keyof LoginStateType
+  ) => void;
   loginData: LoginStateType;
+  switchMode: () => void;
 };
 
 const Login_Input: React.FC<Props> = ({
   submit_login_info,
-  setLoginData,
+  handleLoginData,
   loginData,
+  switchMode,
 }) => {
   return (
     <>
-      {" "}
+      {' '}
+      <h2>Welcome to Chat up!</h2>
       <form onSubmit={submit_login_info}>
-        <label htmlFor={"LOGIN-INPUT-FIELD-USERNAME"}>Username</label>
+        <label htmlFor={'LOGIN-INPUT-FIELD-USERNAME'}>Username</label>
+        <br></br>
         <input
-          id={"LOGIN-INPUT-FIELD-USERNAME"}
+          id={'LOGIN-INPUT-FIELD-USERNAME'}
           name="username"
-          type={"text"}
+          type={'text'}
           min={0}
           max={50}
           value={loginData.username}
           onChange={(e) => {
-            setLoginData({ ...loginData, username: e.target.value });
+            handleLoginData(e, 'username');
           }}
         ></input>
-        <label htmlFor={"LOGIN-INPUT-FIELD-PASSWORD"}></label>
+        <br></br>
+        <label htmlFor={'LOGIN-INPUT-FIELD-PASSWORD'}>Password</label>
+        <br></br>
         <input
           type="password"
           name="password"
-          id={"LOGIN-INPUT-FIELD-PASSWORD"}
+          id={'LOGIN-INPUT-FIELD-PASSWORD'}
           value={loginData.password}
           onChange={(e) => {
-            setLoginData({ ...loginData, password: e.target.value });
+            handleLoginData(e, 'password');
           }}
         ></input>
-        <button type={"submit"}>Login!</button>
+        <br></br>
+        <div>
+          <Button type={'submit'} className="bg-success rounded-pill">
+            Login!
+          </Button>
+          <Button onClick={switchMode}>Register</Button>
+        </div>
       </form>
     </>
   );

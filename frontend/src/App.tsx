@@ -1,41 +1,38 @@
-import { Route, Routes } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
-import { ActiveUser } from "./types/userTypes";
-import NavBar from "./components/NavBar";
-import Register from "./pages/subpages/Register";
-import Home from "./pages/Home";
-import Profile from "./pages/Profile";
-import Login from "./pages/Login";
-import { useEffect, useState } from "react";
-import { LOGGED_OUT } from "./types/userTypes";
-import AdminPage from "./pages/AdminPage";
+import { Route, Routes } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
+import NavBar from './components/NAV/NavBar';
+import Register from './pages/subpages/Register';
+import Home from './pages/Home';
+import ProfilePage from './pages/ProfilePage';
+import Login from './pages/Login';
+import AdminPage from './pages/AdminPage';
+import { AuthProvider } from './utils/hooks/AuthContext';
+import { Container } from 'react-bootstrap';
+import ChatPage from './pages/ChatPage';
+import { SocketContextV2Provider } from './utils/hooks/SocketContextV2';
+import { useEffect } from 'react';
 function App() {
-  const [loggedIn, setLoggedIn] = useState<ActiveUser>(() => {
-    const storedLogin = localStorage.getItem("logged_in");
-    return storedLogin != undefined ? JSON.parse(storedLogin) : LOGGED_OUT;
-  });
-  useEffect(() => {
-    if (loggedIn.id) {
-      localStorage.setItem("logged_in", JSON.stringify(loggedIn));
-    } else {
-      localStorage.removeItem("logged_in");
-    }
-  }, [loggedIn]);
   return (
     <>
-      <Routes>
-        <Route element={<NavBar {...{ loggedIn, setLoggedIn }} />}>
-          <Route path="/" element={<Home {...{ loggedIn }} />} />
-          <Route path="/profile" element={<Profile {...{ loggedIn }} />} />
-          <Route
-            path="/login"
-            element={<Login {...{ setLoggedIn, loggedIn }} />}
-          />
-          <Route path="/register" element={<Register />} />
-          <Route path="/admin" element={<AdminPage {...{ loggedIn }} />} />
-        </Route>
-      </Routes>
+      <AuthProvider>
+        <SocketContextV2Provider>
+          {
+            <Container>
+              <Routes>
+                <Route element={<NavBar />}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  {/* <Route path="/admin" element={<AdminPage />} /> */}
+                  <Route path="/chat" element={<ChatPage />} />
+                </Route>
+              </Routes>
+            </Container>
+          }
+        </SocketContextV2Provider>
+      </AuthProvider>
     </>
   );
 }

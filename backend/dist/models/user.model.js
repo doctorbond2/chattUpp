@@ -1,5 +1,5 @@
-import { Schema, model } from "mongoose";
-import { hash_password } from "../middleware/auth.middleware.js";
+import { Schema, model } from 'mongoose';
+import { hashHelper } from '../utilities/hooks/auth.hooks.js';
 const userSchema = new Schema({
     username: {
         type: String,
@@ -18,6 +18,7 @@ const userSchema = new Schema({
         type: String,
         maxLength: 255,
         minLength: 8,
+        match: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
         required: true,
     },
     firstname: {
@@ -40,29 +41,34 @@ const userSchema = new Schema({
     },
     avatar: {
         type: String,
-        default: "none",
+        default: 'none',
     },
     role: {
         type: String,
         required: true,
-        default: "standard",
+        default: 'standard',
+    },
+    admin: {
+        type: Boolean,
+        default: false,
     },
     friends: [
         {
             type: Schema.Types.ObjectId,
-            ref: "User",
+            ref: 'User',
         },
     ],
+    conversations: { type: [Schema.Types.ObjectId], ref: 'Conversation' },
 }, { timestamps: true });
-userSchema.virtual("fullname").get(function () {
+userSchema.virtual('fullname').get(function () {
     return (this.firstname.charAt(0).toUpperCase() +
-        " " +
+        ' ' +
         this.lastname.charAt(0).toUpperCase());
 });
 // TODO
 // ANVÄND PRESAVE FÖR ATT IMPLEMENTERA BILDER!
 //PRE SAVE FÖR ATT KOLLA SPRÅKET -> AJA BAJA!!!
-userSchema.pre("save", hash_password);
+userSchema.pre('save', hashHelper);
 // userSchema.pre("save");
-const User = model("User", userSchema);
+const User = model('User', userSchema);
 export default User;

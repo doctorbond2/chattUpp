@@ -7,14 +7,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import User from "../models/user.model.js";
-import { error_MESSAGE } from "../utilities/helpers/database.helper.js";
-import { compare_password } from "../middleware/auth.middleware.js";
+import User from '../models/user.model.js';
+import { error_MESSAGE } from '../utilities/helpers/database.helper.js';
 export const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body) {
         return res.status(400).json({
-            message: "Bad request.",
-            error: "No user body submitted.",
+            message: 'Bad request.',
+            error: 'No user body submitted.',
         });
     }
     try {
@@ -26,77 +25,165 @@ export const createUser = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
     }
     catch (err) {
-        console.log(error_MESSAGE("post"), err);
+        console.log(error_MESSAGE('post'), err);
         return res.status(400).json({
-            message: "Error creating user",
+            message: 'Error creating user',
             error: err.message,
         });
     }
 });
-export const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+export const updateUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!req.body) {
         return res.status(400).json({
-            message: "Bad request, no login body submitted.",
+            message: 'Bad request.',
+            error: 'No user body submitted.',
         });
     }
-    const { username, password, email } = req.body;
-    console.log("REQBODY:", req.body);
-    if (!password) {
-        return res.status(404).json({
-            message: "Bad login, no password or username/email submitted.",
-        });
-    }
-    if (username) {
-        try {
-            const user = yield User.findOne({ username: username });
-            if (!user) {
-                return res.status(404).json({
-                    message: "Bad login, user not found.",
-                });
-            }
-            const isValidPassword = yield compare_password(password, user.password);
-            if (isValidPassword) {
-                const isAdmin = (user === null || user === void 0 ? void 0 : user.role) === "admin" ? true : false;
-                return res.status(200).json({
-                    message: (user === null || user === void 0 ? void 0 : user.username) + " is logged in!",
-                    access: isAdmin,
-                    user: user === null || user === void 0 ? void 0 : user._id,
-                });
-            }
-            else {
-                return res.status(400).send("Bad login, passwords don't match.");
-            }
-        }
-        catch (err) {
-            return res.status(404).json({
-                message: "Bad login, unexpected error.",
-                error: err.message,
-            });
-        }
-    }
-    else {
-        return res.status(404).json({
-            message: "Bad login, no username/email submitted.",
-        });
-    }
-});
-export const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("Test backend");
     if (!req.params.id) {
         return res.status(400).json({
-            message: "Bad request, no profile ID provided.",
+            message: 'Bad request.',
+            error: 'No user id submitted.',
         });
     }
     const { id } = req.params;
     try {
-        const user = yield User.findOne({ _id: id });
+        const _user = yield User.findOne({ _id: id });
+        if (_user) {
+            Object.assign(_user, req.body);
+            yield _user.save();
+            res.status(200).send({ message: 'Updated' });
+        }
+    }
+    catch (err) {
+        console.log(error_MESSAGE('post'), err);
+        return res.status(400).json({
+            message: 'Error creating user',
+            error: err.message,
+        });
+    }
+});
+export const getUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('Test backend');
+    if (!req.params.id) {
+        return res.status(400).json({
+            message: 'Bad request, no profile ID provided.',
+        });
+    }
+    const { id } = req.params;
+    console.log('id: ', id);
+    try {
+        const user = yield User.findById(id);
         if (user) {
             res.status(200).json(user);
         }
     }
     catch (err) {
+        console.log(err.message);
         res.status(500).json({
-            message: "Unexpected error.",
+            message: 'Unexpected error.',
+            error: err.message,
+        });
+    }
+});
+export const addFriendController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!req.body) {
+        return res.status(404).json({ message: 'Friend not found' });
+    }
+    const { userId } = req;
+    const { friendId } = req.body;
+    try {
+        const _friend = yield User.findById({ _id: friendId });
+        const _you = yield User.findById({ _id: userId });
+        if (_friend && _you) {
+            const hisFriends = _friend.friends;
+            const yourFriends = _you.friends;
+            if (!hisFriends.includes(_you._id) &&
+                !yourFriends.includes(_friend._id)) {
+                _friend.friends.push(userId);
+                _you.friends.push(_friend._id);
+                yield _friend.save();
+                yield _you.save();
+                return res
+                    .status(200)
+                    .json({ message: 'Added friend: ' + _friend.firstname });
+            }
+        }
+        else {
+            return res.status(404).json({ message: 'Neither found' });
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+export const removeFriendController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userId } = req;
+    const { friendId } = req.body;
+    console.log('asd');
+    try {
+        const _friend = yield User.findById({ _id: friendId });
+        const _you = yield User.findById({ _id: userId });
+        if (_friend && _you) {
+            const hisFriends = _friend.friends;
+            const yourFriends = _you.friends;
+            if (hisFriends.includes(_you._id) && yourFriends.includes(_friend._id)) {
+                hisFriends.forEach((f) => {
+                    console.log(f);
+                    console.log(_you._id);
+                });
+                const friendIndex = yourFriends.findIndex((f) => _friend._id.toString() === f.toString());
+                const yourIndex = hisFriends.findIndex((f) => _you._id.toString() === f.toString());
+                console.log(friendIndex);
+                console.log(yourIndex);
+                if (yourIndex !== -1 && friendIndex !== -1) {
+                    console.log('test 2');
+                    _friend.friends.splice(yourIndex, 1);
+                    _you.friends.splice(friendIndex, 1);
+                    yield _friend.save();
+                    yield _you.save();
+                    return res
+                        .status(204)
+                        .json({ message: 'Removed friend: ' + _friend.firstname });
+                }
+            }
+        }
+        else {
+            return res.status(404).json({ message: 'Neither found' });
+        }
+    }
+    catch (err) {
+        console.log(err.message);
+        return res.status(500).json({ error: err.message });
+    }
+});
+export const detailedUserController = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const _user = yield User.findById(req.userId)
+            .populate('friends', {
+            firstname: 1,
+            friends: 1,
+        })
+            .populate('conversations');
+        res.status(200).json(_user);
+    }
+    catch (err) {
+        return res.status(401).json({ error: err });
+    }
+});
+export const getUserList = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('You try here');
+    let page = parseInt(req.query.page) || 1;
+    let pageSize = parseInt(req.query.pageSize) || 10;
+    let pageSkip = page - 1;
+    try {
+        let _users = yield User.find().skip(pageSkip).limit(pageSize);
+        res.status(200).json(_users);
+    }
+    catch (err) {
+        console.error(err.message);
+        res.status(500).json({
+            message: 'Unexpected error.',
             error: err.message,
         });
     }

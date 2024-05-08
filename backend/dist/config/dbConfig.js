@@ -7,20 +7,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import mongoose from "mongoose";
-import app from "../app.js";
+import mongoose from 'mongoose';
+import server from '../server.js';
 export const RUN_SERVER = (db_path, port) => __awaiter(void 0, void 0, void 0, function* () {
     if (!db_path || !port) {
-        throw new Error("PROVIDE ADDITIONAL INPUT TO ESTABLISH CONNECTION WITH DATABASE AND SERVER.");
+        throw new Error('PROVIDE ADDITIONAL INPUT TO ESTABLISH CONNECTION WITH DATABASE AND SERVER.');
     }
     try {
         yield mongoose.connect(db_path);
-        app.listen(port, () => {
-            console.log("Connected to host:", port);
+        server.listen(port, () => {
+            console.log('Connected to host:', port);
         });
-        console.log("Connected with mongoose!");
+        console.log('Connected with mongoose!');
     }
     catch (err) {
-        console.log("ERROR CONNECTING WITH MONGOOSE", err.message);
+        console.log('ERROR CONNECTING WITH MONGOOSE', err.message);
+        mongoose.disconnect();
     }
 });
