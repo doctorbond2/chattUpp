@@ -3,7 +3,7 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { useAuth } from '../../utils/hooks/AuthContext';
-import { NavDropdown, Button } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { Outlet } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import { useSocketV2 } from '../../utils/hooks/SocketContextV2';
@@ -90,7 +90,7 @@ const mainNavBar: React.FC<Props> = ({}) => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              {!loggedIn.access && (
+              {/* {!loggedIn.access && (
                 <NavDropdown
                   title={loggedIn?.access ? 'Profile' : 'Logged out'}
                   id="basic-nav-dropdown"
@@ -104,7 +104,7 @@ const mainNavBar: React.FC<Props> = ({}) => {
                   </NavDropdown.Item>
                   {loggedIn.adminToken && <></>}
                 </NavDropdown>
-              )}
+              )} */}
 
               {!loggedIn.access && (
                 <Nav.Link
