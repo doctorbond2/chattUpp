@@ -8,9 +8,7 @@ const SocketV2Context = createContext<SocketContextV2Interface>(defaultSCV2I);
 export const useSocketV2 = () => useContext(SocketV2Context);
 export const SocketContextV2Provider = ({ children }: any) => {
   const { loggedIn } = useAuth();
-  const newSocket: Socket = io(import.meta.env.VITE_ServerPort, {
-    rejectUnauthorized: false,
-  });
+  const newSocket: Socket = io(import.meta.env.VITE_ServerPort);
   const [room, setRoom] = useState('');
   const [socket, setSocket] = useState<any>(null);
 
