@@ -4,7 +4,8 @@ Work in progress
 (DONT) Visit page @ https://chatt-upp-client.vercel.app/
 
 # TILL INLÄMNING
-
+terminal 1: cd frontend npm run dev
+terminal 2: cd backend npm run dev
 -------------------------------SERVER/BACKEND ENV-------------------------------
 DATABASE_PATH =
 PORT = 3000
