@@ -1,6 +1,7 @@
 # chattUpp
 
 Work in progress
+# Working on v2 atm deploying with kubernetes
 (DONT) Visit page @ https://chatt-upp-client.vercel.app/
 
 # TILL INLÄMNING
