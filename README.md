@@ -3,7 +3,7 @@
 (outdated)
 # Working on v2 atm deploying with kubernetes
 
-# TILL INLÄMNING
+# How to start
 **Terminal 1:**  
 ```sh
 cd frontend
