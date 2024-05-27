@@ -19,7 +19,7 @@ npm run dev
 cd backend
 npm run compile
 ```
-# - - - -SERVER/BACKEND ENV - - - -
+# - - - - SERVER/BACKEND ENV - - - -
 DATABASE_PATH =
 PORT = 3000
 JWT_ACCESS_SECRET =
