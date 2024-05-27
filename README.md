@@ -1,7 +1,7 @@
 # chattUpp
 
 
-#  (Old version) Working on v2 atm deploying with kubernetes
+#  (Old version) Working on v2 atm to find another way to deploy without Vercel!
 
 # How to start
 **Terminal 1:**  
