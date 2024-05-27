@@ -2,11 +2,23 @@
 
 (outdated)
 # Working on v2 atm deploying with kubernetes
-(DONT) Visit page @ https://chatt-upp-client.vercel.app/
 
 # TILL INLÄMNING
-terminal 1: cd frontend npm run dev
-terminal 2: cd backend npm run dev
+**Terminal 1:**  
+```sh
+cd frontend
+npm run dev
+```
+**Terminal 2:**  
+```sh
+cd backend
+npm run dev
+```
+**Terminal 3 (for backend): for compiling TS code** 
+```sh
+cd backend
+npm run compile
+```
 -------------------------------SERVER/BACKEND ENV-------------------------------
 DATABASE_PATH =
 PORT = 3000
