@@ -19,7 +19,7 @@ npm run dev
 cd backend
 npm run compile
 ```
--------------------------------SERVER/BACKEND ENV-------------------------------
+# SERVER/BACKEND ENV
 DATABASE_PATH =
 PORT = 3000
 JWT_ACCESS_SECRET =
@@ -55,7 +55,7 @@ message_route_CREATE = /create
 message_route_GET_LATEST_MESSAGE = /get/latest/message/:id
 
 
--------------------------------CLIENT/FRONTEND ENV-----------------------
+# CLIENT/FRONTEND ENV
 _OBS_
 Important that VITE_BaseUrl ends with /api/chatupp if you change something!
 
