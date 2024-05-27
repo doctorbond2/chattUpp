@@ -1,7 +1,7 @@
 # chattUpp
 
-(outdated)
-# Working on v2 atm deploying with kubernetes
+
+#  (Old version) Working on v2 atm deploying with kubernetes
 
 # How to start
 **Terminal 1:**  
