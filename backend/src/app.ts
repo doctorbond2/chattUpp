@@ -6,8 +6,7 @@ import convoRouter from './routes/conversation.route.js';
 import messageRouter from './routes/message.route.js';
 const ALLOWED_ORIGINS: string[] = [
   'http://localhost:5173',
-  'https://chatt-upp-client.vercel.app',
-  'https://*.vercel.app',
+  'https://chattupp-client.onrender.com',
 ];
 const app = express();
 //`${process.env.CLIENT_URL}`
